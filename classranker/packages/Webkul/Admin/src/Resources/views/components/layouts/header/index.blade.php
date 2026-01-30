@@ -2,7 +2,7 @@
     $admin = auth()->guard('admin')->user();
 @endphp
 
-<header class="sticky top-0 z-[10001] flex items-center justify-between border-b bg-white px-2 py-2 dark:border-gray-800 dark:bg-gray-900 sm:px-4 sm:py-2.5">
+<header class="sticky top-0 z-[10001] flex items-center justify-between border-b bg-gray-500 px-2 py-2 dark:border-gray-800 dark:bg-gray-900 sm:px-4 sm:py-2.5">
     <div class="flex items-center gap-1 sm:gap-1.5">
         <!-- Hamburger Menu -->
         <i
@@ -28,55 +28,9 @@
                 />
             @endif
         </a>
-
-        <!-- Mega Search Bar Vue Component -->
-        <v-mega-search class="hidden sm:block">
-            <div class="relative flex w-[200px] items-center sm:w-[300px] md:w-[400px] lg:w-[525px] xl:max-w-[525px] ltr:ml-2 rtl:mr-2 sm:ltr:ml-2.5 sm:rtl:mr-2.5">
-                <i class="icon-search absolute top-1.5 flex items-center text-xl ltr:left-2 rtl:right-2 sm:text-2xl sm:ltr:left-3 sm:rtl:right-3"></i>
-
-                <input 
-                    type="text" 
-                    class="block w-full rounded-lg border bg-white px-8 py-1.5 text-sm leading-6 text-gray-600 transition-all hover:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 sm:px-10 sm:text-base"
-                    placeholder="@lang('admin::app.components.layouts.header.mega-search.title')" 
-                >
-            </div>
-        </v-mega-search>
     </div>
 
     <div class="flex items-center gap-1 sm:gap-2.5">
-        <!-- Dark mode Switcher -->
-        <v-dark>
-            <div class="flex">
-                <span
-                    class="{{ request()->cookie('dark_mode') ? 'icon-light' : 'icon-dark' }} cursor-pointer rounded-md p-1.5 text-xl transition-all hover:bg-gray-100 dark:hover:bg-gray-950 sm:text-2xl"
-                ></span>
-            </div>
-        </v-dark>
-
-        <!-- Visit Shop Link -->
-        <a 
-            href="{{ route('shop.home.index') }}" 
-            target="_blank"
-            class="hidden sm:flex"
-        >
-            <span 
-                class="icon-store cursor-pointer rounded-md p-1.5 text-xl transition-all hover:bg-gray-100 dark:hover:bg-gray-950 sm:text-2xl"
-                title="@lang('admin::app.components.layouts.header.visit-shop')"
-            >
-            </span>
-        </a>
-
-       <!-- Notification Component -->
-        <v-notifications {{ $attributes }}>
-            <span class="relative flex">
-                <span 
-                    class="icon-notification cursor-pointer rounded-md p-1.5 text-xl transition-all hover:bg-gray-100 dark:hover:bg-gray-950 sm:text-2xl" 
-                    title="@lang('admin::app.components.layouts.header.notifications')"
-                >
-                </span>
-            </span>
-        </v-notifications>
-
         <!-- Admin profile -->
         <x-admin::dropdown position="bottom-{{ core()->getCurrentLocale()->direction === 'ltr' ? 'right' : 'left' }}">
             <x-slot:toggle>
