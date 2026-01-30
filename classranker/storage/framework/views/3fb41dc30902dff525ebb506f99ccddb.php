@@ -6,7 +6,7 @@
     <div class="flex items-center gap-1 sm:gap-1.5">
         <!-- Hamburger Menu -->
         <i
-            class="icon-menu cursor-pointer rounded-md p-1.5 text-xl hover:bg-gray-100 dark:hover:bg-gray-950 lg:hidden sm:text-2xl"
+            class="icon-menu cursor-pointer rounded-md p-1.5 text-xl bg-gray-100 dark:hover:bg-gray-950 lg:hidden sm:text-2xl"
             @click="$refs.sidebarMenuDrawer.open()"
         >
         </i>
@@ -205,7 +205,7 @@
 <?php unset($__componentOriginal9bfb526197f1d7304e7fade44c26fbb8); ?>
 <?php endif; ?>
 
-<?php if (! $__env->hasRenderedOnce('de3b7b1d-41ae-40cb-a208-d523d2cfb2d0')): $__env->markAsRenderedOnce('de3b7b1d-41ae-40cb-a208-d523d2cfb2d0');
+<?php if (! $__env->hasRenderedOnce('0df68b73-f660-474e-8a80-63f8ce350e9a')): $__env->markAsRenderedOnce('0df68b73-f660-474e-8a80-63f8ce350e9a');
 $__env->startPush('scripts'); ?>
     <script
         type="text/x-template"

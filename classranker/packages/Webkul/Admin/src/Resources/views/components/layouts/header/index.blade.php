@@ -6,7 +6,7 @@
     <div class="flex items-center gap-1 sm:gap-1.5">
         <!-- Hamburger Menu -->
         <i
-            class="icon-menu cursor-pointer rounded-md p-1.5 text-xl hover:bg-gray-100 dark:hover:bg-gray-950 lg:hidden sm:text-2xl"
+            class="icon-menu cursor-pointer rounded-md p-1.5 text-xl bg-gray-100 dark:hover:bg-gray-950 lg:hidden sm:text-2xl"
             @click="$refs.sidebarMenuDrawer.open()"
         >
         </i>
