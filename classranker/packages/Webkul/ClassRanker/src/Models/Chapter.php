@@ -15,7 +15,6 @@ class Chapter extends Model implements ChapterContract
     protected $fillable = [
         'title',
         'code',
-        'is_premium',
         'avatar',
         'status',
         'board_id',

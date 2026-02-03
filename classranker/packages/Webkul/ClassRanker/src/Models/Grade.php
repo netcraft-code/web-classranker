@@ -15,7 +15,6 @@ class Grade extends Model implements GradeContract
     protected $fillable = [
         'name',
         'code',
-        'is_premium',
         'avatar',
         'status',
         'board_id',

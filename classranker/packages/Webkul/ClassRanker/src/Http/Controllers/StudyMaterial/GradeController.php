@@ -53,7 +53,6 @@ class GradeController extends Controller
             'name',
             'board_id',
             'status',
-            'is_premium',
         ]);
 
         $grade = $this->gradeRepository->create($data);
@@ -85,7 +84,6 @@ class GradeController extends Controller
             'code',
             'name',
             'status',
-            'is_premium',
         ]);
 
         $page = $this->gradeRepository->update($data, $id);

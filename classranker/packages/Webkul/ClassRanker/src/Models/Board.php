@@ -15,7 +15,6 @@ class Board extends Model implements BoardContract
     protected $fillable = [
         'name',
         'code',
-        'is_premium',
         'avatar',
         'status',
     ];

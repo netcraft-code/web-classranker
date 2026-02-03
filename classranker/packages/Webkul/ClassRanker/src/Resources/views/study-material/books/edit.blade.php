@@ -76,25 +76,6 @@
                                             <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Code:</span>
                                             <span style="display: inline-block; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace; color: #475569; border: 1px solid #e2e8f0;">@{{ board.code }}</span>
                                         </div>
-
-                                        <!-- Premium Status -->
-                                        <div style="display: flex; align-items: center; gap: 8px;">
-                                            <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Premium:</span>
-                                            
-                                            <span 
-                                                v-if="board.is_premium"
-                                                style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);"
-                                            >
-                                                ⭐ Premium
-                                            </span>
-                                            
-                                            <span 
-                                                v-else
-                                                style="display: inline-block; background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"
-                                            >
-                                                Standard
-                                            </span>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -136,25 +117,6 @@
                                             <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Code:</span>
                                             <span style="display: inline-block; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace; color: #475569; border: 1px solid #e2e8f0;">@{{ grade.code }}</span>
                                         </div>
-
-                                        <!-- Premium Status -->
-                                        <div style="display: flex; align-items: center; gap: 8px;">
-                                            <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Premium:</span>
-                                            
-                                            <span 
-                                                v-if="grade.is_premium"
-                                                style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);"
-                                            >
-                                                ⭐ Premium
-                                            </span>
-                                            
-                                            <span 
-                                                v-else
-                                                style="display: inline-block; background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"
-                                            >
-                                                Standard
-                                            </span>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -195,25 +157,6 @@
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Code:</span>
                                             <span style="display: inline-block; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace; color: #475569; border: 1px solid #e2e8f0;">@{{ subject.code }}</span>
-                                        </div>
-
-                                        <!-- Premium Status -->
-                                        <div style="display: flex; align-items: center; gap: 8px;">
-                                            <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Premium:</span>
-                                            
-                                            <span 
-                                                v-if="subject.is_premium"
-                                                style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);"
-                                            >
-                                                ⭐ Premium
-                                            </span>
-                                            
-                                            <span 
-                                                v-else
-                                                style="display: inline-block; background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"
-                                            >
-                                                Standard
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -300,35 +243,6 @@
                                 />
 
                                 <x-admin::form.control-group.error control-name="status" />
-                            </x-admin::form.control-group>
-
-                            <!-- Premium Option -->
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label class="required">
-                                    @lang('class_ranker::app.study_materials.books.edit.is-premium')
-                                </x-admin::form.control-group.label>
-
-                                <input
-                                    type="hidden"
-                                    name="is_premium"
-                                    :value="bookIsPremium ? 1 : 0"
-                                >
-
-                                <input
-                                    type="checkbox"
-                                    v-model="bookIsPremium"
-                                    :disabled="isPremiumLocked"
-                                    class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                                >
-
-                                <p
-                                    v-if="isPremiumLocked"
-                                    class="text-xs text-gray-500 mt-1"
-                                >
-                                    This is locked because selected subject is premium.
-                                </p>
-
-                                <x-admin::form.control-group.error control-name="is_premium" />
                             </x-admin::form.control-group>
 
                             <!-- Avatar -->
@@ -470,18 +384,7 @@
                         totalPage: '{{ old('total_pages', $book->total_pages) }}',
                         edition: '{{ old('edition', $book->edition ?? '') }}',
                         publicationYear: '{{ old('publication_year', $book->publication_year ?? '') }}',
-                        
-                        bookIsPremium: {{ old('is_premium', $book->is_premium) ? 'true' : 'false' }},
-                        isPremiumLocked: false,
                     };
-                },
-
-                mounted() {
-                    // Check if subject is premium on load
-                    if (this.subject && this.subject.is_premium) {
-                        this.bookIsPremium = true;
-                        this.isPremiumLocked = true;
-                    }
                 },
 
                 methods: {

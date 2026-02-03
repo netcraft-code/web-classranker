@@ -15,7 +15,6 @@ class Subject extends Model implements SubjectContract
     protected $fillable = [
         'name',
         'code',
-        'is_premium',
         'avatar',
         'status',
         'board_id',

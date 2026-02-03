@@ -55,7 +55,6 @@ class SubjectController extends Controller
             'board_id',
             'grade_id',
             'status',
-            'is_premium',
         ]);
 
         $subject = $this->subjectRepository->create($data);
@@ -87,7 +86,6 @@ class SubjectController extends Controller
             'code',
             'name',
             'status',
-            'is_premium',
         ]);
 
         $subject = $this->subjectRepository->update($data, $id);

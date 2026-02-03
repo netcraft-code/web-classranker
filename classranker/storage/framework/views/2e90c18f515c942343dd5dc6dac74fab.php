@@ -13,7 +13,7 @@
         <?php echo app('translator')->get('admin::app.users.sessions.title'); ?>
      <?php $__env->endSlot(); ?>
 
-    <div class="flex h-[100vh] items-center justify-center">
+    <div class="flex h-[100vh] items-center justify-center bg-gray-500">
         <div class="flex flex-col items-center gap-5">
             <!-- Logo -->            
             <?php if($logo = core()->getConfigData('general.design.admin_logo.logo_image')): ?>
@@ -25,7 +25,7 @@
             <?php else: ?>
                 <img
                     class="w-max" 
-                    src="<?php echo e(bagisto_asset('images/logo.svg')); ?>"
+                    src="<?php echo e(bagisto_asset('images/logo.png')); ?>"
                     alt="<?php echo e(config('app.name')); ?>"
                 />
             <?php endif; ?>

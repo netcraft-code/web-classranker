@@ -45,7 +45,6 @@ class BoardController extends Controller
             'code',
             'name',
             'status',
-            'is_premium',
         ]);
 
         $board = $this->boardRepository->create($data);
@@ -77,7 +76,6 @@ class BoardController extends Controller
             'code',
             'name',
             'status',
-            'is_premium',
         ]);
 
         $page = $this->boardRepository->update($data, $id);

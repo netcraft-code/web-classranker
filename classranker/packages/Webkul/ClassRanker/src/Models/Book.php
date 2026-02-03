@@ -20,7 +20,6 @@ class Book extends Model implements BookContract
         'edition',
         'publication_year',
         'total_pages',
-        'is_premium',
         'avatar',
         'status',
         'board_id',

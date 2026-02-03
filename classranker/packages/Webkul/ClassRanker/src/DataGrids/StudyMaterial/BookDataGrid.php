@@ -56,31 +56,6 @@ class BookDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'is_premium',
-            'label'      => trans('class_ranker::app.study_materials.books.index.datagrid.is-premium'),
-            'type'       => 'boolean',
-            'filterable' => true,
-            'filterable_options' => [
-                [
-                    'label' => 'Yes',
-                    'value' => 1,
-                ],
-                [
-                    'label' => 'No',
-                    'value' => 0,
-                ],
-            ],
-            'sortable'   => true,
-            'closure'    => function ($value) {
-                if ($value->is_premium) {
-                    return '<span class="badge badge-md badge-success">Yes</span>';
-                }
-
-                return '<span class="badge badge-md badge-danger">No</span>';
-            },
-        ]);
-
-        $this->addColumn([
             'index'      => 'avatar',
             'label'      => trans('class_ranker::app.study_materials.books.index.datagrid.avatar'),
             'type'       => 'string',

@@ -332,9 +332,9 @@
     "file": "assets/icon-options-B9pp5RQf.svg",
     "src": "src/Resources/assets/images/icon-options.svg"
   },
-  "src/Resources/assets/images/logo.svg": {
+  "src/Resources/assets/images/logo.png": {
     "file": "assets/logo-CXf-crI0.svg",
-    "src": "src/Resources/assets/images/logo.svg"
+    "src": "src/Resources/assets/images/logo.png"
   },
   "src/Resources/assets/images/product-placeholders/front.svg": {
     "file": "assets/front-CFI3VfdH.svg",

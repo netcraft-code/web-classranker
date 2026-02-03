@@ -21,7 +21,7 @@
                 />
             <?php else: ?>
                 <img
-                    src="<?php echo e(request()->cookie('dark_mode') ? bagisto_asset('images/dark-logo.svg') : bagisto_asset('images/logo.svg')); ?>"
+                    src="<?php echo e(request()->cookie('dark_mode') ? bagisto_asset('images/dark-logo.svg') : bagisto_asset('images/logo.png')); ?>"
                     class="h-8 w-auto sm:h-10"
                     id="logo-image"
                     alt="<?php echo e(config('app.name')); ?>"
@@ -148,7 +148,7 @@
                 />
             <?php else: ?>
                 <img
-                    src="<?php echo e(request()->cookie('dark_mode') ? bagisto_asset('images/dark-logo.svg') : bagisto_asset('images/logo.svg')); ?>"
+                    src="<?php echo e(request()->cookie('dark_mode') ? bagisto_asset('images/dark-logo.svg') : bagisto_asset('images/logo.png')); ?>"
                     class="h-8 w-auto sm:h-10"
                     id="logo-image"
                     alt="<?php echo e(config('app.name')); ?>"
@@ -205,7 +205,7 @@
 <?php unset($__componentOriginal9bfb526197f1d7304e7fade44c26fbb8); ?>
 <?php endif; ?>
 
-<?php if (! $__env->hasRenderedOnce('0df68b73-f660-474e-8a80-63f8ce350e9a')): $__env->markAsRenderedOnce('0df68b73-f660-474e-8a80-63f8ce350e9a');
+<?php if (! $__env->hasRenderedOnce('2ea842fd-0d5f-4914-abfb-aecfa8fc7175')): $__env->markAsRenderedOnce('2ea842fd-0d5f-4914-abfb-aecfa8fc7175');
 $__env->startPush('scripts'); ?>
     <script
         type="text/x-template"
@@ -839,7 +839,7 @@ $__env->startPush('scripts'); ?>
                 return {
                     isDarkMode: <?php echo e(request()->cookie('dark_mode') ?? 0); ?>,
 
-                    logo: "<?php echo e(bagisto_asset('images/logo.svg')); ?>",
+                    logo: "<?php echo e(bagisto_asset('images/logo.png')); ?>",
 
                     dark_logo: "<?php echo e(bagisto_asset('images/dark-logo.svg')); ?>",
                 };

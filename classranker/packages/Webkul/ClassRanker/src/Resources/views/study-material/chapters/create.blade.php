@@ -108,35 +108,6 @@
                             <x-admin::form.control-group.error control-name="status" />
                         </x-admin::form.control-group>
 
-                        <!-- Premium Option -->
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label class="required">
-                                @lang('class_ranker::app.study_materials.chapters.create.is-premium')
-                            </x-admin::form.control-group.label>
-
-                            <input
-                                type="hidden"
-                                name="is_premium"
-                                :value="chapterIsPremium ? 1 : 0"
-                            >
-
-                            <input
-                                type="checkbox"
-                                v-model="chapterIsPremium"
-                                :disabled="isPremiumLocked"
-                                class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                            >
-
-                            <p
-                                v-if="isPremiumLocked"
-                                class="text-xs text-gray-500 mt-1"
-                            >
-                                This is locked because selected book is premium.
-                            </p>
-
-                            <x-admin::form.control-group.error control-name="is_premium" />
-                        </x-admin::form.control-group>
-
                         <!-- Avatar -->
                         <div class="flex w-2/5 flex-col gap-2">
                             <p class="font-medium text-gray-800 dark:text-white">
@@ -210,25 +181,6 @@
                                                 <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Code:</span>
                                                 <span style="display: inline-block; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace; color: #475569; border: 1px solid #e2e8f0;">@{{ selectedBoard.code }}</span>
                                             </div>
-
-                                            <!-- Premium Status -->
-                                            <div style="display: flex; align-items: center; gap: 8px;">
-                                                <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Premium:</span>
-                                                
-                                                <span 
-                                                    v-if="selectedBoard.is_premium"
-                                                    style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);"
-                                                >
-                                                    ⭐ Premium
-                                                </span>
-                                                
-                                                <span 
-                                                    v-else
-                                                    style="display: inline-block; background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"
-                                                >
-                                                    Standard
-                                                </span>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -296,25 +248,6 @@
                                                 <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Code:</span>
                                                 <span style="display: inline-block; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace; color: #475569; border: 1px solid #e2e8f0;">@{{ selectedGrade.code }}</span>
                                             </div>
-
-                                            <!-- Premium Status -->
-                                            <div style="display: flex; align-items: center; gap: 8px;">
-                                                <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Premium:</span>
-                                                
-                                                <span 
-                                                    v-if="selectedGrade.is_premium"
-                                                    style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);"
-                                                >
-                                                    ⭐ Premium
-                                                </span>
-                                                
-                                                <span 
-                                                    v-else
-                                                    style="display: inline-block; background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"
-                                                >
-                                                    Standard
-                                                </span>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -381,25 +314,6 @@
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Code:</span>
                                                 <span style="display: inline-block; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: 'Courier New', monospace; color: #475569; border: 1px solid #e2e8f0;">@{{ selectedSubject.code }}</span>
-                                            </div>
-
-                                            <!-- Premium Status -->
-                                            <div style="display: flex; align-items: center; gap: 8px;">
-                                                <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Premium:</span>
-                                                
-                                                <span 
-                                                    v-if="selectedSubject.is_premium"
-                                                    style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);"
-                                                >
-                                                    ⭐ Premium
-                                                </span>
-                                                
-                                                <span 
-                                                    v-else
-                                                    style="display: inline-block; background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"
-                                                >
-                                                    Standard
-                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -474,25 +388,6 @@
                                                 <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Writer:</span>
                                                 <span style="font-size: 14px; font-weight: 500; color: #0f172a;">@{{ selectedBook.writer }}</span>
                                             </div>
-
-                                            <!-- Premium Status -->
-                                            <div style="display: flex; align-items: center; gap: 8px;">
-                                                <span style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; min-width: 70px;">Premium:</span>
-                                                
-                                                <span 
-                                                    v-if="selectedBook.is_premium"
-                                                    style="display: inline-flex; align-items: center; gap: 4px; background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%); color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);"
-                                                >
-                                                    ⭐ Premium
-                                                </span>
-                                                
-                                                <span 
-                                                    v-else
-                                                    style="display: inline-block; background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;"
-                                                >
-                                                    Standard
-                                                </span>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -548,10 +443,6 @@
                         title: '',
                         code: '',
                         codeIsAutoGenerated: true,
-
-                        // Premium control
-                        chapterIsPremium: false,
-                        isPremiumLocked: false,
                     };
                 },
 
@@ -589,7 +480,6 @@
                         this.selectedBookId = '';
                         this.selectedBook = null;
                         this.filteredBooks = [];
-                        this.resetPremiumState();
                     },
 
                     // Grade selection handler
@@ -605,7 +495,6 @@
                             this.selectedBookId = '';
                             this.selectedBook = null;
                             this.filteredBooks = [];
-                            this.resetPremiumState();
                             return;
                         }
 
@@ -618,7 +507,6 @@
                         this.selectedBookId = '';
                         this.selectedBook = null;
                         this.filteredBooks = [];
-                        this.resetPremiumState();
                     },
 
                     // Subject selection handler
@@ -631,7 +519,6 @@
                             this.selectedBookId = '';
                             this.selectedBook = null;
                             this.filteredBooks = [];
-                            this.resetPremiumState();
                             return;
                         }
 
@@ -641,7 +528,6 @@
                         // Reset book selection
                         this.selectedBookId = '';
                         this.selectedBook = null;
-                        this.resetPremiumState();
                     },
 
                     // Book selection handler
@@ -649,20 +535,6 @@
                         this.selectedBook = this.filteredBooks.find(
                             book => book.id == this.selectedBookId
                         );
-
-                        if (!this.selectedBook) {
-                            this.resetPremiumState();
-                            return;
-                        }
-
-                        // Set premium based on book
-                        if (this.selectedBook.is_premium) {
-                            this.chapterIsPremium = true;
-                            this.isPremiumLocked = true;
-                        } else {
-                            this.chapterIsPremium = false;
-                            this.isPremiumLocked = false;
-                        }
                     },
 
                     // Reset all selections
@@ -676,13 +548,6 @@
                         this.selectedBookId = '';
                         this.selectedBook = null;
                         this.filteredBooks = [];
-                        this.resetPremiumState();
-                    },
-
-                    // Reset premium state
-                    resetPremiumState() {
-                        this.chapterIsPremium = false;
-                        this.isPremiumLocked = false;
                     },
 
                     // Avatar URL generator

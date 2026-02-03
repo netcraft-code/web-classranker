@@ -112,32 +112,6 @@
                             />
                         </x-admin::form.control-group>
 
-                        <!-- Premium -->
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label class="required">
-                                @lang('class_ranker::app.study_materials.subjects.boards.edit.is-premium')
-                            </x-admin::form.control-group.label>
-
-                            @php $selectedValue = old('is_premium') ?: $board->is_premium @endphp
-
-                            <!-- Visible in menu Hidden field -->
-                            <x-admin::form.control-group.control
-                                type="hidden"
-                                class="cursor-pointer"
-                                name="is_premium"
-                                :checked="(boolean) $selectedValue"
-                            />
-
-                            <x-admin::form.control-group.control
-                                type="switch"
-                                class="cursor-pointer"
-                                name="is_premium"
-                                value="1"
-                                :label="trans('class_ranker::app.study_materials.subjects.boards.edit.is-premium')"
-                                :checked="(boolean) $selectedValue"
-                            />
-                        </x-admin::form.control-group>
-
                         <!-- Avatar -->
                         <div class="flex w-2/5 flex-col gap-2">
                             <p class="font-medium text-gray-800 dark:text-white">

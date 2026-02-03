@@ -97,7 +97,6 @@ class ChapterController extends Controller
             'code',
             'title',
             'status',
-            'is_premium',
         ]);
 
         Event::dispatch('study_materials.chapters.update.before', $id);

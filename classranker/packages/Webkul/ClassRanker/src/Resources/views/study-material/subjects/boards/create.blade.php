@@ -115,23 +115,6 @@
                             <x-admin::form.control-group.error control-name="status" />
                         </x-admin::form.control-group>
 
-                        <!-- Premium Option -->
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label class="required">
-                                @lang('class_ranker::app.study_materials.subjects.boards.create.is-premium')
-                            </x-admin::form.control-group.label>
-
-                            <x-admin::form.control-group.control
-                                type="switch"
-                                class="cursor-pointer"
-                                name="is_premium"
-                                value="1"
-                                :label="trans('class_ranker::app.study_materials.subjects.boards.create.is-premium')"
-                            />
-
-                            <x-admin::form.control-group.error control-name="is_premium" />
-                        </x-admin::form.control-group>
-
                         <!-- Add Logo -->
                         <div class="flex w-2/5 flex-col gap-2">
                             <p class="font-medium text-gray-800 dark:text-white">

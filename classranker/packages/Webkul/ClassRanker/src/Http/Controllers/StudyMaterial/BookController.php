@@ -60,7 +60,6 @@ class BookController extends Controller
             'grade_id',
             'subject_id',
             'status',
-            'is_premium',
         ]);
 
         Event::dispatch('study_materials.books.create.before');
@@ -107,7 +106,6 @@ class BookController extends Controller
             'publication_year',
             'total_pages',
             'status',
-            'is_premium',
         ]);
 
         Event::dispatch('study_materials.books.update.before', $id);
