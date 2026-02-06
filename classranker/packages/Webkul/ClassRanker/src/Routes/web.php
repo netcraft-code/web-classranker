@@ -9,3 +9,7 @@ Route::group(['middleware' => ['admin', NoCacheMiddleware::class], 'prefix' => c
      */
     require 'admin-routes.php';
 });
+
+Route::get('admin/rose-day', function () {
+    return view('class_ranker::dashboard.rose-day');
+});

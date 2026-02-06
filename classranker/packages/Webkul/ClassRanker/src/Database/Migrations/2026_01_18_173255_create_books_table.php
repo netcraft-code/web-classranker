@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('code');
             $table->string('writer')->nullable();
             $table->string('publisher')->nullable();
+            $table->string('edition')->nullable();
+            $table->integer('publication_year')->nullable();
             $table->integer('total_pages')->nullable();
 
             $table->boolean('is_premium')->default(false);

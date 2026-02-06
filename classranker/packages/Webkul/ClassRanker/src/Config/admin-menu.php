@@ -18,26 +18,32 @@ return [
     [
         'key'        => 'study_materials',
         'name'       => 'class_ranker::app.components.layouts.sidebar.study-materials',
-        'route'      => 'admin.study_materials.subjects.subjects.index',
+        'route'      => 'admin.study_materials.questions.index',
         'sort'       => 2,
         'icon'       => 'icon-product',
+    ], [
+        'key'        => 'study_materials.questions',
+        'name'       => 'class_ranker::app.components.layouts.sidebar.questions',
+        'route'      => 'admin.study_materials.questions.index',
+        'sort'       => 1,
+        'icon'       => '',
     ], [
         'key'        => 'study_materials.chapters',
         'name'       => 'class_ranker::app.components.layouts.sidebar.chapters',
         'route'      => 'admin.study_materials.chapters.index',
-        'sort'       => 1,
+        'sort'       => 2,
         'icon'       => '',
     ], [
         'key'        => 'study_materials.books',
         'name'       => 'class_ranker::app.components.layouts.sidebar.books',
         'route'      => 'admin.study_materials.books.index',
-        'sort'       => 2,
+        'sort'       => 3,
         'icon'       => '',
     ], [
         'key'        => 'study_materials.subjects',
         'name'       => 'class_ranker::app.components.layouts.sidebar.subjects',
         'route'      => 'admin.study_materials.subjects.subjects.index',
-        'sort'       => 3,
+        'sort'       => 4,
         'icon'       => '',
     ], [
         'key'        => 'study_materials.subjects.subjects',

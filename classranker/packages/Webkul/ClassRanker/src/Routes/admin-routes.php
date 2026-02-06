@@ -6,6 +6,7 @@ use Webkul\ClassRanker\Http\Controllers\StudyMaterial\GradeController;
 use Webkul\ClassRanker\Http\Controllers\StudyMaterial\BoardController;
 use Webkul\ClassRanker\Http\Controllers\StudyMaterial\BookController;
 use Webkul\ClassRanker\Http\Controllers\StudyMaterial\ChapterController;
+use Webkul\ClassRanker\Http\Controllers\StudyMaterial\QuestionController;
 use Webkul\ClassRanker\Http\Controllers\DashboardController;
 
 /**
@@ -99,6 +100,23 @@ Route::prefix('study-material')->group(function () {
         Route::put('edit/{id}', 'update')->name('admin.study_materials.chapters.update');
 
         Route::delete('edit/{id}', 'delete')->name('admin.study_materials.chapters.delete');
+    });
+
+    /**
+     * Questions routes.
+     */
+    Route::controller(QuestionController::class)->prefix('questions')->group(function () {
+        Route::get('', 'index')->name('admin.study_materials.questions.index');
+
+        Route::get('create', 'create')->name('admin.study_materials.questions.create');
+        
+        Route::post('create', 'store')->name('admin.study_materials.questions.store');
+
+        Route::get('edit/{id}', 'edit')->name('admin.study_materials.questions.edit');
+
+        Route::put('edit/{id}', 'update')->name('admin.study_materials.questions.update');
+
+        Route::delete('edit/{id}', 'delete')->name('admin.study_materials.questions.delete');
     });
 });
 

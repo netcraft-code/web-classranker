@@ -1,0 +1,35 @@
+<?php
+
+namespace Webkul\ClassRanker\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Webkul\ClassRanker\Contracts\QuestionItem as QuestionItemContract;
+
+class QuestionItem extends Model implements QuestionItemContract
+{
+    protected $table = 'question_items';
+
+    protected $fillable = [
+        'question_id',
+        'question_number',
+        'question_title',
+        'question',
+        'answer',
+        'page_number',
+        'order',
+    ];
+
+    protected $casts = [
+        'question_number' => 'integer',
+        'order' => 'integer',
+    ];
+
+    /**
+     * Get the parent question
+     */
+    public function question(): BelongsTo
+    {
+        return $this->belongsTo(Question::class);
+    }
+}

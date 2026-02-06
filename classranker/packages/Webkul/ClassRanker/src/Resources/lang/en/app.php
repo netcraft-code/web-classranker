@@ -10,6 +10,7 @@ return [
                 'boards'          => 'Boards',
                 'books'           => 'Books',
                 'chapters'        => 'Chapters',
+                'questions'       => 'Questions'
             ],
         ],
     ],
@@ -224,6 +225,53 @@ return [
             'index' => [
                 'title'         => 'Chapters',
                 'create-btn'    => 'Create Chapter',
+                'already-taken' => 'The :title already exists.',
+
+                'datagrid' => [
+                    'id'         => 'ID',
+                    'title'      => 'Title',
+                    'code'       => 'Code',
+                    'avatar'     => 'Avatar',
+                    'status'     => 'Status',
+                    'edit'       => 'Edit',
+                    'delete'     => 'Delete',
+                ],
+            ],
+
+            'create' => [
+                'title'       => 'Create Book',
+                'save-btn'    => 'Save Book',
+                'information' => 'Information',
+                'name'        => 'Name',
+                'code'        => 'Code',
+                'settings'    => 'Settings',
+                'status'      => 'Status',
+                'avatar'      => 'Avatar',
+                'avatar-size' => 'Recommended size: 110px x 110px',
+            ],
+
+            'edit' => [
+                'title'       => 'Edit Book',
+                'update-btn'  => 'Update Book',
+                'information' => 'Information',
+                'name'        => 'Name',
+                'code'        => 'Code',
+                'settings'    => 'Settings',
+                'status'      => 'Status',
+                'avatar'      => 'Avatar',
+                'avatar-size' => 'Recommended size: 110px x 110px',
+            ],
+        ],
+
+        'questions' => [
+            'create-success' => 'Question created successfully.',
+            'update-success' => 'Question updated successfully.',
+            'delete-success' => 'Question deleted successfully.',
+            'no-resource'    => 'No resource found.',
+
+            'index' => [
+                'title'         => 'Questions',
+                'create-btn'    => 'Create Question',
                 'already-taken' => 'The :title already exists.',
 
                 'datagrid' => [

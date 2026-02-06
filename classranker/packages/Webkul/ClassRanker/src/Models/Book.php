@@ -46,4 +46,9 @@ class Book extends Model implements BookContract
     {
         return $this->belongsTo(Subject::class);
     }
+
+    public function chapters()
+    {
+        return $this->hasMany(Chapter::class);
+    }
 }

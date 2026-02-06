@@ -1,1 +1,0 @@
-<?php echo themes()->setBagistoVite(['src/Resources/assets/css/app.css'])->toHtml(); ?><?php /**PATH /home/anmol/www/html/Customization/Abhishek/classranker/packages/Webkul/ClassRanker/src/Providers/../Resources/views/style.blade.php ENDPATH**/ ?>

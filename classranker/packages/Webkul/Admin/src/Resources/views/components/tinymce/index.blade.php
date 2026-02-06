@@ -5,6 +5,23 @@
         TODO (@devansh-webkul): Only this portion is pending; it just needs to be integrated using the Vite bundler. Currently,
         there is an issue with relative paths in the plugins. I intend to address this task at the end.
     -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        async
+    ></script>
+
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.6.2/tinymce.min.js"
         crossorigin="anonymous"
@@ -245,7 +262,8 @@
                 this.init();
 
                 this.$emitter.on('change-theme', (theme) => {
-                    tinymce.get(0).destroy();
+                    // tinymce.get(0).destroy();
+                    tinymce.remove();
 
                     this.currentSkin = theme === 'dark' ? 'oxide-dark' : 'oxide';
                     this.currentContentCSS = theme === 'dark' ? 'dark' : 'default';
@@ -405,6 +423,10 @@
                                 this.field.onInput(editor.getContent());
                             });
                         },
+
+                        mathjax: {
+                            lib: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+                        }
                     });
                 },
 
@@ -436,12 +458,26 @@
                         return;
                     }
 
-                    tinymce.get(this.selector.replace('textarea#', '')).setContent(this.ai.content.replace(/\r?\n/g, '<br />'))
+                    const editor = tinymce.activeEditor;
 
-                    this.field.onInput(this.ai.content.replace(/\r?\n/g, '<br />'));
+                    if (! editor) {
+                        return;
+                    }
+
+                    const content = this.ai.content.replace(/\r?\n/g, '<br />');
+
+                    editor.setContent(content);
+                    this.field.onInput(content);
+
+                    // 🔥 Force MathJax render
+                    if (window.MathJax?.typesetPromise) {
+                        window.MathJax.typesetPromise();
+                    }
 
                     this.$refs.magicAIModal.close();
-                },
+                }
+
+
             },
         })
     </script>

@@ -3,17 +3,10 @@
 namespace Webkul\ClassRanker\Http\Controllers;
 
 use Webkul\Admin\Helpers\Dashboard;
-use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Admin\Http\Controllers\DashboardController as AdminDashboardController;
 
-class DashboardController extends Controller
+class DashboardController extends AdminDashboardController
 {
-    /**
-     * Create a controller instance.
-     *
-     * @return void
-     */
-    public function __construct(protected Dashboard $dashboardHelper) {}
-
     /**
      * Dashboard page.
      *

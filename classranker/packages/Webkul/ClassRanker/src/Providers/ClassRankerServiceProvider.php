@@ -32,6 +32,12 @@ class ClassRankerServiceProvider extends ServiceProvider
 
         $this->app->register(ModuleServiceProvider::class);
 
+        // Bind our custom ShipmentRepository
+        $this->app->bind(
+            \Webkul\Admin\Http\Controllers\DashboardController::class,
+            \Webkul\ClassRanker\Http\Controllers\DashboardController::class
+        );
+
         Event::listen('bagisto.admin.layout.head.before', function () {
             return view(
                 'class_ranker::style'

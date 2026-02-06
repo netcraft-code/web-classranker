@@ -17,5 +17,9 @@ class ModuleServiceProvider extends CoreModuleServiceProvider
         \Webkul\ClassRanker\Models\Subject::class,
         \Webkul\ClassRanker\Models\Book::class,
         \Webkul\ClassRanker\Models\Chapter::class,
+        \Webkul\ClassRanker\Models\Question::class,
+        \Webkul\ClassRanker\Models\QuestionAssignment::class,
+        \Webkul\ClassRanker\Models\QuestionItem::class,
+        \Webkul\ClassRanker\Models\QuestionFaq::class,
     ];
 }
