@@ -70,8 +70,7 @@ class QuestionController extends Controller
             
             // Question items validation
             'question_items' => 'nullable|array',
-            'question_items.*.question_number' => 'required|integer',
-            'question_items.*.question_title' => 'nullable|string',
+            'question_items.*.question_number' => 'required|string',
             'question_items.*.question' => 'required',
             'question_items.*.answer' => 'required',
             'question_items.*.page_number' => 'nullable|string',
@@ -108,7 +107,47 @@ class QuestionController extends Controller
 
         $boards = $this->boardRepository->with(['grades.subjects.books.chapters'])->all();
 
-        return view('class_ranker::study-material.questions.edit', compact('question', 'boards'));
+        // Format assignments for Vue
+        $formattedAssignments = $question->assignments->map(function($assignment) {
+            return [
+                'boardId' => $assignment->board_id,
+                'gradeId' => $assignment->grade_id,
+                'subjectId' => $assignment->subject_id,
+                'bookId' => $assignment->book_id,
+                'chapterId' => $assignment->chapter_id,
+                'boardName' => $assignment->board->name,
+                'gradeName' => $assignment->grade->name,
+                'subjectName' => $assignment->subject->name,
+                'bookName' => $assignment->book->title,
+                'chapterName' => $assignment->chapter->title,
+            ];
+        });
+        
+        // Format question items
+        $formattedQuestionItems = $question->questionItems->map(function($item) {
+            return [
+                'questionNumber' => $item->question_number,
+                'question' => $item->question,
+                'answer' => $item->answer,
+                'pageNumber' => $item->page_number,
+            ];
+        });
+        
+        // Format FAQs
+        $formattedFaqs = $question->faqs->map(function($faq) {
+            return [
+                'question' => $faq->question,
+                'answer' => $faq->answer,
+            ];
+        });
+
+        return view('class_ranker::study-material.questions.edit', compact(
+            'question', 
+            'boards', 
+            'formattedAssignments', 
+            'formattedQuestionItems', 
+            'formattedFaqs'
+        ));
     }
 
     /**
@@ -139,8 +178,7 @@ class QuestionController extends Controller
             
             // Question items validation
             'question_items' => 'nullable|array',
-            'question_items.*.question_number' => 'required|integer',
-            'question_items.*.question_title' => 'nullable|string',
+            'question_items.*.question_number' => 'required|string',
             'question_items.*.question' => 'required',
             'question_items.*.answer' => 'required',
             'question_items.*.page_number' => 'nullable|string',

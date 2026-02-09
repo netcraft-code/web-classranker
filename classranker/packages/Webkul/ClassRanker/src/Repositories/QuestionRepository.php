@@ -65,7 +65,6 @@ class QuestionRepository extends Repository
                 foreach ($data['question_items'] as $index => $item) {
                     $question->questionItems()->create([
                         'question_number' => $item['question_number'],
-                        'question_title' => $item['question_title'] ?? null,
                         'question' => $item['question'],
                         'answer' => $item['answer'],
                         'page_number' => $item['page_number'] ?? null,
@@ -145,7 +144,6 @@ class QuestionRepository extends Repository
                 foreach ($data['question_items'] as $index => $item) {
                     $question->questionItems()->create([
                         'question_number' => $item['question_number'],
-                        'question_title' => $item['question_title'] ?? null,
                         'question' => $item['question'],
                         'answer' => $item['answer'],
                         'page_number' => $item['page_number'] ?? null,

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('question_id')->constrained('questions')->onDelete('cascade');
             
             // Question Data
-            $table->integer('question_number');
+            $table->string('question_number');
             $table->string('question_title')->nullable();
             $table->longText('question');
             $table->longText('answer');

@@ -21,7 +21,6 @@ class QuestionItem extends Model implements QuestionItemContract
     ];
 
     protected $casts = [
-        'question_number' => 'integer',
         'order' => 'integer',
     ];
 

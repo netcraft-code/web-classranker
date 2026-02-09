@@ -253,7 +253,7 @@
                             <x-admin::form.control-group.control
                                 type="textarea"
                                 id="top_description"
-                                class="top_description tinymce-editor"
+                                class="top_description"
                                 name="top_description"
                                 :value="old('top_description')"
                                 label="Top Description"
@@ -325,16 +325,6 @@
                                 <x-admin::form.control-group.label class="required">
                                     Answer
                                 </x-admin::form.control-group.label>
-
-                                <!-- <x-admin::form.control-group.control
-                                    type="textarea"
-                                    v-bind:id="'answer_text_' + index"
-                                    class="answer_text tinymce-editor"
-                                    v-bind:name="'question_items[' + index + '][answer]'"
-                                    rules="required"
-                                    label="Answer"
-                                    :tinymce="true"
-                                /> -->
 
                                 <x-admin::form.control-group.control
                                     type="textarea"
@@ -444,16 +434,6 @@
                                 <x-admin::form.control-group.label class="required">
                                     Answer
                                 </x-admin::form.control-group.label>
-
-                                <!-- <x-admin::form.control-group.control
-                                    type="textarea"
-                                    v-bind:id="'faq_answer_' + index"
-                                    class="faq_answer tinymce-editor"
-                                    v-bind:name="'faqs[' + index + '][answer]'"
-                                    rules="required"
-                                    label="FAQ Answer"
-                                    :tinymce="true"
-                                /> -->
 
                                 <x-admin::form.control-group.control
                                     type="textarea"
@@ -839,21 +819,6 @@
                             tinymce.remove();
                         }
 
-                        // Static editors (Top / Bottom / Related)
-                        document.querySelectorAll('textarea.tinymce-editor[id]').forEach(el => {
-                            if (!el.id) return;
-
-                            if (!tinymce.get(el.id)) {
-                                tinymce.init({
-                                    selector: `#${el.id}`,
-                                    height: 300,
-                                    menubar: true,
-                                    plugins: 'lists link image code',
-                                    toolbar: 'undo redo | bold italic | bullist numlist | link image | code',
-                                });
-                            }
-                        });
-
                         // Reinitialize for all textareas with class 'tinymce-editor'
                         this.$nextTick(() => {
                             if (typeof tinymce !== 'undefined') {
@@ -878,6 +843,33 @@
                                 // Initialize FAQ answers
                                 tinymce.init({
                                     selector: 'textarea.faq_answer',
+                                    height: 200,
+                                    menubar: false,
+                                    plugins: 'lists link image code',
+                                    toolbar: 'undo redo | formatselect | bold italic | bullist numlist | link image | code'
+                                });
+
+                                // Initialize FAQ answers
+                                tinymce.init({
+                                    selector: 'textarea.top_description',
+                                    height: 200,
+                                    menubar: false,
+                                    plugins: 'lists link image code',
+                                    toolbar: 'undo redo | formatselect | bold italic | bullist numlist | link image | code'
+                                });
+
+                                // Initialize FAQ answers
+                                tinymce.init({
+                                    selector: 'textarea.bottom_description',
+                                    height: 200,
+                                    menubar: false,
+                                    plugins: 'lists link image code',
+                                    toolbar: 'undo redo | formatselect | bold italic | bullist numlist | link image | code'
+                                });
+
+                                // Initialize FAQ answers
+                                tinymce.init({
+                                    selector: 'textarea.related_links',
                                     height: 200,
                                     menubar: false,
                                     plugins: 'lists link image code',

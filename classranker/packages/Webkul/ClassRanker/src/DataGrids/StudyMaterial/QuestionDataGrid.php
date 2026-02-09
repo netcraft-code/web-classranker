@@ -36,6 +36,15 @@ class QuestionDataGrid extends DataGrid
             'filterable' => true,
             'sortable'   => true,
         ]);
+
+        $this->addColumn([
+            'index'      => 'top_description',
+            'label'      => trans('class_ranker::app.study_materials.chapters.index.datagrid.title'),
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'sortable'   => true,
+        ]);
     }
 
     /**
@@ -45,14 +54,14 @@ class QuestionDataGrid extends DataGrid
      */
     public function prepareActions()
     {
-        // $this->addAction([
-        //     'icon'   => 'icon-edit',
-        //     'title'  => trans('class_ranker::app.study_materials.questions.index.datagrid.edit'),
-        //     'method' => 'GET',
-        //     'url'    => function ($row) {
-        //         return route('admin.study_materials.questions.edit', $row->id);
-        //     },
-        // ]);
+        $this->addAction([
+            'icon'   => 'icon-edit',
+            'title'  => trans('class_ranker::app.study_materials.questions.index.datagrid.edit'),
+            'method' => 'GET',
+            'url'    => function ($row) {
+                return route('admin.study_materials.questions.edit', $row->id);
+            },
+        ]);
 
         $this->addAction([
             'icon'   => 'icon-delete',

@@ -18,11 +18,6 @@
     </script>
 
     <script
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        async
-    ></script>
-
-    <script
         src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.6.2/tinymce.min.js"
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
