@@ -9,11 +9,6 @@
 <head>
     {!! view_render_event('bagisto.admin.layout.head.before') !!}
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
-        async
-    ></script>
-
     <title>{{ $title ?? '' }}</title>
 
     <meta charset="UTF-8">
@@ -154,6 +149,53 @@
             app.mount("#app");
         });
     </script>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <script>
+        (function () {
+
+            function renderMath() {
+                if (window.MathJax && MathJax.typesetPromise) {
+                    MathJax.typesetPromise();
+                }
+            }
+
+            // MathJax ready hook (MOST RELIABLE)
+            if (window.MathJax) {
+                MathJax.startup.promise.then(() => {
+                    renderMath();
+                });
+            }
+
+            // Bagisto datagrid AJAX reload (actual event)
+            document.addEventListener('datagrid:loaded', function () {
+                renderMath();
+            });
+
+            // Fallback: DOM mutation observer (guaranteed)
+            const observer = new MutationObserver(() => {
+                renderMath();
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+
+        })();
+    </script>
+
 
     {!! view_render_event('bagisto.admin.layout.vue-app-mount.after') !!}
 </body>

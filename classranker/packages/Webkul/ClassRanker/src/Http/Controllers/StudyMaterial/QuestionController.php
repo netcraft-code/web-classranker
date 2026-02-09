@@ -201,7 +201,7 @@ class QuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function delete($id)
     {
         try {
             $this->questionRepository->delete($id);

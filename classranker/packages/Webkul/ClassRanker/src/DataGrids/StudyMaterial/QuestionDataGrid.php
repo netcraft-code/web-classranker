@@ -43,7 +43,10 @@ class QuestionDataGrid extends DataGrid
             'type'       => 'string',
             'searchable' => true,
             'filterable' => true,
-            'sortable'   => true,
+            'closure'    => function ($row) {
+                // dd($row->top_description);
+                return '<div class="q">' . $row->top_description . '</div>';
+            },
         ]);
     }
 
