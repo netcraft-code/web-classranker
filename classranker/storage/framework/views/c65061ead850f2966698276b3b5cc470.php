@@ -255,55 +255,54 @@
     </script>
 
     <script>
-window.MathJax = {
-  tex: {
-    inlineMath: [['$', '$'], ['\\(', '\\)']],
-    displayMath: [['$$', '$$'], ['\\[', '\\]']]
-  },
-  svg: { fontCache: 'global' }
-};
-</script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
 
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
 
-<script>
-(function () {
+    <script>
+        (function () {
 
-    let rendering = false;
+            let rendering = false;
 
-    function renderMath() {
-        if (!window.MathJax || !MathJax.typesetPromise || rendering) return;
+            function renderMath() {
+                if (!window.MathJax || !MathJax.typesetPromise || rendering) return;
 
-        rendering = true;
+                rendering = true;
 
-        MathJax.typesetPromise().finally(() => {
-            rendering = false;
-        });
-    }
+                MathJax.typesetPromise().finally(() => {
+                    rendering = false;
+                });
+            }
 
-    // Initial render (safe delay)
-    window.addEventListener('load', function () {
-        renderMath();
-    });
+            // Initial render (safe delay)
+            window.addEventListener('load', function () {
+                renderMath();
+            });
 
-    // Bagisto datagrid reload
-    document.addEventListener('datagrid:loaded', function () {
-        renderMath();
-    });
+            // Bagisto datagrid reload
+            document.addEventListener('datagrid:loaded', function () {
+                renderMath();
+            });
 
-    // DOM changes (throttled)
-    const observer = new MutationObserver(() => {
-        renderMath();
-    });
+            // DOM changes (throttled)
+            const observer = new MutationObserver(() => {
+                renderMath();
+            });
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
 
-})();
-</script>
-
+        })();
+    </script>
 
     <?php echo view_render_event('bagisto.admin.layout.vue-app-mount.after'); ?>
 
