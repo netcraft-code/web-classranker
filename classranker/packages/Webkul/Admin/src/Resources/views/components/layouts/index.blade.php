@@ -160,30 +160,34 @@
         };
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
 
     <script>
         (function () {
 
-            function renderMath() {
-                if (window.MathJax && MathJax.typesetPromise) {
-                    MathJax.typesetPromise();
-                }
-            }
+            let rendering = false;
 
-            // MathJax ready hook (MOST RELIABLE)
-            if (window.MathJax) {
-                MathJax.startup.promise.then(() => {
-                    renderMath();
+            function renderMath() {
+                if (!window.MathJax || !MathJax.typesetPromise || rendering) return;
+
+                rendering = true;
+
+                MathJax.typesetPromise().finally(() => {
+                    rendering = false;
                 });
             }
 
-            // Bagisto datagrid AJAX reload (actual event)
+            // Initial render (safe delay)
+            window.addEventListener('load', function () {
+                renderMath();
+            });
+
+            // Bagisto datagrid reload
             document.addEventListener('datagrid:loaded', function () {
                 renderMath();
             });
 
-            // Fallback: DOM mutation observer (guaranteed)
+            // DOM changes (throttled)
             const observer = new MutationObserver(() => {
                 renderMath();
             });
@@ -195,7 +199,6 @@
 
         })();
     </script>
-
 
     {!! view_render_event('bagisto.admin.layout.vue-app-mount.after') !!}
 </body>

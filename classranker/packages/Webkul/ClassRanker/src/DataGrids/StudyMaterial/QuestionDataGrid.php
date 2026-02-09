@@ -44,8 +44,25 @@ class QuestionDataGrid extends DataGrid
             'searchable' => true,
             'filterable' => true,
             'closure'    => function ($row) {
-                // dd($row->top_description);
-                return '<div class="q">' . $row->top_description . '</div>';
+                return '<span>' . $row->top_description . '</span>';
+            },
+        ]);
+
+        $this->addColumn([
+            'index'      => 'bottom_description',
+            'label'      => trans('class_ranker::app.study_materials.chapters.index.datagrid.title'),
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'closure'    => function ($row) {
+                return '<span><math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>x</mi>
+  <mo>=</mo>
+  <msqrt>
+    <mn>2</mn>
+  </msqrt>
+</math>
+</span>';
             },
         ]);
     }
