@@ -809,50 +809,128 @@
                             tinymce.remove();
                         }
 
-                        // Static editors
-                        document.querySelectorAll('textarea.tinymce-editor[id]').forEach(el => {
-                            if (!el.id) return;
+                        const commonConfig = {
+                            menubar: true,
+                            relative_urls: false,
+                            remove_script_host: false,
+                            document_base_url: '/',
 
-                            if (!tinymce.get(el.id)) {
-                                tinymce.init({
-                                    selector: `#${el.id}`,
-                                    height: 300,
-                                    menubar: true,
-                                    plugins: 'lists link image code',
-                                    toolbar: 'undo redo | bold italic | bullist numlist | link image | code',
-                                });
-                            }
-                        });
+                            plugins: `
+                                advlist autolink lists link image charmap preview anchor
+                                searchreplace visualblocks code fullscreen
+                                insertdatetime media table help wordcount save
+                                directionality
+                            `,
 
-                        // Dynamic editors
+                            toolbar: `
+                                undo redo | formatselect |
+                                bold italic underline strikethrough |
+                                forecolor backcolor |
+                                alignleft aligncenter alignright alignjustify |
+                                bullist numlist outdent indent |
+                                link image media table |
+                                fullscreen preview code removeformat
+                            `,
+
+                            image_advtab: true,
+
+                            file_picker_types: 'image',
+                            file_picker_callback: (cb) => {
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.accept = 'image/*';
+
+                                input.onchange = () => {
+                                    const file = input.files[0];
+                                    const reader = new FileReader();
+
+                                    reader.onload = () => {
+                                        cb(reader.result, { title: file.name });
+                                    };
+
+                                    reader.readAsDataURL(file);
+                                };
+
+                                input.click();
+                            },
+
+                            images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+                                const xhr = new XMLHttpRequest();
+                                xhr.open('POST', '/admin/tinymce/upload');
+
+                                xhr.upload.onprogress = e => {
+                                    progress((e.loaded / e.total) * 100);
+                                };
+
+                                xhr.onload = () => {
+                                    if (xhr.status < 200 || xhr.status >= 300) {
+                                        reject('Upload failed');
+                                        return;
+                                    }
+
+                                    const json = JSON.parse(xhr.responseText);
+                                    if (!json.location) {
+                                        reject('Invalid response');
+                                        return;
+                                    }
+
+                                    resolve(json.location);
+                                };
+
+                                const formData = new FormData();
+                                formData.append(
+                                    '_token',
+                                    document.querySelector('meta[name="csrf-token"]').content
+                                );
+                                formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+                                xhr.send(formData);
+                            }),
+
+                            directionality: 'ltr',
+                        };
+
+                        /* ---------------- STATIC EDITORS ---------------- */
+                        document
+                            .querySelectorAll('textarea.tinymce-editor[id]')
+                            .forEach(el => {
+                                if (!el.id) return;
+
+                                if (!tinymce.get(el.id)) {
+                                    tinymce.init({
+                                        selector: `#${el.id}`,
+                                        height: 300,
+                                        ...commonConfig,
+                                    });
+                                }
+                            });
+
+                        /* ---------------- DYNAMIC EDITORS ---------------- */
                         this.$nextTick(() => {
-                            if (typeof tinymce !== 'undefined') {
-                                tinymce.init({
-                                    selector: 'textarea.question_text',
-                                    height: 300,
-                                    menubar: false,
-                                    plugins: 'lists link image code',
-                                    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code'
-                                });
+                            if (typeof tinymce === 'undefined') return;
 
-                                tinymce.init({
-                                    selector: 'textarea.answer_text',
-                                    height: 300,
-                                    menubar: false,
-                                    plugins: 'lists link image code',
-                                    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code'
-                                });
+                            tinymce.init({
+                                selector: 'textarea.question_text',
+                                height: 300,
+                                menubar: false,
+                                ...commonConfig,
+                            });
 
-                                tinymce.init({
-                                    selector: 'textarea.faq_answer',
-                                    height: 200,
-                                    menubar: false,
-                                    plugins: 'lists link image code',
-                                    toolbar: 'undo redo | formatselect | bold italic | bullist numlist | link image | code'
-                                });
-                            }
+                            tinymce.init({
+                                selector: 'textarea.answer_text',
+                                height: 300,
+                                menubar: false,
+                                ...commonConfig,
+                            });
+
+                            tinymce.init({
+                                selector: 'textarea.faq_answer',
+                                height: 200,
+                                menubar: false,
+                                ...commonConfig,
+                            });
                         });
-                    },
+                    }
                 },
             });
         </script>
