@@ -4,9 +4,8 @@ namespace Webkul\ClassRanker\DataGrids\StudyMaterial;
 
 use Webkul\DataGrid\DataGrid;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
-class GradeDataGrid extends DataGrid
+class QuizDataGrid extends DataGrid
 {
     /**
      * Prepare query builder.
@@ -15,16 +14,8 @@ class GradeDataGrid extends DataGrid
      */
     public function prepareQueryBuilder()
     {
-        $queryBuilder = DB::table('grades')
-            ->leftJoin('boards', 'grades.board_id', '=', 'boards.id')
-            ->addSelect(
-                'boards.name as board_name',
-                'grades.id as id',
-                'grades.code as code',
-                'grades.name as name',
-                'grades.avatar as avatar',
-                'grades.status as status',
-            );
+        $queryBuilder = DB::table('quizzes')
+            ->select('*');
 
         return $queryBuilder;
     }
@@ -38,7 +29,7 @@ class GradeDataGrid extends DataGrid
     {
         $this->addColumn([
             'index'      => 'id',
-            'label'      => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.id'),
+            'label'      => trans('class_ranker::app.study_materials.quizzes.index.datagrid.id'),
             'type'       => 'integer',
             'searchable' => true,
             'filterable' => true,
@@ -46,8 +37,8 @@ class GradeDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'name',
-            'label'      => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.name'),
+            'index'      => 'title',
+            'label'      => trans('class_ranker::app.study_materials.quizzes.index.datagrid.title'),
             'type'       => 'string',
             'searchable' => true,
             'filterable' => true,
@@ -55,30 +46,8 @@ class GradeDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'code',
-            'label'      => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.code'),
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'avatar',
-            'label'      => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.avatar'),
-            'type'       => 'string',
-            'closure'    => function ($row) {
-                if (! $row->avatar) {
-                    return;
-                }
-
-                return '<img src="'.Storage::url($row->avatar).'" alt="" width="50" height="50"/>';
-            },
-        ]);
-
-        $this->addColumn([
-            'index'      => 'board_name',
-            'label'      => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.board-name'),
+            'index'      => 'slug',
+            'label'      => trans('class_ranker::app.study_materials.quizzes.index.datagrid.slug'),
             'type'       => 'string',
             'searchable' => true,
             'filterable' => true,
@@ -87,7 +56,7 @@ class GradeDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'status',
-            'label'      => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.status'),
+            'label'      => trans('class_ranker::app.study_materials.quizzes.index.datagrid.status'),
             'type'       => 'boolean',
             'filterable' => true,
             'filterable_options' => [
@@ -120,19 +89,19 @@ class GradeDataGrid extends DataGrid
     {
         $this->addAction([
             'icon'   => 'icon-edit',
-            'title'  => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.edit'),
+            'title'  => trans('class_ranker::app.study_materials.quizzes.index.datagrid.edit'),
             'method' => 'GET',
             'url'    => function ($row) {
-                return route('admin.study_materials.subjects.grades.edit', $row->id);
+                return route('admin.study_materials.quizzes.edit', $row->id);
             },
         ]);
 
         $this->addAction([
             'icon'   => 'icon-delete',
-            'title'  => trans('class_ranker::app.study_materials.subjects.grades.index.datagrid.delete'),
+            'title'  => trans('class_ranker::app.study_materials.quizzes.index.datagrid.delete'),
             'method' => 'DELETE',
             'url'    => function ($row) {
-                return route('admin.study_materials.subjects.grades.delete', $row->id);
+                return route('admin.study_materials.quizzes.delete', $row->id);
             },
         ]);
     }

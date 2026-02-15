@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('code');
             $table->boolean('is_premium')->default(false);
             $table->string('avatar');
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(false);
 
             $table->timestamps();
         });

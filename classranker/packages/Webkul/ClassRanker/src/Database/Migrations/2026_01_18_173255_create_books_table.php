@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->boolean('is_premium')->default(false);
             $table->string('avatar')->nullable();
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(false);
 
             $table->timestamps();
 

@@ -16,7 +16,19 @@ class BookDataGrid extends DataGrid
     public function prepareQueryBuilder()
     {
         $queryBuilder = DB::table('books')
-            ->select('*');
+            ->leftJoin('boards', 'books.board_id', '=', 'boards.id')
+            ->leftJoin('grades', 'books.grade_id', '=', 'grades.id')
+            ->leftJoin('subjects', 'books.subject_id', '=', 'subjects.id')
+            ->addSelect(
+                'boards.name as board_name',
+                'grades.name as grade_name',
+                'subjects.name as subject_name',
+                'books.id as id',
+                'books.code as code',
+                'books.title as title',
+                'books.avatar as avatar',
+                'books.status as status',
+            );
 
         return $queryBuilder;
     }
@@ -66,6 +78,33 @@ class BookDataGrid extends DataGrid
 
                 return '<img src="'.Storage::url($row->avatar).'" alt="" width="50" height="50"/>';
             },
+        ]);
+
+        $this->addColumn([
+            'index'      => 'board_name',
+            'label'      => trans('class_ranker::app.study_materials.books.index.datagrid.board-name'),
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'sortable'   => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'grade_name',
+            'label'      => trans('class_ranker::app.study_materials.books.index.datagrid.grade-name'),
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'sortable'   => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'subject_name',
+            'label'      => trans('class_ranker::app.study_materials.books.index.datagrid.subject-name'),
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'sortable'   => true,
         ]);
 
         $this->addColumn([

@@ -2,14 +2,17 @@
 
 namespace Webkul\ClassRanker\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Webkul\ClassRanker\Contracts\QuestionAssignment as QuestionAssignmentContract;
+use Webkul\ClassRanker\Contracts\QuizChapter as QuizChapterContract;
 
-class QuestionAssignment extends Model implements QuestionAssignmentContract
+class QuizChapter extends Model implements QuizChapterContract
 {
+    use HasFactory;
+
     protected $fillable = [
-        'question_id',
+        'quiz_id',
         'board_id',
         'grade_id',
         'subject_id',
@@ -18,11 +21,11 @@ class QuestionAssignment extends Model implements QuestionAssignmentContract
     ];
 
     /**
-     * Get the question
+     * Get the quiz
      */
-    public function question(): BelongsTo
+    public function quiz(): BelongsTo
     {
-        return $this->belongsTo(Question::class);
+        return $this->belongsTo(Quiz::class);
     }
 
     /**
@@ -65,3 +68,4 @@ class QuestionAssignment extends Model implements QuestionAssignmentContract
         return $this->belongsTo(Chapter::class);
     }
 }
+

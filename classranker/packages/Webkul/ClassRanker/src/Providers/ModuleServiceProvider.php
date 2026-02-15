@@ -21,5 +21,6 @@ class ModuleServiceProvider extends CoreModuleServiceProvider
         \Webkul\ClassRanker\Models\QuestionAssignment::class,
         \Webkul\ClassRanker\Models\QuestionItem::class,
         \Webkul\ClassRanker\Models\QuestionFaq::class,
+        \Webkul\ClassRanker\Models\Quiz::class,
     ];
 }

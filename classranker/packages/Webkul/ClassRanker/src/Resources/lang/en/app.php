@@ -10,7 +10,8 @@ return [
                 'boards'          => 'Boards',
                 'books'           => 'Books',
                 'chapters'        => 'Chapters',
-                'questions'       => 'Questions'
+                'questions'       => 'Questions',
+                'quizzes'         => 'Quizzes',
             ],
         ],
     ],
@@ -313,6 +314,28 @@ return [
                 'status'      => 'Status',
                 'avatar'      => 'Avatar',
                 'avatar-size' => 'Recommended size: 110px x 110px',
+            ],
+        ],
+
+        'quizzes' => [
+            'create-success' => 'Quiz created successfully.',
+            'update-success' => 'Quiz updated successfully.',
+            'delete-success' => 'Quiz deleted successfully.',
+            'no-resource'    => 'No resource found.',
+
+            'index' => [
+                'title'         => 'Quizzes',
+                'create-btn'    => 'Create Quiz',
+                'already-taken' => 'The :title already exists.',
+
+                'datagrid' => [
+                    'id'         => 'ID',
+                    'title'      => 'Title',
+                    'slug'       => 'Code',
+                    'status'     => 'Status',
+                    'edit'       => 'Edit',
+                    'delete'     => 'Delete',
+                ],
             ],
         ],
     ],

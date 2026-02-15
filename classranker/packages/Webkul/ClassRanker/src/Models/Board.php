@@ -2,8 +2,9 @@
 
 namespace Webkul\ClassRanker\Models;
 
-use Webkul\ClassRanker\Contracts\Board as BoardContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Webkul\ClassRanker\Contracts\Board as BoardContract;
 
 class Board extends Model implements BoardContract
 {

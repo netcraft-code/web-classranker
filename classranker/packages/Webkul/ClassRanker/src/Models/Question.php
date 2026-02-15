@@ -3,8 +3,9 @@
 namespace Webkul\ClassRanker\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Webkul\ClassRanker\Contracts\Question as QuestionContract;
 
 class Question extends Model implements QuestionContract
@@ -35,7 +36,11 @@ class Question extends Model implements QuestionContract
 
     public function getAvatarUrlAttribute()
     {
-        return $this->avatar ? url('/storage/' . $this->avatar) : null;
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+
+        return null;
     }
 
     /**

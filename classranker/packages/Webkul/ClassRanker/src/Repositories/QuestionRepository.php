@@ -3,9 +3,7 @@
 namespace Webkul\ClassRanker\Repositories;
 
 use Illuminate\Support\Str;
-use Intervention\Image\ImageManager;
 use Webkul\Core\Eloquent\Repository;
-use Illuminate\Support\Facades\Storage;
 use Webkul\ClassRanker\Contracts\Question;
 use Illuminate\Support\Facades\DB;
 

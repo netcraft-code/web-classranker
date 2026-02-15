@@ -8,8 +8,6 @@ use Webkul\ClassRanker\Contracts\QuestionItem as QuestionItemContract;
 
 class QuestionItem extends Model implements QuestionItemContract
 {
-    protected $table = 'question_items';
-
     protected $fillable = [
         'question_id',
         'question_number',

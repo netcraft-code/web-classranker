@@ -2,8 +2,9 @@
 
 namespace Webkul\ClassRanker\Models;
 
-use Webkul\ClassRanker\Contracts\Chapter as ChapterContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Webkul\ClassRanker\Contracts\Chapter as ChapterContract;
 
 class Chapter extends Model implements ChapterContract
 {
@@ -25,7 +26,11 @@ class Chapter extends Model implements ChapterContract
 
     public function getAvatarUrlAttribute()
     {
-        return $this->avatar ? url('/storage/' . $this->avatar) : null;
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+
+        return null;
     }
 
     public function board()

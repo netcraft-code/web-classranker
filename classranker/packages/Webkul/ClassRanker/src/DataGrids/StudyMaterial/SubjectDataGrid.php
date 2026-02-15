@@ -16,7 +16,17 @@ class SubjectDataGrid extends DataGrid
     public function prepareQueryBuilder()
     {
         $queryBuilder = DB::table('subjects')
-            ->select('*');
+            ->leftJoin('boards', 'subjects.board_id', '=', 'boards.id')
+            ->leftJoin('grades', 'subjects.grade_id', '=', 'grades.id')
+            ->addSelect(
+                'boards.name as board_name',
+                'grades.name as grade_name',
+                'subjects.id as id',
+                'subjects.code as code',
+                'subjects.name as name',
+                'subjects.avatar as avatar',
+                'subjects.status as status',
+            );
 
         return $queryBuilder;
     }
@@ -66,6 +76,24 @@ class SubjectDataGrid extends DataGrid
 
                 return '<img src="'.Storage::url($row->avatar).'" alt="" width="50" height="50"/>';
             },
+        ]);
+
+        $this->addColumn([
+            'index'      => 'board_name',
+            'label'      => trans('class_ranker::app.study_materials.subjects.subjects.index.datagrid.board-name'),
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'sortable'   => true,
+        ]);
+
+        $this->addColumn([
+            'index'      => 'grade_name',
+            'label'      => trans('class_ranker::app.study_materials.subjects.subjects.index.datagrid.grade-name'),
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+            'sortable'   => true,
         ]);
 
         $this->addColumn([

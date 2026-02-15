@@ -11,29 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
             
             // Basic Info
             $table->string('title');
-            $table->string('short_title');
             $table->string('slug')->unique();
-            
-            // Content
-            $table->longText('top_description')->nullable();
-            $table->longText('bottom_description')->nullable();
-            $table->longText('related_links')->nullable();
-            
-            // SEO
-            $table->string('meta_title')->nullable();
-            $table->text('meta_description')->nullable();
-            $table->text('meta_keywords')->nullable();
+            $table->text('description')->nullable();
             
             // Status
             $table->boolean('status')->default(0);
             $table->boolean('is_premium')->default(0);
             
+            // // Creator
+            $table->unsignedInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('admins')->onDelete('set null');
+            
             $table->timestamps();
+            
+            // Indexes
+            $table->index('slug');
+            $table->index('status');
         });
     }
 
@@ -42,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('quizzes');
     }
 };

@@ -2,8 +2,9 @@
 
 namespace Webkul\ClassRanker\Models;
 
-use Webkul\ClassRanker\Contracts\Grade as GradeContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Webkul\ClassRanker\Contracts\Grade as GradeContract;
 
 class Grade extends Model implements GradeContract
 {
@@ -22,7 +23,11 @@ class Grade extends Model implements GradeContract
 
     public function getAvatarUrlAttribute()
     {
-        return $this->avatar ? url('/storage/' . $this->avatar) : null;
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+
+        return null;
     }
 
     /**

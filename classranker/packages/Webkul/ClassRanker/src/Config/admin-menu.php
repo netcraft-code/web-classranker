@@ -63,7 +63,13 @@ return [
         'route'      => 'admin.study_materials.subjects.boards.index',
         'sort'       => 3,
         'icon'       => '',
-    ], 
+    ], [
+        'key'        => 'study_materials.quizzes',
+        'name'       => 'class_ranker::app.components.layouts.sidebar.quizzes',
+        'route'      => 'admin.study_materials.quizzes.index',
+        'sort'       => 5,
+        'icon'       => '',
+    ],
     
     /**
      * Customers.

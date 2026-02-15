@@ -2,8 +2,9 @@
 
 namespace Webkul\ClassRanker\Models;
 
-use Webkul\ClassRanker\Contracts\Book as BookContract;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Webkul\ClassRanker\Contracts\Book as BookContract;
 
 class Book extends Model implements BookContract
 {
@@ -29,7 +30,11 @@ class Book extends Model implements BookContract
 
     public function getAvatarUrlAttribute()
     {
-        return $this->avatar ? url('/storage/' . $this->avatar) : null;
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
+
+        return null;
     }
 
     public function board()
