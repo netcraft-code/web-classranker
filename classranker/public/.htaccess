@@ -59,3 +59,7 @@
   AddOutputFilterByType DEFLATE text/javascript
   AddOutputFilterByType DEFLATE text/plain
 </IfModule>
+
+<IfModule mod_headers.c>
+    Header set ngrok-skip-browser-warning "true"
+</IfModule>

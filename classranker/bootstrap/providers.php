@@ -47,5 +47,6 @@ return [
     /**
      * Custom service providers.
      */
-    Webkul\ClassRanker\Providers\ClassRankerServiceProvider::class,
+    CustomFeature\ClassRanker\Providers\ClassRankerServiceProvider::class,
+    CustomFeature\ClassRankerApi\Providers\ClassRankerApiServiceProvider::class,
 ];

@@ -1,0 +1,26 @@
+{
+    "name": "classranker/rest-api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "xyz company",
+            "email": "xyz@company.in"
+        }
+    ],
+    "require": {
+        "darkaonline/l5-swagger": "^8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "CustomFeature\\ClassRankerApi\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CustomFeature\\ClassRankerApi\\Providers\\ClassRankerApiServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev"
+}

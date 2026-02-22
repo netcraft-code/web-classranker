@@ -35,6 +35,7 @@
         "laravel/socialite": "^5.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^4.0",
+        "league/csv": "^9.28",
         "maatwebsite/excel": "^3.1.46",
         "mpdf/mpdf": "^8.2",
         "nesbot/carbon": "^2.72.2",
@@ -44,6 +45,7 @@
         "prettus/l5-repository": "^2.6",
         "pusher/pusher-php-server": "^7.0",
         "shetabit/visitor": "^4.1",
+        "smalot/pdfparser": "^2.12",
         "spatie/laravel-responsecache": "^7.4",
         "spatie/laravel-sitemap": "^7.3",
         "stevebauman/purify": "^6.3"
@@ -97,7 +99,8 @@
             "Webkul\\Tax\\": "packages/Webkul/Tax/src",
             "Webkul\\Theme\\": "packages/Webkul/Theme/src",
             "Webkul\\User\\": "packages/Webkul/User/src",
-            "Webkul\\ClassRanker\\": "packages/Webkul/ClassRanker/src"
+            "CustomFeature\\ClassRanker\\": "packages/CustomFeature/ClassRanker/src",
+            "CustomFeature\\ClassRankerApi\\": "packages/CustomFeature/ClassRankerApi/src"
         }
     },
     "autoload-dev": {
