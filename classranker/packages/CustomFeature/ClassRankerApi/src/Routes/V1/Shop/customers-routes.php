@@ -7,6 +7,7 @@ use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\GradeCon
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\SubjectController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BookController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\ChapterController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\VideoController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Core\CmsController;
 
 /**
@@ -66,6 +67,12 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
     });
 
     Route::controller(CmsController::class)->prefix('cms')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::get('{id}', 'getResource');
+    });
+
+    Route::controller(VideoController::class)->prefix('short-videos')->group(function () {
         Route::get('', 'allResources');
 
         Route::get('{id}', 'getResource');

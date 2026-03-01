@@ -1,0 +1,29 @@
+<?php
+
+namespace CustomFeature\Question\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use CustomFeature\Question\Contracts\QuestionFaq as QuestionFaqContract;
+
+class QuestionFaq extends Model implements QuestionFaqContract
+{
+    protected $fillable = [
+        'question_id',
+        'question',
+        'answer',
+        'order',
+    ];
+
+    protected $casts = [
+        'order' => 'integer',
+    ];
+
+    /**
+     * Get the parent question
+     */
+    public function question(): BelongsTo
+    {
+        return $this->belongsTo(Question::class);
+    }
+}

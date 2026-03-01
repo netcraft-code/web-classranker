@@ -32,7 +32,7 @@ class ProcessQuizBulkUpload implements ShouldQueue
         try {
             // Update status to processing
             $this->bulkUpload->update([
-                'status' => 'processing',
+                'status'     => 'processing',
                 'started_at' => now(),
             ]);
 
@@ -47,12 +47,12 @@ class ProcessQuizBulkUpload implements ShouldQueue
 
                     // Create quiz for each question (or group them as needed)
                     $quizData = [
-                        'title' => 'Quiz Question ' . ($index + 1) . ' - ' . substr($questionData['text'], 0, 50),
-                        'slug' => str()->slug('quiz-' . ($index + 1) . '-' . time()),
+                        'title'       => 'Quiz Question ' . ($index + 1) . ' - ' . substr($questionData['text'], 0, 50),
+                        'slug'        => str()->slug('quiz-' . ($index + 1) . '-' . time()),
                         'description' => $questionData['explanation'] ?? '',
-                        'is_active' => true,
-                        'chapters' => $chapters,
-                        'questions' => [$questionData],
+                        'is_active'   => true,
+                        'chapters'    => $chapters,
+                        'questions'   => [$questionData],
                     ];
 
                     $quizRepository->create($quizData);
@@ -66,24 +66,24 @@ class ProcessQuizBulkUpload implements ShouldQueue
 
                     $errors[] = [
                         'question_index' => $index,
-                        'error' => $e->getMessage(),
+                        'error'          => $e->getMessage(),
                     ];
 
                     $this->bulkUpload->increment('failed_questions');
 
                     Log::error('Quiz bulk upload question failed', [
-                        'upload_id' => $this->bulkUpload->id,
+                        'upload_id'      => $this->bulkUpload->id,
                         'question_index' => $index,
-                        'error' => $e->getMessage(),
+                        'error'          => $e->getMessage(),
                     ]);
                 }
             }
 
             // Mark as completed
             $this->bulkUpload->update([
-                'status' => 'completed',
+                'status'       => 'completed',
                 'completed_at' => now(),
-                'errors' => $errors,
+                'errors'       => $errors,
             ]);
 
             // Clean up uploaded file
@@ -98,7 +98,7 @@ class ProcessQuizBulkUpload implements ShouldQueue
 
             Log::error('Quiz bulk upload failed', [
                 'upload_id' => $this->bulkUpload->id,
-                'error' => $e->getMessage(),
+                'error'     => $e->getMessage(),
             ]);
 
             throw $e; // Re-throw to trigger retry

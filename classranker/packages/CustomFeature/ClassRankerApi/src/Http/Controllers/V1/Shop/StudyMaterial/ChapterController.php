@@ -2,7 +2,7 @@
 
 namespace CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial;
 
-use CustomFeature\ClassRanker\Repositories\ChapterRepository;
+use CustomFeature\Chapter\Repositories\ChapterRepository;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\StudyMaterialController;
 use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\StudyMaterial\ChapterResource;
 

@@ -12,6 +12,9 @@ return [
                 'chapters'        => 'Chapters',
                 'questions'       => 'Questions',
                 'quizzes'         => 'Quizzes',
+                'videos'          => 'Videos',
+                'pdfs'            => 'Pdfs',
+                'notes'           => 'Notes',
             ],
         ],
     ],
@@ -316,6 +319,63 @@ return [
                 'status'      => 'Status',
                 'avatar'      => 'Avatar',
                 'avatar-size' => 'Recommended size: 110px x 110px',
+            ],
+        ],
+
+        'videos' => [
+            'create-success' => 'Video created successfully.',
+            'update-success' => 'Video updated successfully.',
+            'delete-success' => 'Video deleted successfully.',
+            'no-resource'    => 'No resource found.',
+
+            'index' => [
+                'title'         => 'Videos',
+                'create-btn'    => 'Create Video',
+
+                'datagrid' => [
+                    'id'         => 'ID',
+                    'title'      => 'Title',
+                    'edit'       => 'Edit',
+                    'delete'     => 'Delete',
+                ],
+            ],
+        ],
+
+        'pdfs' => [
+            'create-success' => 'Pdf created successfully.',
+            'update-success' => 'Pdf updated successfully.',
+            'delete-success' => 'Pdf deleted successfully.',
+            'no-resource'    => 'No resource found.',
+
+            'index' => [
+                'title'         => 'Pdfs',
+                'create-btn'    => 'Create Pdf',
+
+                'datagrid' => [
+                    'id'         => 'ID',
+                    'title'      => 'Title',
+                    'edit'       => 'Edit',
+                    'delete'     => 'Delete',
+                ],
+            ],
+        ],
+
+        'notes' => [
+            'create-success' => 'Note created successfully.',
+            'update-success' => 'Note updated successfully.',
+            'delete-success' => 'Note deleted successfully.',
+            'no-resource'    => 'No resource found.',
+
+            'index' => [
+                'title'         => 'Notes',
+                'create-btn'    => 'Create Note',
+
+                'datagrid' => [
+                    'id'         => 'ID',
+                    'title'      => 'Title',
+                    'edit'       => 'Edit',
+                    'delete'     => 'Delete',
+                ],
             ],
         ],
 

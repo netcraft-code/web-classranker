@@ -22,6 +22,7 @@ class CsvQuizParserService
 
             foreach ($csv as $record) {
                 $question = $this->parseRecord($record);
+                
                 if ($question) {
                     $questions[] = $question;
                 }
@@ -42,12 +43,14 @@ class CsvQuizParserService
         }
 
         $options = [];
+
         foreach (['a', 'b', 'c', 'd', 'e', 'f'] as $letter) {
             $optionKey = 'option_' . $letter;
+
             if (isset($record[$optionKey]) && !empty($record[$optionKey])) {
                 $options[] = [
-                    'letter' => $letter,
-                    'text' => trim($record[$optionKey]),
+                    'letter'     => $letter,
+                    'text'       => trim($record[$optionKey]),
                     'useTinymce' => false,
                 ];
             }
@@ -55,15 +58,19 @@ class CsvQuizParserService
 
         // Parse correct options (comma-separated: "a,c" or "0,2")
         $correctOptions = [];
+
         if (isset($record['correct_options'])) {
             $correctParts = explode(',', $record['correct_options']);
+
             foreach ($correctParts as $part) {
                 $part = trim($part);
+
                 if (is_numeric($part)) {
                     $correctOptions[] = (int) $part;
                 } else {
                     // Letter format (a, b, c)
                     $index = ord(strtolower($part)) - 97;
+
                     if ($index >= 0 && $index < count($options)) {
                         $correctOptions[] = $index;
                     }
@@ -72,10 +79,10 @@ class CsvQuizParserService
         }
 
         return [
-            'text' => $questionText,
-            'options' => $options,
+            'text'           => $questionText,
+            'options'        => $options,
             'correctOptions' => $correctOptions,
-            'explanation' => $record['explanation'] ?? '',
+            'explanation'    => $record['explanation'] ?? '',
         ];
     }
 }

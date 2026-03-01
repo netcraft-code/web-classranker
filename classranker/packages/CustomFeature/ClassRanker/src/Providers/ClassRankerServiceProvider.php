@@ -2,12 +2,11 @@
 
 namespace CustomFeature\ClassRanker\Providers;
 
-use CustomFeature\ClassRanker\Models\Customer\Customer as CustomCustomer;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Core\Http\Middleware\PreventRequestsDuringMaintenance;
 use Webkul\Customer\Contracts\Customer as CustomerContract;
+use CustomFeature\ClassRanker\Models\Customer\Customer as CustomCustomer;
 
 class ClassRankerServiceProvider extends ServiceProvider
 {
@@ -32,21 +31,12 @@ class ClassRankerServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'class_ranker');
 
-        $this->app->register(ModuleServiceProvider::class);
-
-        // Bind our custom ShipmentRepository
         $this->app->bind(
             \Webkul\Admin\Http\Controllers\DashboardController::class,
-            \CustomFeature\ClassRanker\Http\Controllers\DashboardController::class
+            \CustomFeature\ClassRanker\Http\Controllers\Dashboard\DashboardController::class
         );
 
         $this->app->bind(CustomerContract::class, CustomCustomer::class);
-
-        Event::listen('bagisto.admin.layout.head.before', function () {
-            return view(
-                'class_ranker::style'
-            )->render();
-        });
     }
 
     /**

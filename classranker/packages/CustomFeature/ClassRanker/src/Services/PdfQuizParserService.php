@@ -54,6 +54,7 @@ class PdfQuizParserService
             }
 
             $question = $this->parseMCQBlock($questionText);
+            
             if ($question) {
                 $questions[] = $question;
             }

@@ -12,7 +12,6 @@ return new class extends Migration
             $table->unsignedBigInteger('board_id')->nullable()->after('id');
             $table->unsignedBigInteger('grade_id')->nullable()->after('board_id');
 
-            // Agar foreign key bhi lagani hai
             $table->foreign('board_id')->references('id')->on('boards')->onDelete('set null');
             $table->foreign('grade_id')->references('id')->on('grades')->onDelete('set null');
         });
