@@ -32,7 +32,7 @@ class VideoController extends Controller
         $request->validate([
             'title'       => 'required|string|max:255',
             'short_title' => 'required|string|max:255',
-            'slug'        => 'nullable|string|max:255|unique:videos,slug',
+            'slug'        => 'nullable|string|max:255',
 
             'assignments'              => 'required|array|min:1',
             'assignments.*.board_id'   => 'required|exists:boards,id',
@@ -103,7 +103,7 @@ class VideoController extends Controller
         $request->validate([
             'title'       => 'required|string|max:255',
             'short_title' => 'required|string|max:255',
-            'slug'        => 'nullable|string|max:255|unique:videos,slug,' . $id,
+            'slug'        => 'nullable|string|max:255',
 
             'top_description'    => 'nullable',
             'bottom_description' => 'nullable',

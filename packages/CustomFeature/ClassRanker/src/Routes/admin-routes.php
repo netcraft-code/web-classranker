@@ -167,8 +167,6 @@ Route::prefix('study-material')->group(function () {
          */
         Route::controller(PdfController::class)->prefix('pdfs')->group(function () {
             Route::get('', 'index')->name('admin.study_materials.pdfs.index');
-
-            Route::get('create', 'create')->name('admin.study_materials.pdfs.create');
             
             Route::post('create', 'store')->name('admin.study_materials.pdfs.store');
 
@@ -177,6 +175,16 @@ Route::prefix('study-material')->group(function () {
             Route::put('edit/{id}', 'update')->name('admin.study_materials.pdfs.update');
 
             Route::delete('edit/{id}', 'delete')->name('admin.study_materials.pdfs.delete');
+
+            Route::post('{id}/assignments/add', 'addAssignment')->name('admin.study_materials.pdfs.assignments.add');
+            
+            Route::delete('{id}/assignments/{assignmentId}', 'removeAssignment')->name('admin.study_materials.pdfs.assignments.remove');
+
+            Route::post('{id}/pdf-items/add', 'addPdfItem')->name('admin.study_materials.pdfs.items.add');
+            
+            Route::post('{id}/pdf-items/{itemId}', 'updatePdfItem')->name('admin.study_materials.pdfs.items.update');
+            
+            Route::delete('{id}/pdf-items/{itemId}', 'removePdfItem')->name('admin.study_materials.pdfs.items.remove');
         });
         
         /**
@@ -184,8 +192,6 @@ Route::prefix('study-material')->group(function () {
          */
         Route::controller(QuizController::class)->prefix('quizzes')->group(function () {
             Route::get('', 'index')->name('admin.study_materials.quizzes.index');
-
-            Route::get('create', 'create')->name('admin.study_materials.quizzes.create');
             
             Route::post('create', 'store')->name('admin.study_materials.quizzes.store');
 
@@ -194,12 +200,17 @@ Route::prefix('study-material')->group(function () {
             Route::put('edit/{id}', 'update')->name('admin.study_materials.quizzes.update');
 
             Route::delete('edit/{id}', 'delete')->name('admin.study_materials.quizzes.delete');
+            
+            // AJAX routes
+            Route::post('{id}/chapters/add', 'addChapter')->name('admin.study_materials.quizzes.chapters.add');
+            
+            Route::delete('{id}/chapters/{chapterId}', 'removeChapter')->name('admin.study_materials.quizzes.chapters.remove');
 
-            Route::get('bulk-upload', 'bulkUpload')->name('admin.study_materials.quizzes.bulk-upload');
+            Route::post('{id}/questions/add', 'addQuestion')->name('admin.study_materials.quizzes.questions.add');
             
-            Route::post('parse-file', 'parseFile')->name('admin.study_materials.quizzes.parse-file');
+            Route::put('{id}/questions/{questionId}', 'updateQuestion')->name('admin.study_materials.quizzes.questions.update');
             
-            Route::post('bulk-store', 'bulkStore')->name('admin.study_materials.quizzes.bulk-store');
+            Route::delete('{id}/questions/{questionId}', 'removeQuestion')->name('admin.study_materials.quizzes.questions.remove');
         });
 
         /**

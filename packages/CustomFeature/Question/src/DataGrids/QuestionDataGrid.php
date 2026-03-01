@@ -23,17 +23,10 @@ class QuestionDataGrid extends DataGrid
             ->leftJoin('chapters',  'question_assignments.chapter_id', '=', 'chapters.id')
             ->addSelect(
                 'question_assignments.id as assignment_id',
-                'boards.code as board_code',
                 'boards.name as board_name',
-                'boards.title as board_title',
-                'grades.code as grade_code',
                 'grades.name as grade_name',
-                'grades.title as grade_title',
-                'subjects.code as subject_code',
                 'subjects.name as subject_name',
-                'books.code as book_code',
                 'books.title as book_title',
-                'chapters.code as chapter_code',
                 'chapters.title as chapter_title',
                 'questions.id as id',
                 'questions.slug as slug',
@@ -102,24 +95,6 @@ class QuestionDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'board_code',
-            'label'      => 'Board Code',
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'board_title',
-            'label'      => 'Board Title',
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
             'index'      => 'grade_name',
             'label'      => 'Grade Name',
             'type'       => 'string',
@@ -129,35 +104,8 @@ class QuestionDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'grade_code',
-            'label'      => 'Grade Code',
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'grade_title',
-            'label'      => 'Grade Title',
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'subject_title',
+            'index'      => 'subject_name',
             'label'      => 'Subject Name',
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
-            'index'      => 'subject_code',
-            'label'      => 'Subject Code',
             'type'       => 'string',
             'searchable' => true,
             'filterable' => true,
@@ -174,15 +122,6 @@ class QuestionDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'book_code',
-            'label'      => 'Book Code',
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
             'index'      => 'chapter_title',
             'label'      => 'Chapter Title',
             'type'       => 'string',
@@ -190,16 +129,7 @@ class QuestionDataGrid extends DataGrid
             'filterable' => true,
             'sortable'   => true,
         ]);
-
-        $this->addColumn([
-            'index'      => 'chapter_code',
-            'label'      => 'Chapter Code',
-            'type'       => 'string',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
-        ]);
-
+        
         $this->addColumn([
             'index'      => 'item_count',
             'label'      => 'Question Count',

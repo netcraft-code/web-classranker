@@ -153,7 +153,7 @@
 
                             <div v-if="item.video_url" class="mb-2">
                                 <video :src="item.video_url" controls
-                                    class="w-full max-h-48 rounded border bg-black" preload="metadata"></video>
+                                    class="w-[360px] max-w-full max-h-[400px] rounded border bg-black" preload="metadata"></video>
                             </div>
                             <p v-else class="text-xs text-gray-400 mb-2">No video uploaded</p>
 
@@ -185,7 +185,7 @@
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Video File</label>
 
                                 <div v-if="item.video_url && !item.video_temp_path && !item.delete_video" class="mb-2">
-                                    <video :src="item.video_url" controls class="w-full max-h-48 rounded border bg-black" preload="metadata"></video>
+                                    <video :src="item.video_url" controls class="w-[360px] max-w-full max-h-[400px] rounded border bg-black" preload="metadata"></video>
                                     <div class="flex items-center gap-3 mt-1">
                                         <p class="text-xs text-gray-400 flex-1">Current video</p>
                                         <button type="button" @click="item.delete_video = true"
@@ -205,7 +205,7 @@
                                     class="w-full border rounded p-2 text-sm bg-white cursor-pointer">
 
                                 <div v-if="item.video_temp_path" class="mt-2">
-                                    <video :src="item.video_preview" controls class="w-full max-h-44 rounded border bg-black" preload="metadata"></video>
+                                    <video :src="item.video_preview" controls class="w-[360px] max-w-full max-h-[400px] rounded border bg-black" preload="metadata"></video>
                                     <div class="flex items-center gap-2 mt-1">
                                         <p class="text-xs text-green-600 flex-1">✓ New video — will replace on save</p>
                                         <button type="button" @click="item.video_temp_path = null; item.video_preview = null"
@@ -303,7 +303,7 @@
                                 @change="onNewVideoSelect($event)"
                                 class="w-full border rounded p-2 text-sm bg-white cursor-pointer">
                             <div v-if="newVideo.video_preview" class="mt-2">
-                                <video :src="newVideo.video_preview" controls class="w-full max-h-44 rounded border bg-black" preload="metadata"></video>
+                                <video :src="newVideo.video_preview" controls class="w-[360px] max-w-full max-h-[200px] rounded border bg-black" preload="metadata"></video>
                                 <p class="text-xs text-green-600 mt-1">✓ @{{ newVideo.video_name }}</p>
                             </div>
                             <div v-if="newVideo.uploading_video" class="mt-2 flex items-center gap-2 text-sm text-gray-500">
@@ -669,7 +669,7 @@
                     formData.append('type', type);
                     formData.append('_token', this.getToken());
 
-                    fetch('/admin/study-material/temp-upload', { method: 'POST', body: formData })
+                    fetch("{{ route('admin.study_materials.temp_upload.store') }}", { method: 'POST', body: formData })
                         .then(r => r.json())
                         .then(data => {
                             if (data.success) onSuccess(data);

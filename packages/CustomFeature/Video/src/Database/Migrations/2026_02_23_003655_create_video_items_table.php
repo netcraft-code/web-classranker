@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('duration')->nullable();
             $table->integer('position')->default(0);
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(0);
 
             $table->timestamps();
 

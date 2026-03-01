@@ -2,9 +2,9 @@
 
 namespace CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial;
 
-use CustomFeature\ClassRanker\Repositories\VideoRepository;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\StudyMaterialController;
 use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\StudyMaterial\VideoResource;
+use CustomFeature\Video\Repositories\VideoRepository;
 use Illuminate\Http\Request;
 
 class VideoController extends StudyMaterialController

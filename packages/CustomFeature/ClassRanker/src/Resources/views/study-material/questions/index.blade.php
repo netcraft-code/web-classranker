@@ -60,7 +60,7 @@
                         >
                             <div
                                 class="flex select-none items-center gap-2.5"
-                                v-for="(columnGroup, index) in [['id', 'created_at', 'status', 'is_premium'], ['slug', 'short_title', 'title'], ['board_name', 'grade_name', 'subject_title', 'book_title', 'chapter_title'], ['item_count', 'faq_count']]"
+                                v-for="(columnGroup, index) in [['id', 'created_at', 'status', 'is_premium'], ['slug', 'short_title', 'title'], ['board_name', 'grade_name', 'subject_name', 'book_title', 'chapter_title'], ['item_count', 'faq_count']]"
                             >
                                 <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
                                     <span class="[&>*]:after:content-['_/_']">

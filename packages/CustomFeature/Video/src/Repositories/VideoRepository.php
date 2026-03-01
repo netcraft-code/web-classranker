@@ -4,7 +4,6 @@ namespace CustomFeature\Video\Repositories;
 
 use CustomFeature\Video\Contracts\Video;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Webkul\Core\Eloquent\Repository;
 
@@ -28,8 +27,6 @@ class VideoRepository extends Repository
                 'title'       => $data['title'],
                 'short_title' => $data['short_title'],
                 'slug'        => $data['slug'],
-                'status'      => $data['status'] ?? 0,
-                'is_premium'  => $data['is_premium'] ?? 0,
             ]);
 
             // Assignments
@@ -77,89 +74,6 @@ class VideoRepository extends Repository
                 'status'             => $data['status']             ?? 0,
                 'is_premium'         => $data['is_premium']         ?? 0,
             ]);
-
-            // // Existing items ko preserve karo — sirf changes apply karo
-            // $existingItems = $video->videoItems()->get()->keyBy('id');
-
-            // // Pehle remove items handle karo — jo form mein nahi aaye
-            // $submittedItemIds = collect($data['video_items'] ?? [])
-            //     ->pluck('item_id')
-            //     ->filter()
-            //     ->toArray();
-
-            // // Jo submit nahi hue — delete karo
-            // foreach ($existingItems as $id => $existingItem) {
-            //     if (!in_array($id, $submittedItemIds)) {
-            //         Storage::disk('public')->delete($existingItem->video_url);
-            //         Storage::disk('public')->delete($existingItem->thumbnail);
-            //         $existingItem->delete();
-            //     }
-            // }
-
-            // // Ab har submitted item process karo
-            // if (!empty($data['video_items'])) {
-            //     foreach ($data['video_items'] as $index => $item) {
-            //         $isNew    = ($item['is_new'] ?? '0') === '1' || empty($item['item_id']);
-            //         $itemId   = $item['item_id'] ?? null;
-
-            //         $videoPath     = $item['video_path']     ?? null;
-            //         $thumbnailPath = $item['thumbnail_path'] ?? null;
-
-            //         // ── Video handle ──
-            //         if (!empty($item['video_temp_path'])) {
-            //             // Naya video upload hua — move karo
-            //             $newPath = str_replace('temp/videos', 'videos/files', $item['video_temp_path']);
-            //             Storage::disk('public')->move($item['video_temp_path'], $newPath);
-
-            //             // Purana delete karo
-            //             if (!empty($item['video_path'])) {
-            //                 Storage::disk('public')->delete($item['video_path']);
-            //             }
-            //             $videoPath = $newPath;
-
-            //         } elseif (($item['delete_video'] ?? '0') === '1') {
-            //             // Delete mark kiya — file delete karo, path null
-            //             if (!empty($item['video_path'])) {
-            //                 Storage::disk('public')->delete($item['video_path']);
-            //             }
-            //             $videoPath = null;
-            //         }
-
-            //         // ── Thumbnail handle ──
-            //         if (!empty($item['thumbnail_temp_path'])) {
-            //             $newPath = str_replace('temp/thumbnails', 'videos/thumbnails', $item['thumbnail_temp_path']);
-            //             Storage::disk('public')->move($item['thumbnail_temp_path'], $newPath);
-
-            //             if (!empty($item['thumbnail_path'])) {
-            //                 Storage::disk('public')->delete($item['thumbnail_path']);
-            //             }
-            //             $thumbnailPath = $newPath;
-
-            //         } elseif (($item['delete_thumbnail'] ?? '0') === '1') {
-            //             if (!empty($item['thumbnail_path'])) {
-            //                 Storage::disk('public')->delete($item['thumbnail_path']);
-            //             }
-            //             $thumbnailPath = null;
-            //         }
-
-            //         $itemData = [
-            //             'title'     => $item['title'],
-            //             'video_url' => $videoPath,
-            //             'thumbnail' => $thumbnailPath,
-            //             'duration'  => $item['duration']  ?? null,
-            //             'position'  => $item['position']  ?? $index,
-            //             'status'    => $item['status']    ?? 1,
-            //         ];
-
-            //         if ($isNew) {
-            //             // Naya item — create karo
-            //             $video->videoItems()->create($itemData);
-            //         } else {
-            //             // Existing item — sirf update karo
-            //             $existingItems[$itemId]?->update($itemData);
-            //         }
-            //     }
-            // }
 
             DB::commit();
 

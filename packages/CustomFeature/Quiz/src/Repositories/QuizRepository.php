@@ -79,8 +79,6 @@ class QuizRepository extends Repository
                 'title' => $data['title'],
                 'slug' => $data['slug'],
                 'description' => $data['description'] ?? null,
-                'status' => $data['status'] ?? false,
-                'created_by' => auth()->id(),
             ]);
 
             // Attach chapters
@@ -88,15 +86,9 @@ class QuizRepository extends Repository
                 $this->attachChapters($quiz, $data['chapters']);
             }
 
-            // Attach questions
-            if (!empty($data['questions'])) {
-                $this->attachQuestions($quiz, $data['questions']);
-            }
-
             DB::commit();
 
             return $quiz;
-
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Quiz creation failed: ' . $e->getMessage());
@@ -119,26 +111,12 @@ class QuizRepository extends Repository
                 'slug' => $data['slug'],
                 'description' => $data['description'] ?? null,
                 'status' => $data['status'] ?? false,
+                'is_premium' => $data['is_premium'] ?? false,
             ]);
-
-            // Remove old chapters and questions
-            $this->detachAllChapters($quiz);
-            $this->detachAllQuestions($quiz);
-
-            // Attach new chapters
-            if (!empty($data['chapters'])) {
-                $this->attachChapters($quiz, $data['chapters']);
-            }
-
-            // Attach new questions
-            if (!empty($data['questions'])) {
-                $this->attachQuestions($quiz, $data['questions']);
-            }
 
             DB::commit();
 
             return true;
-
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Quiz update failed: ' . $e->getMessage());

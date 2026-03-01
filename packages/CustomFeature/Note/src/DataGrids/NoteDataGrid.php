@@ -37,25 +37,27 @@ class NoteDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'top_description',
-            'label'      => 'Top Description',
+            'index'      => 'title',
+            'label'      => 'Title',
             'type'       => 'string',
             'searchable' => true,
             'filterable' => true,
-            'closure'    => function ($row) {
-                return '<span>' . $row->top_description . '</span>';
-            },
         ]);
 
         $this->addColumn([
-            'index'      => 'bottom_description',
-            'label'      => 'Bottom Description',
+            'index'      => 'short_title',
+            'label'      => 'Short Title',
             'type'       => 'string',
             'searchable' => true,
             'filterable' => true,
-            'closure'    => function ($row) {
-                return '<span>' . $row->bottom_description . '</span>';
-            },
+        ]);
+
+        $this->addColumn([
+            'index'      => 'slug',
+            'label'      => 'slug',
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
         ]);
     }
 

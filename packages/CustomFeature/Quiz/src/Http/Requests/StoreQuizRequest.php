@@ -21,7 +21,7 @@ class StoreQuizRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:quizzes,slug',
+            'slug' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'status' => 'nullable|boolean',
 

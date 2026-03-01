@@ -2,7 +2,7 @@
 
 namespace CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial;
 
-use CustomFeature\ClassRanker\Repositories\BoardRepository;
+use CustomFeature\Board\Repositories\BoardRepository;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\StudyMaterialController;
 use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\StudyMaterial\BoardResource;
 

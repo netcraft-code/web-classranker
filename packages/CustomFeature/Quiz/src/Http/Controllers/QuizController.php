@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
 
@@ -37,36 +38,39 @@ class QuizController extends Controller
             return datagrid(QuizDataGrid::class)->process();
         }
 
-        return view('class_ranker::study-material.quizzes.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
         $boards = $this->boardRepository->with(['grades.subjects.books.chapters'])->all();
 
-        return view('class_ranker::study-material.quizzes.create', compact('boards'));
+        return view('class_ranker::study-material.quizzes.index', compact('boards'));
     }
 
     /**
      * Store a newly created quiz in storage
      */
-    public function store(StoreQuizRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        try {
-            $this->quizRepository->create($request->validated());
+        $request->validate([
+            'title'                    => 'required|string|max:255',
+            'slug'                     => 'nullable|string|max:255|unique:quizzes,slug',
+            'chapters'                 => 'required|array|min:1',
+            'chapters.*.board_id'      => 'required|exists:boards,id',
+            'chapters.*.grade_id'      => 'required|exists:grades,id',
+            'chapters.*.subject_id'    => 'required|exists:subjects,id',
+            'chapters.*.book_id'       => 'required|exists:books,id',
+            'chapters.*.chapter_id'    => 'required|exists:chapters,id',
+        ]);
+        
+        $data = $request->all();
 
-            return redirect()
-                ->route('admin.study_materials.quizzes.index')
-                ->with('success', 'Quiz created successfully!');
-        } catch (Exception $e) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Error creating quiz: ' . $e->getMessage());
+        if (empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['title']);
         }
+
+        $quiz = $this->quizRepository->create($data);
+
+        return response()->json([
+            'message'      => 'Quiz created successfully.',
+            'redirect_url' => route('admin.study_materials.quizzes.edit', $quiz->id),
+        ]);
     }
 
     /**
@@ -81,56 +85,6 @@ class QuizController extends Controller
         }
 
         return view('class_ranker::study-material.quizzes.show', compact('quiz'));
-    }
-
-    /**
-     * Show the form for editing the specified quiz
-     */
-    public function edit(int $id): View
-    {
-        $quiz = $this->quizRepository->getWithRelations($id);
-
-        if (!$quiz) {
-            abort(404, 'Quiz not found');
-        }
-
-        $boards = $this->boardRepository->with(['grades.subjects.books.chapters'])->all();
-
-        // 🔥 PROPERLY FORMAT DATA (like Code 1)
-        $formattedChapters = $quiz->quizChapters->map(function($qc) {
-            return [
-                'boardId' => (string) $qc->board_id,
-                'gradeId' => (string) $qc->grade_id,
-                'subjectId' => (string) $qc->subject_id,
-                'bookId' => (string) $qc->book_id,
-                'chapterId' => (string) $qc->chapter_id,
-                'boardName' => $qc->board->name,
-                'gradeName' => $qc->grade->name,
-                'subjectName' => $qc->subject->name,
-                'bookName' => $qc->book->title,
-                'chapterName' => $qc->chapter->title,
-            ];
-        })->toArray();
-        
-        $formattedQuestions = $quiz->questions->map(function($q) {
-            return [
-                'text' => $q->question_text,
-                'options' => $q->options->map(function($opt) {
-                    return [
-                        'text' => $opt->option_text,
-                        'useTinymce' => (bool) $opt->use_tinymce,
-                    ];
-                })->toArray(),
-                'correctOptions' => $q->options
-                    ->filter(fn($opt) => $opt->is_correct)
-                    ->pluck('option_order')
-                    ->map(fn($order) => (int) $order)
-                    ->values()
-                    ->toArray(),
-            ];
-        })->toArray();
-
-        return view('class_ranker::study-material.quizzes.edit', compact('quiz', 'boards', 'formattedChapters', 'formattedQuestions'));
     }
 
     /**
@@ -171,191 +125,209 @@ class QuizController extends Controller
         }
     }
 
-    /**
-     * Show bulk upload page
-     */
-    public function bulkUpload()
-    {
-        $boards = $this->boardRepository->with(['grades.subjects.books.chapters'])->all();
-        
-        return view('class_ranker::study-material.quizzes.bulk-upload', compact('boards'));
-    }
-
-    /**
-     * Parse uploaded file
-     */
-    public function parseFile(Request $request)
-    {
-        try {
-            $request->validate([
-                'file' => 'required|file|mimes:pdf,csv|max:10240',
-                'chapters' => 'required|string',
-            ]);
-
-            $file = $request->file('file');
-            $chapters = json_decode($request->chapters, true);
-
-            if (!$file) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No file uploaded',
-                ], 400);
-            }
-
-            // Store file
-            $filePath = $file->store('quiz-uploads', 'local');
-            $fullPath = Storage::disk('local')->path($filePath);
-
-            // Parse based on file type
-            $extension = $file->getClientOriginalExtension();
-            
-            if ($extension === 'pdf') {
-                $parser = app(PdfQuizParserService::class);
-            } else {
-                $parser = app(CsvQuizParserService::class);
-            }
-
-            $questions = $parser->parse($fullPath);
-
-            if (empty($questions)) {
-                Storage::disk('local')->delete($filePath);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No questions found in file',
-                ], 400);
-            }
-
-            // ✅ FIX: Clean and validate data before saving
-            $cleanedQuestions = $this->cleanQuestionsData($questions);
-
-            // Test JSON encoding
-            $testJson = json_encode(['questions' => $cleanedQuestions]);
-            if ($testJson === false) {
-                Storage::disk('local')->delete($filePath);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Invalid characters in parsed data. Please check your PDF file.',
-                ], 400);
-            }
-
-            // Store preview data
-            $bulkUpload = QuizBulkUpload::create([
-                'original_filename' => $file->getClientOriginalName(),
-                'file_path' => $filePath,
-                'file_type' => $extension,
-                'status' => 'pending',
-                'total_questions' => count($cleanedQuestions),
-                'chapters' => $chapters,
-                'parsed_data' => ['questions' => $cleanedQuestions],
-                'uploaded_by' => auth()->id(),
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'upload_id' => $bulkUpload->id,
-                    'questions' => $cleanedQuestions,
-                ],
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Quiz file parse failed', [
-                'error' => $e->getMessage(),
-                'file' => $file->getClientOriginalName() ?? 'unknown',
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Error parsing file: ' . $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Clean questions data recursively
-     */
-    private function cleanQuestionsData(array $questions): array
-    {
-        return array_map(function($question) {
-            return [
-                'text' => $this->sanitizeString($question['text'] ?? ''),
-                'options' => array_map(function($option) {
-                    return [
-                        'text' => $this->sanitizeString($option['text'] ?? ''),
-                        'useTinymce' => $option['useTinymce'] ?? false,
-                    ];
-                }, $question['options'] ?? []),
-                'correctOptions' => $question['correctOptions'] ?? [],
-                'explanation' => $this->sanitizeString($question['explanation'] ?? ''),
-            ];
-        }, $questions);
-    }
-
-    /**
-     * Sanitize string for JSON encoding
-     */
-    private function sanitizeString(string $text): string
-    {
-        // Remove null bytes
-        $text = str_replace("\0", '', $text);
-        
-        // Convert to UTF-8
-        if (!mb_check_encoding($text, 'UTF-8')) {
-            $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
-        }
-        
-        // Remove invalid UTF-8
-        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
-        
-        // Remove control characters
-        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $text);
-        
-        return trim($text);
-    }
-
-    /**
-     * Process bulk upload (dispatch job)
-     */
-    public function bulkStore(Request $request)
+    // ── CHAPTERS ───────────────────────────────────────────────────
+    public function addChapter(Request $request, $id)
     {
         $request->validate([
-            'upload_id' => 'required|exists:quiz_bulk_uploads,id',
+            'board_id'   => 'required|exists:boards,id',
+            'grade_id'   => 'required|exists:grades,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'book_id'    => 'required|exists:books,id',
+            'chapter_id' => 'required|exists:chapters,id',
         ]);
 
-        try {
-            $bulkUpload = QuizBulkUpload::findOrFail($request->upload_id);
+        $quiz    = $this->quizRepository->findOrFail($id);
 
-            // Dispatch job to queue
-            ProcessQuizBulkUpload::dispatch($bulkUpload);
+        $chapter = $quiz->quizChapters()->create($request->only([
+            'board_id', 'grade_id', 'subject_id', 'book_id', 'chapter_id',
+        ]));
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Quiz upload queued for processing',
-                'upload_id' => $bulkUpload->id,
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Check upload progress
-     */
-    public function uploadProgress($id)
-    {
-        $bulkUpload = QuizBulkUpload::findOrFail($id);
+        $chapter->load(['board', 'grade', 'subject', 'book', 'chapter']);
 
         return response()->json([
-            'status' => $bulkUpload->status,
-            'progress' => $bulkUpload->progress_percentage,
-            'processed' => $bulkUpload->processed_questions,
-            'total' => $bulkUpload->total_questions,
-            'failed' => $bulkUpload->failed_questions,
-            'errors' => $bulkUpload->errors,
+            'message' => 'Chapter added.',
+            'chapter' => [
+                'id'          => $chapter->id,
+                'boardId'     => $chapter->board_id,
+                'gradeId'     => $chapter->grade_id,
+                'subjectId'   => $chapter->subject_id,
+                'bookId'      => $chapter->book_id,
+                'chapterId'   => $chapter->chapter_id,
+                'boardName'   => $chapter->board->name,
+                'gradeName'   => $chapter->grade->name,
+                'subjectName' => $chapter->subject->name,
+                'bookName'    => $chapter->book->title,
+                'chapterName' => $chapter->chapter->title,
+            ],
         ]);
+    }
+
+    public function removeChapter($id, $chapterId)
+    {
+        $quiz = $this->quizRepository->findOrFail($id);
+
+        $quiz->quizChapters()->findOrFail($chapterId)->delete();
+
+        return response()->json(['message' => 'Chapter removed.']);
+    }
+
+    // ── QUESTIONS ──────────────────────────────────────────────────
+    public function addQuestion(Request $request, $id)
+    {
+        $request->validate([
+            'text'                         => 'required|string',
+            'solution'                     => 'nullable|string',
+            'options'                      => 'required|array|min:2',
+            'options.*.text'               => 'required|string',
+            'options.*.use_tinymce'        => 'nullable|boolean',
+            'correct_options'              => 'nullable|array',
+        ]);
+
+        $quiz     = $this->quizRepository->findOrFail($id);
+
+        $question = $quiz->questions()->create([
+            'quiz_id'           => $quiz->id,
+            'question_text'     => $request->text,
+            'question_solution' => $request->solution,
+            'question_order'    => $quiz->questions()->count(),
+        ]);
+
+        foreach ($request->options as $index => $option) {
+            $isCorrect = in_array($index, $request->correct_options ?? []);
+            $question->options()->create([
+                'option_text'  => $option['text'],
+                'is_correct'   => $isCorrect,
+                'use_tinymce'  => $option['use_tinymce'] ?? 0,
+                'option_order' => $index,
+            ]);
+        }
+
+        $question->load('options');
+
+        return response()->json([
+            'message'  => 'Question added.',
+            'question' => $this->formatQuestion($question),
+        ]);
+    }
+
+    public function updateQuestion(Request $request, $id, $questionId)
+    {
+        $request->validate([
+            'text'                  => 'required|string',
+            'solution'              => 'nullable|string',
+            'options'               => 'required|array|min:2',
+            'options.*.text'        => 'required|string',
+            'options.*.use_tinymce' => 'nullable|boolean',
+            'correct_options'       => 'nullable|array',
+        ]);
+
+        $quiz     = $this->quizRepository->findOrFail($id);
+
+        $question = $quiz->questions()->findOrFail($questionId);
+
+        $question->update([
+            'question_text'     => $request->text,
+            'question_solution' => $request->solution,
+        ]);
+
+        // Delete old options + recreate
+        $question->options()->delete();
+
+        foreach ($request->options as $index => $option) {
+            $isCorrect = in_array($index, $request->correct_options ?? []);
+
+            $question->options()->create([
+                'option_text'  => $option['text'],
+                'is_correct'   => $isCorrect,
+                'use_tinymce'  => $option['use_tinymce'] ?? 0,
+                'option_order' => $index,
+            ]);
+        }
+
+        $question->load('options');
+
+        return response()->json([
+            'message'  => 'Question updated.',
+            'question' => $this->formatQuestion($question),
+        ]);
+    }
+
+    public function removeQuestion($id, $questionId)
+    {
+        $quiz     = $this->quizRepository->findOrFail($id);
+
+        $question = $quiz->questions()->findOrFail($questionId);
+        
+        $question->options()->delete();
+
+        $question->delete();
+
+        return response()->json(['message' => 'Question removed.']);
+    }
+
+    private function formatQuestion($question): array
+    {
+        return [
+            'id'       => $question->id,
+            'text'     => $question->question_text,
+            'solution' => $question->question_solution,
+            'options'  => $question->options->map(fn($opt) => [
+                'id'         => $opt->id,
+                'text'       => $opt->option_text,
+                'is_correct' => (bool) $opt->is_correct,
+                'use_tinymce'=> (bool) $opt->use_tinymce,
+                'order'      => $opt->option_order,
+            ])->toArray(),
+            'correctOptions' => $question->options
+                ->filter(fn($opt) => $opt->is_correct)
+                ->pluck('option_order')
+                ->map(fn($o) => (int) $o)
+                ->values()
+                ->toArray(),
+        ];
+    }
+
+    // edit() mein formattedQuestions update karo — solution add karo
+    public function edit(int $id): View
+    {
+        $quiz = $this->quizRepository->getWithRelations($id);
+
+        if (!$quiz) abort(404);
+
+        $boards = $this->boardRepository->with(['grades.subjects.books.chapters'])->all();
+
+        $formattedChapters = $quiz->quizChapters->map(fn($qc) => [
+            'id'          => $qc->id,           // ← AJAX ke liye zaruri
+            'boardId'     => (string) $qc->board_id,
+            'gradeId'     => (string) $qc->grade_id,
+            'subjectId'   => (string) $qc->subject_id,
+            'bookId'      => (string) $qc->book_id,
+            'chapterId'   => (string) $qc->chapter_id,
+            'boardName'   => $qc->board->name,
+            'gradeName'   => $qc->grade->name,
+            'subjectName' => $qc->subject->name,
+            'bookName'    => $qc->book->title,
+            'chapterName' => $qc->chapter->title,
+        ])->toArray();
+
+        $formattedQuestions = $quiz->questions->map(fn($q) => [
+            'id'       => $q->id,               // ← AJAX ke liye zaruri
+            'text'     => $q->question_text,
+            'solution' => $q->question_solution,
+            'options'  => $q->options->map(fn($opt) => [
+                'text'       => $opt->option_text,
+                'useTinymce' => (bool) $opt->use_tinymce,
+            ])->toArray(),
+            'correctOptions' => $q->options
+                ->filter(fn($opt) => $opt->is_correct)
+                ->pluck('option_order')
+                ->map(fn($order) => (int) $order)
+                ->values()
+                ->toArray(),
+        ])->toArray();
+
+        return view('class_ranker::study-material.quizzes.edit', compact(
+            'quiz', 'boards', 'formattedChapters', 'formattedQuestions'
+        ));
     }
 }

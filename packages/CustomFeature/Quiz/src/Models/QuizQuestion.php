@@ -16,6 +16,7 @@ class QuizQuestion extends Model implements QuizQuestionContract
         'quiz_id',
         'question_text',
         'question_order',
+        'question_solution',
     ];
 
     protected $casts = [

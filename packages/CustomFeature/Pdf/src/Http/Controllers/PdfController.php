@@ -20,14 +20,10 @@ class PdfController extends Controller
         if (request()->ajax()) {
             return datagrid(PdfDataGrid::class)->process();
         }
-        return view('class_ranker::study-material.pdfs.index');
-    }
 
-    public function create()
-    {
         $boards = $this->boardRepository->with(['grades.subjects.books.chapters'])->all();
-        
-        return view('class_ranker::study-material.pdfs.create', compact('boards'));
+
+        return view('class_ranker::study-material.pdfs.index', compact('boards'));
     }
 
     public function store(Request $request)
@@ -35,32 +31,22 @@ class PdfController extends Controller
         $request->validate([
             'title'                      => 'required|string|max:255',
             'short_title'                => 'required|string|max:255',
-            'slug'                       => 'nullable|string|max:255|unique:pdfs,slug',
-            'top_description'            => 'nullable',
-            'bottom_description'         => 'nullable',
-            'meta_title'                 => 'nullable|string|max:255',
-            'meta_description'           => 'nullable|string',
-            'meta_keywords'              => 'nullable|string',
-            'status'                     => 'nullable|boolean',
-            'is_premium'                 => 'nullable|boolean',
+            'slug'                       => 'nullable|string|max:255',
+
             'assignments'                => 'required|array|min:1',
             'assignments.*.board_id'     => 'required|exists:boards,id',
             'assignments.*.grade_id'     => 'required|exists:grades,id',
             'assignments.*.subject_id'   => 'required|exists:subjects,id',
             'assignments.*.book_id'      => 'required|exists:books,id',
             'assignments.*.chapter_id'   => 'required|exists:chapters,id',
-            'pdf_items'                  => 'nullable|array',
-            'pdf_items.*.title'          => 'required|string|max:255',
-            'pdf_items.*.pdf_temp_path'  => 'required|string',
-            'pdf_items.*.position'       => 'nullable|integer',
-            'pdf_items.*.status'         => 'nullable|boolean',
         ]);
 
-        $this->pdfRepository->create($request->all());
+        $pdf = $this->pdfRepository->create($request->all());
 
-        session()->flash('success', 'PDF created successfully.');
-
-        return redirect()->route('admin.study_materials.pdfs.index');
+        return response()->json([
+            'message'      => 'PDF created successfully.',
+            'redirect_url' => route('admin.study_materials.pdfs.edit', $pdf->id),
+        ]);
     }
 
     public function edit($id)
@@ -74,6 +60,7 @@ class PdfController extends Controller
         $boards = $this->boardRepository->with(['grades.subjects.books.chapters'])->all();
 
         $formattedAssignments = $pdf->assignments->map(fn($a) => [
+            'id'          => $a->id,
             'boardId'     => $a->board_id,
             'gradeId'     => $a->grade_id,
             'subjectId'   => $a->subject_id,
@@ -108,7 +95,7 @@ class PdfController extends Controller
         $request->validate([
             'title'                    => 'required|string|max:255',
             'short_title'              => 'required|string|max:255',
-            'slug'                     => 'nullable|string|max:255|unique:pdfs,slug,' . $id,
+            'slug'                     => 'nullable|string|max:255',
             'top_description'          => 'nullable',
             'bottom_description'       => 'nullable',
             'meta_title'               => 'nullable|string|max:255',
@@ -116,19 +103,12 @@ class PdfController extends Controller
             'meta_keywords'            => 'nullable|string',
             'status'                   => 'nullable|boolean',
             'is_premium'               => 'nullable|boolean',
-            'assignments'              => 'required|array|min:1',
-            'assignments.*.board_id'   => 'required|exists:boards,id',
-            'assignments.*.grade_id'   => 'required|exists:grades,id',
-            'assignments.*.subject_id' => 'required|exists:subjects,id',
-            'assignments.*.book_id'    => 'required|exists:books,id',
-            'assignments.*.chapter_id' => 'required|exists:chapters,id',
-            'pdf_items'                => 'nullable|array',
-            'pdf_items.*.title'        => 'required|string|max:255',
         ]);
 
         $this->pdfRepository->update($request->all(), $id);
 
         session()->flash('success', 'PDF updated successfully.');
+
         return redirect()->route('admin.study_materials.pdfs.index');
     }
 
@@ -136,11 +116,167 @@ class PdfController extends Controller
     {
         try {
             $this->pdfRepository->delete($id);
+
             session()->flash('success', 'PDF deleted successfully.');
+
             return response()->json(['message' => true], 200);
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to delete PDF.');
+
             return response()->json(['message' => false], 500);
         }
+    }
+
+    // ── ASSIGNMENTS ────────────────────────────────────────────────
+    public function addAssignment(Request $request, $id)
+    {
+        $request->validate([
+            'board_id'   => 'required|exists:boards,id',
+            'grade_id'   => 'required|exists:grades,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'book_id'    => 'required|exists:books,id',
+            'chapter_id' => 'required|exists:chapters,id',
+        ]);
+
+        $pdf        = $this->pdfRepository->findOrFail($id);
+
+        $assignment = $pdf->assignments()->create($request->only([
+            'board_id', 'grade_id', 'subject_id', 'book_id', 'chapter_id',
+        ]));
+
+        $assignment->load(['board', 'grade', 'subject', 'book', 'chapter']);
+
+        return response()->json([
+            'message'    => 'Assignment added.',
+            'assignment' => [
+                'id'          => $assignment->id,
+                'boardId'     => $assignment->board_id,
+                'gradeId'     => $assignment->grade_id,
+                'subjectId'   => $assignment->subject_id,
+                'bookId'      => $assignment->book_id,
+                'chapterId'   => $assignment->chapter_id,
+                'boardName'   => $assignment->board->name,
+                'gradeName'   => $assignment->grade->name,
+                'subjectName' => $assignment->subject->name,
+                'bookName'    => $assignment->book->title,
+                'chapterName' => $assignment->chapter->title,
+            ],
+        ]);
+    }
+
+    public function removeAssignment($id, $assignmentId)
+    {
+        $pdf = $this->pdfRepository->findOrFail($id);
+
+        $pdf->assignments()->findOrFail($assignmentId)->delete();
+
+        return response()->json(['message' => 'Assignment removed.']);
+    }
+
+    // ── PDF ITEMS ──────────────────────────────────────────────────
+    public function addPdfItem(Request $request, $id)
+    {
+        $request->validate([
+            'title'        => 'required|string|max:255',
+            'pdf_temp_path'=> 'required|string',
+            'position'     => 'nullable|integer',
+            'status'       => 'nullable|boolean',
+        ]);
+
+        $pdf     = $this->pdfRepository->findOrFail($id);
+
+        $pdfPath = null;
+
+        if ($request->pdf_temp_path) {
+            $newPath = str_replace('temp/pdfs', "pdfs/files/{$id}", $request->pdf_temp_path);
+
+            Storage::disk('public')->move($request->pdf_temp_path, $newPath);
+
+            $pdfPath = $newPath;
+        }
+
+        $item = $pdf->pdfItems()->create([
+            'title'    => $request->title,
+            'pdf_path' => $pdfPath,
+            'position' => $request->position ?? $pdf->pdfItems()->count(),
+            'status'   => $request->boolean('status', true),
+        ]);
+
+        return response()->json([
+            'message' => 'PDF item added.',
+            'item'    => [
+                'id'       => $item->id,
+                'title'    => $item->title,
+                'pdf_path' => $item->pdf_path,
+                'pdf_url'  => $item->pdf_path ? Storage::disk('public')->url($item->pdf_path) : null,
+                'pdf_name' => $item->pdf_path ? basename($item->pdf_path) : null,
+                'position' => $item->position,
+                'status'   => $item->status,
+            ],
+        ]);
+    }
+
+    public function updatePdfItem(Request $request, $id, $itemId)
+    {
+        $request->validate([
+            'title'        => 'required|string|max:255',
+            'position'     => 'nullable|integer',
+            'status'       => 'nullable|boolean',
+            'pdf_temp_path'=> 'nullable|string',
+            'delete_pdf'   => 'nullable|boolean',
+        ]);
+
+        $pdf     = $this->pdfRepository->findOrFail($id);
+
+        $item    = $pdf->pdfItems()->findOrFail($itemId);
+
+        $pdfPath = $item->pdf_path;
+
+        if ($request->pdf_temp_path) {
+            $newPath = str_replace('temp/pdfs', "pdfs/files/{$id}", $request->pdf_temp_path);
+
+            Storage::disk('public')->move($request->pdf_temp_path, $newPath);
+
+            if ($item->pdf_path) Storage::disk('public')->delete($item->pdf_path);
+
+            $pdfPath = $newPath;
+        } elseif ($request->boolean('delete_pdf')) {
+            if ($item->pdf_path) Storage::disk('public')->delete($item->pdf_path);
+
+            $pdfPath = null;
+        }
+
+        $item->update([
+            'title'    => $request->title,
+            'pdf_path' => $pdfPath,
+            'position' => $request->position ?? $item->position,
+            'status'   => $request->boolean('status', true),
+        ]);
+
+        return response()->json([
+            'message' => 'PDF item updated.',
+            'item'    => [
+                'id'       => $item->id,
+                'title'    => $item->title,
+                'pdf_path' => $item->pdf_path,
+                'pdf_url'  => $item->pdf_path_url,
+                'pdf_name' => $item->pdf_path ? basename($item->pdf_path) : null,
+                'position' => $item->position,
+                'status'   => $item->status,
+            ],
+        ]);
+    }
+
+    public function removePdfItem($id, $itemId)
+    {
+        $pdf  = $this->pdfRepository->findOrFail($id);
+
+        $item = $pdf->pdfItems()->findOrFail($itemId);
+
+        if ($item->pdf_path) Storage::disk('public')->delete($item->pdf_path);
+
+        $item->delete();
+
+        return response()->json(['message' => 'PDF item removed.']);
     }
 }

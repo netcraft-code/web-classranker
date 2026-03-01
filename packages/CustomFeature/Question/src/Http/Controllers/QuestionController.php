@@ -41,7 +41,7 @@ class QuestionController extends Controller
         $validatedData = $request->validate([
             'title'              => 'required|string|max:255',
             'short_title'        => 'required|string|max:255',
-            'slug'               => 'required|string|max:255|unique:questions,slug',
+            'slug'               => 'required|string|max:255',
             
             // Assignments validation
             'assignments'              => 'required|array|min:1',
@@ -127,7 +127,7 @@ class QuestionController extends Controller
         $validatedData = $request->validate([
             'title'              => 'required|string|max:255',
             'short_title'        => 'required|string|max:255',
-            'slug'               => 'nullable|string|max:255|unique:questions,slug,' . $id,
+            'slug'               => 'nullable|string|max:255',
             'top_description'    => 'nullable',
             'bottom_description' => 'nullable',
             'related_links'      => 'nullable',

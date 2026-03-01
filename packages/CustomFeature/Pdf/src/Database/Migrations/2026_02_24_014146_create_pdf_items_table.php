@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('pdf_path');
             $table->integer('position')->default(0);
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }

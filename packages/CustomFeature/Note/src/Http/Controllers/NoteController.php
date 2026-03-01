@@ -5,7 +5,7 @@ namespace CustomFeature\Note\Http\Controllers;
 use Illuminate\Http\Request;
 use Webkul\Admin\Http\Controllers\Controller;
 use CustomFeature\Note\Repositories\NoteRepository;
-use CustomFeature\Bord\Repositories\BoardRepository;
+use CustomFeature\Board\Repositories\BoardRepository;
 use CustomFeature\Note\DataGrids\NoteDataGrid;
 
 class NoteController extends Controller
