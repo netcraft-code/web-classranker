@@ -37,6 +37,11 @@ class Video extends Model implements VideoContract
         return $this->hasMany(VideoItem::class)->orderBy('position');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
     public function assignments(): HasMany
     {
         return $this->hasMany(VideoAssignment::class);

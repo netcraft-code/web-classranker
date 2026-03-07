@@ -158,7 +158,7 @@
                             <p v-else class="text-xs text-gray-400 mb-2">No video uploaded</p>
 
                             <div v-if="item.thumbnail_full_url" class="mb-2">
-                                <img :src="item.thumbnail_full_url" class="h-20 rounded border object-cover">
+                                <img :src="item.thumbnail_full_url" class="w-[360px] rounded border object-cover">
                             </div>
 
                             <div class="flex gap-4 text-xs text-gray-500">
@@ -227,7 +227,8 @@
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Thumbnail</label>
 
                                 <div v-if="item.thumbnail_full_url && !item.thumbnail_temp_path && !item.delete_thumbnail" class="mb-2">
-                                    <img :src="item.thumbnail_full_url" class="h-24 rounded border object-cover">
+                                    <img :src="item.thumbnail_full_url" class="w-[360px] max-w-full max-h-[400px] rounded border bg-black">
+
                                     <div class="flex items-center gap-3 mt-1">
                                         <p class="text-xs text-gray-400 flex-1">Current thumbnail</p>
                                         <button type="button" @click="item.delete_thumbnail = true"
@@ -247,7 +248,7 @@
                                     class="w-full border rounded p-2 text-sm bg-white cursor-pointer">
 
                                 <div v-if="item.thumbnail_temp_path" class="mt-2">
-                                    <img :src="item.thumbnail_preview" class="h-24 rounded border object-cover">
+                                    <img :src="item.thumbnail_preview" class="w-[360px] max-w-full max-h-[400px] rounded border bg-black">
                                     <div class="flex items-center gap-2 mt-1">
                                         <p class="text-xs text-green-600 flex-1">✓ New thumbnail — will replace on save</p>
                                         <button type="button" @click="item.thumbnail_temp_path = null; item.thumbnail_preview = null"
@@ -321,7 +322,7 @@
                                 @change="onNewThumbnailSelect($event)"
                                 class="w-full border rounded p-2 text-sm bg-white cursor-pointer">
                             <div v-if="newVideo.thumbnail_preview" class="mt-2">
-                                <img :src="newVideo.thumbnail_preview" class="h-24 rounded border object-cover">
+                                <img :src="newVideo.thumbnail_preview" class="w-[360px] rounded border object-cover">
                             </div>
                             <div v-if="newVideo.uploading_thumbnail" class="mt-2 flex items-center gap-2 text-sm text-gray-500">
                                 <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
@@ -611,7 +612,8 @@
                     if (!item.title) { alert('Title required'); return; }
 
                     item.saving = true;
-                    this.$axios.post(this.routes.items_update.replace(':itemId', item.id), {
+                    
+                    this.$axios.post(this.routes.items_update.replace(':itemId', item.item_id), {
                         title:                item.title,
                         video_temp_path:      item.video_temp_path,
                         delete_video:         item.delete_video ? 1 : 0,

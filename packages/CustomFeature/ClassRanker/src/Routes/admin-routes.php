@@ -157,7 +157,7 @@ Route::prefix('study-material')->group(function () {
 
             Route::post('{id}/video-items/add', 'addVideoItem')->name('admin.study_materials.videos.items.add');
             
-            Route::post('{id}/video-items/{itemId}', 'updateVideoItem')->name('admin.study_materials.videos.items.update');
+            Route::put('{id}/video-items/{itemId}', 'updateVideoItem')->name('admin.study_materials.videos.items.update');
             
             Route::delete('{id}/video-items/{itemId}', 'removeVideoItem')->name('admin.study_materials.videos.items.remove');
         });

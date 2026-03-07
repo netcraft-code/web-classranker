@@ -112,4 +112,28 @@ class NoteRepository extends Repository
             throw $e;
         }
     }
+
+    public function getByChapter(int $chapterId, int $limit = 10, int $page = 1): array
+    {
+        $query = $this->model
+            ->whereHas('assignments', fn($q) =>
+                $q->where('chapter_id', $chapterId)
+            )
+            ->where('status', 1);
+
+        $total = $query->count();
+        $items = $query
+            ->select('id', 'title', 'short_title', 'slug', 'content')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get();
+
+        return [
+            'data'     => $items,
+            'total'    => $total,
+            'page'     => $page,
+            'limit'    => $limit,
+            'has_more' => ($page * $limit) < $total,
+        ];
+    }
 }

@@ -131,4 +131,37 @@ class QuestionRepository extends Repository
             throw $e;
         }
     }
+
+    public function getByChapter(
+        int $chapterId,
+        ?string $type = null,
+        int $limit = 10,
+        int $page = 1
+    ): array {
+        $query = $this->model
+            ->whereHas('assignments', fn($q) =>
+                $q->where('chapter_id', $chapterId)
+            )
+            ->where('status', 1)
+            ->withCount('questionItems');
+
+        if ($type) {
+            $query->where('title', 'like', "%{$type}%");
+        }
+
+        $total   = $query->count();
+        $items   = $query
+            ->select('id', 'title', 'short_title', 'slug', 'is_premium')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get();
+
+        return [
+            'data'     => $items,
+            'total'    => $total,
+            'page'     => $page,
+            'limit'    => $limit,
+            'has_more' => ($page * $limit) < $total,
+        ];
+    }
 }

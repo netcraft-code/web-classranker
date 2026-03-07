@@ -626,6 +626,7 @@
                             item.pdf_temp_path = data.path;
                             item.new_pdf_url   = data.url;
                             item.new_pdf_name  = data.filename;
+                            item.title  = data.filename;
                             item.uploading     = false;
                             item.delete_pdf    = false;
                         },
@@ -643,6 +644,7 @@
                             this.newPdf.pdf_temp_path = data.path;
                             this.newPdf.pdf_url       = data.url;
                             this.newPdf.pdf_name      = data.filename;
+                            this.newPdf.title      = data.filename;
                             this.newPdf.uploading     = false;
                         },
                         () => { alert('Upload failed'); this.newPdf.uploading = false; },

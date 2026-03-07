@@ -7,7 +7,11 @@ use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\GradeCon
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\SubjectController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BookController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\ChapterController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuestionController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\VideoController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\NoteController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\PdfController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuizController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Core\CmsController;
 
 /**
@@ -64,6 +68,38 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 
     Route::controller(ChapterController::class)->prefix('chapters')->group(function () {
         Route::get('', 'allResources');
+
+        Route::get('{id}', 'getResource');
+    });
+
+    Route::controller(QuestionController::class)->prefix('questions')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::get('{id}', 'getResource');
+    });
+
+    Route::controller(NoteController::class)->prefix('notes')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::get('{id}', 'getResource');
+    });
+
+    Route::controller(VideoController::class)->prefix('videos')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::get('{id}', 'getResource');
+    });
+
+    Route::controller(PdfController::class)->prefix('pdfs')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::get('{id}', 'getResource');
+    });
+
+    Route::controller(QuizController::class)->prefix('quizzes')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::get('{id}', 'getResource');
     });
 
     Route::controller(CmsController::class)->prefix('cms')->group(function () {

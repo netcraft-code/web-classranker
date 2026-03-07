@@ -31,4 +31,9 @@ class PdfItem extends Model implements PdfItemContract
     {
         return $this->belongsTo(Pdf::class);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
 }

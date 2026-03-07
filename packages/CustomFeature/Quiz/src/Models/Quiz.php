@@ -67,4 +67,9 @@ class Quiz extends Model implements QuizContract
     {
         return $this->belongsToMany(Chapter::class, 'quiz_chapters');
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
 }

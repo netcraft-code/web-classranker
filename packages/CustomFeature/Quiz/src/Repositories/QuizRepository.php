@@ -220,4 +220,29 @@ class QuizRepository extends Repository
 
         return $query->exists();
     }
+
+    public function getByChapter(int $chapterId, int $limit = 3, int $page = 1): array
+    {
+        $query = $this->model
+            ->whereHas('quizChapters', fn($q) =>
+                $q->where('chapter_id', $chapterId)
+            )
+            ->where('status', 1)
+            ->withCount('questions');
+
+        $total = $query->count();
+        $items = $query
+            ->select('id', 'title', 'slug', 'is_premium')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get();
+
+        return [
+            'data'     => $items,
+            'total'    => $total,
+            'page'     => $page,
+            'limit'    => $limit,
+            'has_more' => ($page * $limit) < $total,
+        ];
+    }
 }

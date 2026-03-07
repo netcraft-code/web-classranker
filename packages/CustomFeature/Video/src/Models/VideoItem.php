@@ -19,6 +19,8 @@ class VideoItem extends Model implements VideoItemContract
         'status',
     ];
 
+    protected $appends = ['thumbnail_url'];
+
     protected $casts = [
         'status'   => 'boolean',
         'position' => 'integer',
@@ -45,5 +47,10 @@ class VideoItem extends Model implements VideoItemContract
     public function video(): BelongsTo
     {
         return $this->belongsTo(Video::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 }

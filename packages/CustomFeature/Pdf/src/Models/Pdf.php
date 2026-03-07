@@ -3,14 +3,15 @@
 namespace CustomFeature\Pdf\Models;
 
 use CustomFeature\Board\Models\Board;
-use CustomFeature\Grade\Models\Grade;
-use CustomFeature\Subject\Models\Subject;
 use CustomFeature\Book\Models\Book;
 use CustomFeature\Chapter\Models\Chapter;
+use CustomFeature\Grade\Models\Grade;
 use CustomFeature\Pdf\Contracts\Pdf as PdfContract;
+use CustomFeature\Subject\Models\Subject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Pdf extends Model implements PdfContract
 {
@@ -25,6 +26,15 @@ class Pdf extends Model implements PdfContract
         'status'     => 'boolean',
         'is_premium' => 'boolean',
     ];
+
+    public function getPdfPathUrlAttribute()
+    {
+        if ($this->pdf_path) {
+            return Storage::disk('public')->url($this->pdf_path);
+        }
+
+        return null;
+    }
 
     public function pdfItems(): HasMany
     {
@@ -59,5 +69,10 @@ class Pdf extends Model implements PdfContract
     public function chapters(): BelongsToMany
     {
         return $this->belongsToMany(Chapter::class, 'pdf_assignments')->distinct();
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 }

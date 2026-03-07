@@ -56,6 +56,11 @@ class Question extends Model implements QuestionContract
         return $this->hasMany(QuestionItem::class)->orderBy('order');
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
     /**
      * Get the FAQs
      */
@@ -111,9 +116,15 @@ class Question extends Model implements QuestionContract
     /**
      * Get all chapters this question is assigned to
      */
-    public function chapters(): BelongsToMany
+    public function chapters()
     {
-        return $this->belongsToMany(Chapter::class, 'question_assignments')
-            ->distinct();
+        return $this->hasManyThrough(
+            Chapter::class,
+            QuestionAssignment::class,
+            'question_id',
+            'id',
+            'id',
+            'chapter_id'
+        );
     }
 }

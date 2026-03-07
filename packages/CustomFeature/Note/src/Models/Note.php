@@ -15,10 +15,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Note extends Model implements NoteContract
 {
     protected $fillable = [
-        'title', 'short_title', 'slug',
-        'top_description', 'content', 'bottom_description',
-        'meta_title', 'meta_description', 'meta_keywords',
-        'status', 'is_premium',
+        'title',
+        'short_title',
+        'slug',
+        'top_description',
+        'content',
+        'bottom_description',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'status',
+        'is_premium',
     ];
 
     protected $casts = [
@@ -54,5 +61,10 @@ class Note extends Model implements NoteContract
     public function chapters(): BelongsToMany
     {
         return $this->belongsToMany(Chapter::class, 'note_assignments')->distinct();
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 }

@@ -52,6 +52,7 @@ class PdfRepository extends Repository
     public function update(array $data, $id)
     {
         DB::beginTransaction();
+        
         try {
             $pdf = $this->findOrFail($id);
 
@@ -73,6 +74,7 @@ class PdfRepository extends Repository
             ]);
 
             DB::commit();
+
             return $pdf;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -83,6 +85,7 @@ class PdfRepository extends Repository
     public function delete($id)
     {
         DB::beginTransaction();
+
         try {
             $pdf = $this->findOrFail($id);
 
@@ -91,14 +94,43 @@ class PdfRepository extends Repository
             }
 
             $pdf->assignments()->delete();
+
             $pdf->pdfItems()->delete();
+
             $pdf->delete();
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function getByChapter(int $chapterId, int $limit = 3, int $page = 1): array
+    {
+        $query = $this->model
+            ->whereHas('assignments', fn($q) =>
+                $q->where('chapter_id', $chapterId)
+            )
+            ->where('status', 1)
+            ->withCount('pdfItems');
+
+        $total = $query->count();
+
+        $items = $query
+            ->select('id', 'title', 'short_title', 'slug', 'is_premium')
+            ->offset(($page - 1) * $limit)
+            ->limit($limit)
+            ->get();
+
+        return [
+            'data'     => $items,
+            'total'    => $total,
+            'page'     => $page,
+            'limit'    => $limit,
+            'has_more' => ($page * $limit) < $total,
+        ];
     }
 }

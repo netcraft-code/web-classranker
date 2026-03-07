@@ -6,17 +6,17 @@ use CustomFeature\Board\Models\Board;
 use CustomFeature\Book\Models\Book;
 use CustomFeature\Chapter\Contracts\Chapter as ChapterContract;
 use CustomFeature\Grade\Models\Grade;
+use CustomFeature\Note\Models\Note;
+use CustomFeature\Pdf\Models\Pdf;
+use CustomFeature\Question\Models\Question;
+use CustomFeature\Quiz\Models\Quiz;     
 use CustomFeature\Subject\Models\Subject;
+use CustomFeature\Video\Models\Video;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class Chapter extends Model implements ChapterContract
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'title',
         'code',
@@ -28,14 +28,24 @@ class Chapter extends Model implements ChapterContract
         'book_id',
     ];
 
+    /*
+    |--------------------------------------------------------------------------
+    | Accessors
+    |--------------------------------------------------------------------------
+    */
+
     public function getAvatarUrlAttribute()
     {
-        if ($this->avatar) {
-            return Storage::url($this->avatar);
-        }
-
-        return null;
+        return $this->avatar
+            ? Storage::url($this->avatar)
+            : null;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Base Relations
+    |--------------------------------------------------------------------------
+    */
 
     public function board()
     {
@@ -55,5 +65,105 @@ class Chapter extends Model implements ChapterContract
     public function book()
     {
         return $this->belongsTo(Book::class);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Questions
+    |--------------------------------------------------------------------------
+    */
+
+    public function questions()
+    {
+        return $this->belongsToMany(
+            Question::class,
+            'question_assignments',
+            'chapter_id',
+            'question_id'
+        )->with('questionItems');
+    }
+
+    public function activeQuestions()
+    {
+        return $this->questions()->active();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Videos
+    |--------------------------------------------------------------------------
+    */
+
+    public function videos()
+    {
+        return $this->belongsToMany(
+            Video::class,
+            'video_assignments',
+            'chapter_id',
+            'video_id'
+        );
+    }
+
+    public function activeVideos()
+    {
+        return $this->videos()->active();
+    }
+
+    public function activeVideosWithActiveItems()
+    {
+        return $this->activeVideos()
+            ->whereHas('videoItems', fn ($q) => $q->active())
+            ->with(['videoItems' => fn ($q) => $q->active()->orderBy('position')]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Quizzes
+    |--------------------------------------------------------------------------
+    */
+
+    public function quizzes()
+    {
+        return $this->belongsToMany(
+            Quiz::class,
+            'quiz_chapters',
+            'chapter_id',
+            'quiz_id'
+        );
+    }
+
+    public function activeQuizzes()
+    {
+        return $this->quizzes()->active();
+    }
+
+    public function pdfs()
+    {
+        return $this->belongsToMany(
+            Pdf::class,
+            'pdf_assignments',
+            'chapter_id',
+            'pdf_id'
+        )->with('pdfItems');
+    }
+
+    public function activePdfs()
+    {
+        return $this->pdfs()->active();
+    }
+
+    public function notes()
+    {
+        return $this->belongsToMany(
+            Note::class,
+            'note_assignments',
+            'chapter_id',
+            'note_id'
+        );
+    }
+
+    public function activeNotes()
+    {
+        return $this->notes()->active();
     }
 }
