@@ -94,6 +94,8 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::get('', 'allResources');
 
         Route::get('{id}', 'getResource');
+
+        Route::get('file/{itemid}', 'streamFile');
     });
 
     Route::controller(QuizController::class)->prefix('quizzes')->group(function () {

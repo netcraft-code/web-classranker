@@ -182,7 +182,7 @@ Route::prefix('study-material')->group(function () {
 
             Route::post('{id}/pdf-items/add', 'addPdfItem')->name('admin.study_materials.pdfs.items.add');
             
-            Route::post('{id}/pdf-items/{itemId}', 'updatePdfItem')->name('admin.study_materials.pdfs.items.update');
+            Route::put('{id}/pdf-items/{itemId}', 'updatePdfItem')->name('admin.study_materials.pdfs.items.update');
             
             Route::delete('{id}/pdf-items/{itemId}', 'removePdfItem')->name('admin.study_materials.pdfs.items.remove');
         });

@@ -553,9 +553,9 @@
 
                 ajaxUpdatePdfItem(item) {
                     if (!item.title) { alert('Title required'); return; }
-
+                    
                     item.saving = true;
-                    this.$axios.post(this.routes.items_update.replace(':itemId', item.id), {
+                    this.$axios.put(this.routes.items_update.replace(':itemId', item.item_id), {
                         title:         item.title,
                         pdf_temp_path: item.pdf_temp_path,
                         delete_pdf:    item.delete_pdf ? 1 : 0,

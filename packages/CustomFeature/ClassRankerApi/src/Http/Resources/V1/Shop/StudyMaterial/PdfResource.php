@@ -31,9 +31,7 @@ class PdfResource extends JsonResource
             "pdf_path"           => $this->pdf_path,
             "pdf_path_url"       => $this->pdf_path_url,
             "position"           => $this->position,
-            'pdf_item'           => PdfItemResource::collection($this->whenLoaded('pdfItems')),
             'item_created_at'    => Carbon::parse($this->item_created_at)->diffForHumans(),
-            'pdf_download_url'   => route('pdf.download', ['id' => $this->item_id]),
         ];
     }
 }

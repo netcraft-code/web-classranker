@@ -8,6 +8,7 @@ use CustomFeature\Pdf\Models\Pdf;
 use CustomFeature\Pdf\Models\PdfItem;
 use CustomFeature\Pdf\Repositories\PdfRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PdfController extends StudyMaterialController
 {
@@ -126,5 +127,23 @@ class PdfController extends StudyMaterialController
 
         // ✅ Return as single resource, not collection
         return new $resourceClassName($resource);
+    }
+
+    public function streamFile(int $id)
+    {
+        $item  = PdfItem::findOrFail($id);
+
+        if (!$item || !$item->pdf_path) {
+            abort(404);
+        }
+
+        $content = Storage::disk('public')->get($item->pdf_path);
+
+        return response($content, 200, [
+            'Content-Type'                     => 'application/pdf',
+            'Content-Disposition'              => 'inline',
+            'Access-Control-Allow-Origin'      => '*',
+            'Access-Control-Allow-Headers'     => '*',
+        ]);
     }
 }
