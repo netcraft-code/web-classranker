@@ -3,19 +3,12 @@
 namespace CustomFeature\Quiz\Http\Controllers;
 
 use CustomFeature\Board\Repositories\BoardRepository;
-use CustomFeature\ClassRanker\Services\CsvQuizParserService;
-use CustomFeature\ClassRanker\Services\PdfQuizParserService;
 use CustomFeature\Quiz\DataGrids\QuizDataGrid;
-use CustomFeature\Quiz\Http\Requests\StoreQuizRequest;
 use CustomFeature\Quiz\Http\Requests\UpdateQuizRequest;
-use CustomFeature\Quiz\Jobs\ProcessQuizBulkUpload;
-use CustomFeature\Quiz\Models\QuizBulkUpload;
 use CustomFeature\Quiz\Repositories\QuizRepository;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Webkul\Admin\Http\Controllers\Controller;
@@ -50,7 +43,7 @@ class QuizController extends Controller
     {
         $request->validate([
             'title'                    => 'required|string|max:255',
-            'slug'                     => 'nullable|string|max:255|unique:quizzes,slug',
+            'slug'                     => 'nullable|string|max:255',
             'chapters'                 => 'required|array|min:1',
             'chapters.*.board_id'      => 'required|exists:boards,id',
             'chapters.*.grade_id'      => 'required|exists:grades,id',
