@@ -83,7 +83,7 @@ class QuizController extends StudyMaterialController
 
         $query = $this->getRepositoryInstance()
             ->with([
-                'questions',
+                'questions.options',
             ]);
 
         if ($this->isAuthorized()) {
@@ -91,7 +91,7 @@ class QuizController extends StudyMaterialController
         }
 
         $resource = $query->findOrFail($id);
-
+        
         return new $resourceClassName($resource);
     }
 }

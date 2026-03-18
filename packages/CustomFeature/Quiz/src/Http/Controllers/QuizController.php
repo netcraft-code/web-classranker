@@ -103,7 +103,7 @@ class QuizController extends Controller
     /**
      * Remove the specified quiz from storage
      */
-    public function destroy($id)
+    public function delete($id)
     {
         try {
             $this->quizRepository->delete($id);
