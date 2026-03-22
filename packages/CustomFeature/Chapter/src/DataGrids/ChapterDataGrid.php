@@ -37,6 +37,7 @@ class ChapterDataGrid extends DataGrid
                 'chapters.avatar as avatar',
                 'chapters.status as status',
                 'chapters.created_at as created_at',
+                'chapters.available_from as available_from',
             );
 
         return $queryBuilder;
@@ -207,6 +208,16 @@ class ChapterDataGrid extends DataGrid
         $this->addColumn([
             'index'           => 'created_at',
             'label'           => 'Created At',
+            'type'            => 'date',
+            'searchable'      => true,
+            'filterable'      => true,
+            'filterable_type' => 'date_range',
+            'sortable'        => true,
+        ]);
+
+        $this->addColumn([
+            'index'           => 'available_from',
+            'label'           => 'Available From',
             'type'            => 'date',
             'searchable'      => true,
             'filterable'      => true,

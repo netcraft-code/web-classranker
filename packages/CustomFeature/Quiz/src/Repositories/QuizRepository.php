@@ -2,15 +2,17 @@
 
 namespace CustomFeature\Quiz\Repositories;
 
+use CustomFeature\Quiz\Contracts\Quiz;
+use CustomFeature\Quiz\Models\QuizAnswer;
+use CustomFeature\Quiz\Models\QuizAttempt;
+use CustomFeature\Quiz\Models\QuizChapter;
+use CustomFeature\Quiz\Models\QuizOption;
+use CustomFeature\Quiz\Models\QuizQuestion;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use CustomFeature\Quiz\Contracts\Quiz;
-use CustomFeature\Quiz\Models\QuizChapter;
-use CustomFeature\Quiz\Models\QuizOption;
-use CustomFeature\Quiz\Models\QuizQuestion;
 use Webkul\Core\Eloquent\Repository;
 
 class QuizRepository extends Repository
@@ -243,6 +245,106 @@ class QuizRepository extends Repository
             'page'     => $page,
             'limit'    => $limit,
             'has_more' => ($page * $limit) < $total,
+        ];
+    }
+
+    public function submitQuiz($quiz, array $answers, $user): array
+    {
+        $attempt = QuizAttempt::create([
+            'quiz_id'      => $quiz->id,
+            'customer_id'  => $user->id,
+            'started_at'   => now(),
+            'completed_at' => now(),
+            'status'       => 'completed',
+        ]);
+
+        $allQuestions = QuizQuestion::where('quiz_id', $quiz->id)
+            ->with('options')
+            ->orderBy('question_order')
+            ->get();
+
+        $allQuestionIds = $allQuestions->pluck('id')->toArray();
+
+        $submittedMap = collect($answers)
+            ->keyBy('quiz_question_id')
+            ->map(fn($a) => $a['quiz_option_id']);
+
+        $correctOptions = QuizOption::whereIn('quiz_question_id', $allQuestionIds)
+            ->where('is_correct', true)
+            ->pluck('id', 'quiz_question_id');
+
+        $correctCount  = 0;
+        $skippedCount  = 0;
+        $answersToSave = [];
+        $reviewData    = [];
+
+        foreach ($allQuestions as $question) {
+            $qid              = $question->id;
+            $correctOptionId  = $correctOptions[$qid] ?? null;
+            $selectedOptionId = $submittedMap[$qid] ?? null;
+
+            $isSkipped = is_null($selectedOptionId);
+            $isCorrect = !$isSkipped && ($selectedOptionId == $correctOptionId);
+
+            if ($isCorrect) $correctCount++;
+            if ($isSkipped) $skippedCount++;
+
+            $selectedOption = $isSkipped
+                ? null
+                : $question->options->firstWhere('id', $selectedOptionId);
+
+            $correctOption = $question->options->firstWhere('id', $correctOptionId);
+
+            $answersToSave[] = [
+                'quiz_attempt_id'   => $attempt->id,
+                'quiz_question_id'  => $qid,
+                'quiz_option_id'    => $selectedOptionId,
+                'correct_option_id' => $correctOptionId,
+                'is_correct'        => $isCorrect,
+                'created_at'        => now(),
+                'updated_at'        => now(),
+            ];
+
+            $reviewData[] = [
+                'question_id'      => $qid,
+                'question_text'    => $question->question_text,
+                'question_solution'=> $question->question_solution,
+                'is_correct'       => $isCorrect,
+                'is_skipped'       => $isSkipped,
+                'selected_option'  => $selectedOption ? [
+                    'id'          => $selectedOption->id,
+                    'option_text' => $selectedOption->option_text,
+                ] : null,
+                'correct_option'   => $correctOption ? [
+                    'id'          => $correctOption->id,
+                    'option_text' => $correctOption->option_text,
+                ] : null,
+            ];
+        }
+
+        QuizAnswer::insert($answersToSave);
+
+        $totalQuestions = count($allQuestionIds);
+        $wrongCount     = $totalQuestions - $correctCount - $skippedCount;
+        $score          = $totalQuestions > 0
+            ? round(($correctCount / $totalQuestions) * 100)
+            : 0;
+
+        $attempt->update([
+            'total_questions' => $totalQuestions,
+            'correct_answers' => $correctCount,
+            'score'           => $score,
+        ]);
+
+        return [
+            'attempt_id'      => $attempt->id,
+            'quiz_title'      => $quiz->title,
+            'total_questions' => $totalQuestions,
+            'correct_answers' => $correctCount,
+            'wrong_answers'   => $wrongCount,
+            'skipped'         => $skippedCount,
+            'score'           => $score,
+            'answers'         => $reviewData,
         ];
     }
 }

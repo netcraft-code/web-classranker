@@ -22,6 +22,7 @@ class Chapter extends Model implements ChapterContract
         'code',
         'avatar',
         'status',
+        'available_from',
         'board_id',
         'grade_id',
         'subject_id',

@@ -46,6 +46,7 @@ class ChapterController extends Controller
             'grade_id'   => ['required', 'exists:grades,id'],
             'subject_id' => ['required', 'exists:subjects,id'],
             'book_id'    => ['required', 'exists:books,id'],
+            'available_from' => 'nullable|date|after:today',
         ]);
 
         $data = request()->only([
@@ -55,6 +56,7 @@ class ChapterController extends Controller
             'grade_id',
             'subject_id',
             'book_id',
+            'available_from',
         ]);
 
         Event::dispatch('study_materials.chapters.create.before');
@@ -96,6 +98,7 @@ class ChapterController extends Controller
             'code',
             'title',
             'status',
+            'available_from',
         ]);
 
         Event::dispatch('study_materials.chapters.update.before', $id);

@@ -39,7 +39,7 @@
                 >
                     <div
                         class="flex select-none items-center gap-2.5"
-                        v-for="(columnGroup, index) in [['id', 'created_at', 'status'], ['avatar', 'code', 'title'], ['board_code', 'board_name', 'board_title'], ['grade_code', 'grade_name', 'grade_title'], ['subject_code', 'subject_name'], ['book_code', 'book_title']]"
+                        v-for="(columnGroup, index) in [['id', 'created_at', 'available_from', 'status'], ['avatar', 'code', 'title'], ['board_code', 'board_name', 'board_title'], ['grade_code', 'grade_name', 'grade_title'], ['subject_code', 'subject_name'], ['book_code', 'book_title']]"
                     >
                         <p class="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
                             <span class="[&>*]:after:content-['_/_']">
@@ -98,7 +98,11 @@
                         <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                             @{{ record.created_at }}
                         </p>
-                        
+
+                        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                            @{{ record.available_from }}
+                        </p>
+
                         <p :class="[record.status ? 'label-active': 'label-info']">
                             @{{ record.status ? "@lang('admin::app.catalog.products.index.datagrid.active')" : "@lang('admin::app.catalog.products.index.datagrid.disable')" }}
                         </p>

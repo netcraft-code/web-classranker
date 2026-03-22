@@ -102,6 +102,8 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::get('', 'allResources');
 
         Route::get('{id}', 'getResource');
+
+        Route::post('{id}', 'submitQuiz');
     });
 
     Route::controller(CmsController::class)->prefix('cms')->group(function () {

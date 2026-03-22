@@ -23,6 +23,7 @@ class ChapterResource extends JsonResource
             'status'     => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'available_from' => $this->available_from,
         ];
     }
 }

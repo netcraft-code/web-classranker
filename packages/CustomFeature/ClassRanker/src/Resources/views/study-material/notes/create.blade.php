@@ -94,7 +94,7 @@
                     <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">Note Content</p>
                     <x-admin::form.control-group>
                         <x-admin::form.control-group.label>Note Content</x-admin::form.control-group.label>
-                        <x-admin::form.control-group.control type="textarea" id="note_content" class="note_content" name="note_content" :tinymce="true" />
+                        <x-admin::form.control-group.control type="textarea" id="content" class="content" name="content" :tinymce="true" />
                     </x-admin::form.control-group>
                 </div>
 

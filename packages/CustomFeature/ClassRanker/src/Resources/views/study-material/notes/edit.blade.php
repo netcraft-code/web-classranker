@@ -129,8 +129,8 @@
                         <x-admin::form.control-group.label class="required">Content</x-admin::form.control-group.label>
                         <x-admin::form.control-group.control
                             type="textarea"
-                            id="note_content"
-                            class="note_content"
+                            id="content"
+                            class="content"
                             name="content"
                             :tinymce="true"
                             :value="old('content', $note->content)" />

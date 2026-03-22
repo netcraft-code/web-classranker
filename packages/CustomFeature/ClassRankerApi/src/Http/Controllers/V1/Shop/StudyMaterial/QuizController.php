@@ -94,4 +94,33 @@ class QuizController extends StudyMaterialController
         
         return new $resourceClassName($resource);
     }
+
+    public function submitQuiz(Request $request, $id)
+    {
+        $quiz = $this->getRepositoryInstance()->find($id);
+
+        if (!$quiz) {
+            return response()->json(['message' => 'Quiz not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'answers'                    => 'required|array',
+            'answers.*.quiz_question_id' => 'required|integer|exists:quiz_questions,id',
+            'answers.*.quiz_option_id'   => 'required|integer|exists:quiz_options,id',
+        ]);
+
+        $user = $this->resolveShopUser($request);
+
+        $result = $this->getRepositoryInstance()->submitQuiz(
+            $quiz,
+            $validatedData['answers'],
+            $user
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quiz submitted successfully',
+            'data'    => $result,
+        ]);
+    }
 }

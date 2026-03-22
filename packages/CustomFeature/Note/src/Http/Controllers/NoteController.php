@@ -34,7 +34,7 @@ class NoteController extends Controller
         $request->validate([
             'title'                    => 'required|string|max:255',
             'short_title'              => 'required|string|max:255',
-            'slug'                     => 'nullable|string|max:255|unique:notes,slug',
+            'slug'                     => 'nullable|string|max:255',
             'top_description'          => 'nullable',
             'content'                  => 'required',
             'bottom_description'       => 'nullable',
@@ -89,7 +89,7 @@ class NoteController extends Controller
         $request->validate([
             'title'                    => 'required|string|max:255',
             'short_title'              => 'required|string|max:255',
-            'slug'                     => 'nullable|string|max:255|unique:notes,slug,' . $id,
+            'slug'                     => 'nullable|string|max:255',
             'top_description'          => 'nullable',
             'content'                  => 'required',
             'bottom_description'       => 'nullable',

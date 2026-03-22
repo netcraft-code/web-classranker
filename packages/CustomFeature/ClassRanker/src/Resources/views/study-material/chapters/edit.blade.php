@@ -109,6 +109,20 @@
                             <x-admin::form.control-group.error control-name="status" />
                         </x-admin::form.control-group>
 
+                        <x-admin::form.control-group>
+                            <x-admin::form.control-group.label>
+                                Available From
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control
+                                type="date"
+                                name="available_from"
+                                v-model="available_from"
+                                :value="old('available_from', $chapter->available_from)"
+                                label="Available From"
+                            />
+                        </x-admin::form.control-group>
+
                         <!-- Avatar -->
                         <div class="flex w-2/5 flex-col gap-2">
                             <p class="font-medium text-gray-800 dark:text-white">
@@ -329,6 +343,7 @@
                         // Chapter data
                         title: '{{ old('title', $chapter->title) }}',
                         code: '{{ old('code', $chapter->code) }}',
+                        available_from: '{{ old('available_from', $chapter->available_from) }}',
                     };
                 },
 
