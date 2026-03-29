@@ -311,14 +311,9 @@ class QuizRepository extends Repository
                 'question_solution'=> $question->question_solution,
                 'is_correct'       => $isCorrect,
                 'is_skipped'       => $isSkipped,
-                'selected_option'  => $selectedOption ? [
-                    'id'          => $selectedOption->id,
-                    'option_text' => $selectedOption->option_text,
-                ] : null,
-                'correct_option'   => $correctOption ? [
-                    'id'          => $correctOption->id,
-                    'option_text' => $correctOption->option_text,
-                ] : null,
+                'selected_option_id' => $selectedOptionId,
+                'correct_option_id'  => $correctOptionId,
+                'options' => $question->options,
             ];
         }
 

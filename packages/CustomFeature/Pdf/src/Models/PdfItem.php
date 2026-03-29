@@ -2,6 +2,7 @@
 
 namespace CustomFeature\Pdf\Models;
 
+use CustomFeature\ClassRanker\Traits\HasBookmarks;
 use CustomFeature\Pdf\Contracts\PdfItem as PdfItemContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PdfItem extends Model implements PdfItemContract
 {
+    use HasBookmarks;
+    
     protected $fillable = [
         'pdf_id', 'title', 'pdf_path', 'position', 'status',
     ];

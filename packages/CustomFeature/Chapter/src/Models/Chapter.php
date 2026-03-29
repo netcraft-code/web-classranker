@@ -10,8 +10,10 @@ use CustomFeature\Note\Models\Note;
 use CustomFeature\Pdf\Models\Pdf;
 use CustomFeature\Question\Models\Question;
 use CustomFeature\Quiz\Models\Quiz;     
+use CustomFeature\Quiz\Models\QuizChapter;
 use CustomFeature\Subject\Models\Subject;
 use CustomFeature\Video\Models\Video;
+use CustomFeature\Video\Models\VideoAssignment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -166,5 +168,15 @@ class Chapter extends Model implements ChapterContract
     public function activeNotes()
     {
         return $this->notes()->active();
+    }
+
+    public function quizChapters()
+    {
+        return $this->hasMany(QuizChapter::class, 'chapter_id');
+    }
+
+    public function videoAssignments()
+    {
+        return $this->hasMany(VideoAssignment::class, 'chapter_id');
     }
 }

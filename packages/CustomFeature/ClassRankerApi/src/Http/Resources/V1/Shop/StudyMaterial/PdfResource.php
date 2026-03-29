@@ -3,6 +3,7 @@
 namespace CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\StudyMaterial;
 
 use Carbon\Carbon;
+use CustomFeature\ClassRanker\Models\Bookmark;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PdfResource extends JsonResource
@@ -32,6 +33,12 @@ class PdfResource extends JsonResource
             "pdf_path_url"       => $this->pdf_path_url,
             "position"           => $this->position,
             'item_created_at'    => Carbon::parse($this->item_created_at)->diffForHumans(),
+            'is_bookmarked' => Bookmark::where([
+                'customer_id'       => auth()->user()->id,
+                'grade_id'          => auth()->user()->grade_id,
+                'bookmarkable_id'   => $this->item_id,
+                'bookmarkable_type' => \CustomFeature\Pdf\Models\PdfItem::class,
+            ])->exists(),
         ];
     }
 }

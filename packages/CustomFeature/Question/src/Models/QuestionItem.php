@@ -2,12 +2,15 @@
 
 namespace CustomFeature\Question\Models;
 
+use CustomFeature\ClassRanker\Traits\HasBookmarks;
+use CustomFeature\Question\Contracts\QuestionItem as QuestionItemContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use CustomFeature\Question\Contracts\QuestionItem as QuestionItemContract;
 
 class QuestionItem extends Model implements QuestionItemContract
 {
+    use HasBookmarks;
+    
     protected $fillable = [
         'question_id',
         'question_number',
@@ -15,6 +18,7 @@ class QuestionItem extends Model implements QuestionItemContract
         'question',
         'answer',
         'page_number',
+        'video_solution',
         'order',
     ];
 

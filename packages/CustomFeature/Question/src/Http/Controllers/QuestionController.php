@@ -101,6 +101,7 @@ class QuestionController extends Controller
             'question'        => $item->question,
             'answer'          => $item->answer,
             'page_number'     => $item->page_number,
+            'video_solution'  => $item->video_solution,
         ]);
         
         // Format FAQs
@@ -223,6 +224,7 @@ class QuestionController extends Controller
             'question'        => 'required|string',
             'answer'          => 'required|string',
             'page_number'     => 'nullable|string',
+            'video_solution'  => 'nullable|string',
         ]);
 
         $question = $this->questionRepository->findOrFail($id);
@@ -233,6 +235,7 @@ class QuestionController extends Controller
             'answer'          => $request->answer,
             'page_number'     => $request->page_number,
             'order'           => $request->order ?? $question->questionItems()->count(),
+            'video_solution'  => $request->video_solution,
         ]);
 
         return response()->json([
@@ -248,6 +251,7 @@ class QuestionController extends Controller
             'question'        => 'required|string',
             'answer'          => 'required|string',
             'page_number'     => 'nullable|string',
+            'video_solution'  => 'nullable|string',
         ]);
 
         $question = $this->questionRepository->findOrFail($id);
@@ -259,7 +263,8 @@ class QuestionController extends Controller
             'question'        => $request->question,
             'answer'          => $request->answer,
             'page_number'     => $request->page_number,
-            'order'           => $request->order ?? $question->questionItems()->count(),
+            'order'           => $request->order ?? $item->order ?? $question->questionItems()->count(),
+            'video_solution'  => $request->video_solution,
         ]);
 
         return response()->json(['message' => 'Question item updated.', 'item' => $item]);

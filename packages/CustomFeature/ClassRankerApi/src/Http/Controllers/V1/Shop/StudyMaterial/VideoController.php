@@ -96,4 +96,38 @@ class VideoController extends StudyMaterialController
 
         return $this->getResourceCollection($results);
     }
+
+    public function subjectChapterList(Request $request)
+    {
+        $gradeId = $request->query('grade_id');
+
+        if (!$gradeId) {
+            return response()->json(['message' => 'grade_id required'], 422);
+        }
+
+        // Subjects jo is grade ke chapters mein hain
+        $subjects = $this->getRepositoryInstance()->whereHas('chapters', function ($q) use ($gradeId) {
+                $q->where('grade_id', $gradeId);
+            })
+            ->with(['chapters' => function ($q) use ($gradeId) {
+                $q->where('grade_id', $gradeId)
+                ->withCount(['shortVideos']) // short_videos table se count
+                ->orderBy('chapter_number');
+            }])
+            ->get()
+            ->map(fn($subject) => [
+                'id'       => $subject->id,
+                'name'     => $subject->name,
+                'icon'     => $subject->icon ?? null,
+                'color'    => $subject->color ?? null,
+                'chapters' => $subject->chapters->map(fn($ch) => [
+                    'id'             => $ch->id,
+                    'name'           => $ch->name,
+                    'chapter_number' => $ch->chapter_number,
+                    'video_count'    => $ch->short_videos_count,
+                ]),
+            ]);
+
+        return response()->json(['data' => $subjects]);
+    }
 }

@@ -1,18 +1,19 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Core\CmsController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Customer\AuthController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BoardController;
-use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\GradeController;
-use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\SubjectController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BookController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BookmarkController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\ChapterController;
-use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuestionController;
-use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\VideoController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\GradeController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\NoteController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\PdfController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuestionController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuizController;
-use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Core\CmsController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\SubjectController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\VideoController;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Customer unauthorized routes.
@@ -64,6 +65,8 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 
     Route::controller(BookController::class)->prefix('books')->group(function () {
         Route::get('', 'allResources');
+
+        Route::get('quiz-video-list', 'quizVideoList');
     });
 
     Route::controller(ChapterController::class)->prefix('chapters')->group(function () {
@@ -116,5 +119,13 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::get('', 'allResources');
 
         Route::get('{id}', 'getResource');
+
+        Route::get('subjects', 'subjectChapterList');
+    });
+
+    Route::controller(BookmarkController::class)->prefix('bookmarks')->group(function () {
+        Route::get('', 'allResources');
+        
+        Route::post('toggle', 'toggle');
     });
 });

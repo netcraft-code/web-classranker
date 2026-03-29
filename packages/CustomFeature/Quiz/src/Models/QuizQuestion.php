@@ -2,15 +2,16 @@
 
 namespace CustomFeature\Quiz\Models;
 
+use CustomFeature\ClassRanker\Traits\HasBookmarks;
+use CustomFeature\Quiz\Contracts\QuizQuestion as QuizQuestionContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use CustomFeature\Quiz\Contracts\QuizQuestion as QuizQuestionContract;
 
 class QuizQuestion extends Model implements QuizQuestionContract
 {
-    use HasFactory;
+    use HasFactory, HasBookmarks;
 
     protected $fillable = [
         'quiz_id',

@@ -37,6 +37,8 @@ class ClassRankerServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(CustomerContract::class, CustomCustomer::class);
+
+        $this->app->register(ModuleServiceProvider::class);
     }
 
     /**

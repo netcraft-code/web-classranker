@@ -3,17 +3,20 @@
 namespace CustomFeature\Note\Models;
 
 use CustomFeature\Board\Models\Board;
-use CustomFeature\Grade\Models\Grade;
-use CustomFeature\Subject\Models\Subject;
 use CustomFeature\Book\Models\Book;
 use CustomFeature\Chapter\Models\Chapter;
+use CustomFeature\ClassRanker\Traits\HasBookmarks;
+use CustomFeature\Grade\Models\Grade;
 use CustomFeature\Note\Contracts\Note as NoteContract;
+use CustomFeature\Subject\Models\Subject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Note extends Model implements NoteContract
 {
+    use HasBookmarks;
+    
     protected $fillable = [
         'title',
         'short_title',

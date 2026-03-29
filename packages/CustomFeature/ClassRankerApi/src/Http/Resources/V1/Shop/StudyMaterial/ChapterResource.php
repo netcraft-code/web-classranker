@@ -24,6 +24,10 @@ class ChapterResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'available_from' => $this->available_from,
+            'quiz_count' => count($this->activeQuizzes) ?? 0,
+            'video_count' => $this->activeVideos
+                              ->loadMissing('videoItems')
+                              ->sum(fn($video) => $video->videoItems->count()),
         ];
     }
 }

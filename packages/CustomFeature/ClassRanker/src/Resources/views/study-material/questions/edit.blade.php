@@ -183,6 +183,7 @@
                                 <div class="text-sm text-gray-600 dark:text-gray-400 prose max-w-none"
                                     v-html="item.answer"></div>
                                 <p v-if="item.page_number" class="text-xs text-gray-400 mt-1">Page: @{{ item.page_number }}</p>
+                                <p v-if="item.video_solution" class="text-xs text-gray-400 mt-1">Video Solution: @{{ item.video_solution }}</p>
                             </template>
 
                             <!-- Edit form -->
@@ -212,6 +213,11 @@
                                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Page Number</label>
                                     <input type="text" v-model="item.page_number"
                                         class="w-full border rounded p-2 text-sm" placeholder="e.g. 45">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Video Solution</label>
+                                    <input type="text" v-model="item.video_solution"
+                                        class="w-full border rounded p-2 text-sm" placeholder="e.g. https://example.com/video">
                                 </div>
                             </template>
                         </div>
@@ -244,6 +250,11 @@
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Page Number</label>
                                 <input type="text" v-model="newQuestion.page_number"
                                     class="w-full border rounded p-2 text-sm" placeholder="e.g. 45">
+                            </div>
+                            <div class="mb-3">
+                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Video Solution</label>
+                                <input type="text" v-model="newQuestion.video_solution"
+                                    class="w-full border rounded p-2 text-sm" placeholder="e.g. https://example.com/video">
                             </div>
                             <div class="flex gap-2">
                                 <button type="button" @click="ajaxAddQuestionItem"
@@ -478,7 +489,7 @@
 
                         // New item forms
                         showNewQuestion: false,
-                        newQuestion: { question_number: '', question: '', answer: '', page_number: '' },
+                        newQuestion: { question_number: '', question: '', answer: '', page_number: '', video_solution: '' },
                         questionSaving: false,
 
                         showNewFaq: false,
@@ -635,6 +646,7 @@
                             question:        this.newQuestion.question,
                             answer:          this.newQuestion.answer,
                             page_number:     this.newQuestion.page_number,
+                            video_solution:  this.newQuestion.video_solution,
                         })
                         .then(res => {
                             this.questionItems.push({ ...res.data.item, editing: false, saving: false, deleting: false });
@@ -659,6 +671,7 @@
                             question:        item.question,
                             answer:          item.answer,
                             page_number:     item.page_number,
+                            video_solution:  item.video_solution,
                         })
                         .then(res => {
                             item.editing = false;
@@ -685,7 +698,7 @@
                     },
 
                     resetNewQuestion() {
-                        this.newQuestion = { question_number: '', question: '', answer: '', page_number: '' };
+                        this.newQuestion = { question_number: '', question: '', answer: '', page_number: '', video_solution: '' };
                     },
 
                     // ── FAQs ─────────────────────────────────────────────
