@@ -1,5 +1,6 @@
 <?php
 
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Ads\AdController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Core\CmsController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Customer\AuthController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BoardController;
@@ -78,6 +79,8 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
     Route::controller(QuestionController::class)->prefix('questions')->group(function () {
         Route::get('', 'allResources');
 
+        Route::get('items', 'getResourceItems');
+
         Route::get('{id}', 'getResource');
     });
 
@@ -127,5 +130,11 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::get('', 'allResources');
         
         Route::post('toggle', 'toggle');
+    });
+
+    Route::controller(AdController::class)->prefix('ads')->group(function () {
+        Route::post('watch', 'watchAd');
+
+        Route::get('premium-status', 'premiumStatus');
     });
 });

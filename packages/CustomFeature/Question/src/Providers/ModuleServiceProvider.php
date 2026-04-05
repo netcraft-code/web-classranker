@@ -13,5 +13,6 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
      */
     protected $models = [
         \CustomFeature\Question\Models\Question::class,
+        \CustomFeature\Question\Models\QuestionItem::class,
     ];
 }

@@ -38,6 +38,8 @@ class QuestionDataGrid extends DataGrid
                 DB::raw('(SELECT COUNT(*) FROM question_items WHERE question_items.question_id = questions.id) as item_count'),
                 DB::raw('(SELECT COUNT(*) FROM question_faqs  WHERE question_faqs.question_id  = questions.id) as faq_count'),
             );
+        
+        $this->addFilter('title', 'questions.title');
 
         return $queryBuilder;
     }

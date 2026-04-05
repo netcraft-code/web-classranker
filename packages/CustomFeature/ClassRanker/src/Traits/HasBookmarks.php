@@ -2,7 +2,7 @@
 
 namespace CustomFeature\ClassRanker\Traits;
 
-use CustomFeature\Video\Models\Bookmark;
+use CustomFeature\ClassRanker\Models\Bookmark;
 
 trait HasBookmarks
 {

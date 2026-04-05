@@ -27,8 +27,8 @@ class QuestionResource extends JsonResource
             'created_at'         => $this->created_at,
             'updated_at'         => $this->updated_at,
             'question_item_count' => $this->questionItems()->count(),
-            'question_items'     => QuestionItemResource::collection($this->whenLoaded('questionItems')),
-            'question_faqs'      => QuestionFaqResource::collection($this->whenLoaded('faqs')),
+            // 'question_items'     => QuestionItemResource::collection($this->whenLoaded('questionItems')),
+            // 'question_faqs'      => QuestionFaqResource::collection($this->whenLoaded('faqs')),
         ];
     }
 }

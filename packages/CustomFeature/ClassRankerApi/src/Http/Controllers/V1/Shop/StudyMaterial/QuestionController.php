@@ -4,7 +4,9 @@ namespace CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial;
 
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\StudyMaterialController;
 use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\StudyMaterial\QuestionResource;
+use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\StudyMaterial\QuestionItemResource;
 use CustomFeature\Question\Repositories\QuestionRepository;
+use CustomFeature\Question\Repositories\QuestionItemRepository;
 use Illuminate\Http\Request;
 
 class QuestionController extends StudyMaterialController
@@ -75,22 +77,41 @@ class QuestionController extends StudyMaterialController
         return $this->getResourceCollection($results);
     }
 
-    public function getResource(Request $request, $id)
+    public function getResourceItems(Request $request)
     {
-        $resourceClassName = $this->resource();
+        $questionItemRepository = app()->make(QuestionItemRepository::class);
+        
+        $query = $questionItemRepository->scopeQuery(function ($query) use ($request) {
+            $customer = $this->resolveShopUser($request);
 
-        $query = $this->getRepositoryInstance()
-            ->with([
-                'questionItems',
-                'faqs',
-            ]);
+            if ($this->isAuthorized()) {
+                $query = $query->where('customer_id', $customer->id);
+            }
+            
+            foreach ($request->except($this->requestException) as $input => $value) {
+                $query = $query->whereIn($input, array_map('trim', explode(',', $value)));
+            }
 
-        if ($this->isAuthorized()) {
-            $query = $query->where('customer_id', $this->resolveShopUser($request)->id);
+            $query = $query->withExists(['bookmarks as is_bookmarked' => function ($q) use ($customer) {
+                $q->where('customer_id', $customer->id)
+                  ->where('grade_id', $customer->grade_id);
+            }]);
+
+            if ($sort = $request->input('sort')) {
+                $query = $query->orderBy($sort, $request->input('order') ?? 'desc');
+            } else {
+                $query = $query->orderBy('order', 'asc');
+            }
+
+            return $query;
+        });
+
+        if (is_null($request->input('pagination')) || $request->input('pagination')) {
+            $results = $query->paginate($request->input('limit') ?? 10);
+        } else {
+            $results = $query->get();
         }
 
-        $resource = $query->findOrFail($id);
-
-        return new $resourceClassName($resource);
+        return QuestionItemResource::collection($results);
     }
 }
