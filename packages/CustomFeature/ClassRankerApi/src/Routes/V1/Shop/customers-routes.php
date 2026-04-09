@@ -158,27 +158,13 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 });
 
 Route::post('payu/success', function (Request $request) {
-    $data = json_encode($request->all());
-    return response(
-        "<html><body><script>
-            if (window.opener) {
-                window.opener.postMessage({ payuStatus: 'success', data: {$data} }, '*');
-                window.close();
-            }
-        </script></body></html>",
-        200
-    )->header('Content-Type', 'text/html');
+    $params = http_build_query($request->all());
+    $frontendUrl = config('services.payu.frontend_url');
+    return redirect("{$frontendUrl}/my-purchase?payu=success&{$params}");
 });
 
 Route::post('payu/failure', function (Request $request) {
-    $data = json_encode($request->all());
-    return response(
-        "<html><body><script>
-            if (window.opener) {
-                window.opener.postMessage({ payuStatus: 'failure', data: {$data} }, '*');
-                window.close();
-            }
-        </script></body></html>",
-        200
-    )->header('Content-Type', 'text/html');
+    $params = http_build_query($request->all());
+    $frontendUrl = config('services.payu.frontend_url');
+    return redirect("{$frontendUrl}/my-purchase?payu=failure&{$params}");
 });

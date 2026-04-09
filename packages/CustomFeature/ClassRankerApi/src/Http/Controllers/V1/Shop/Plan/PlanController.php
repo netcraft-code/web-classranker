@@ -67,8 +67,8 @@ class PlanController extends ShopController
  
         $effectivePrice = (float) ($plan->discount_price ?? $plan->price);
         $txnId          = 'CR_' . $customer->id . '_' . $plan->id . '_' . time();
-        $key            = config('services.payu.key');
-        $salt           = config('services.payu.salt');
+        $key            = core()->getConfigData('class_ranker.settings.pay_u.key');
+        $salt           = core()->getConfigData('class_ranker.settings.pay_u.salt');
         $amount         = number_format($effectivePrice, 2, '.', '');
         $productInfo    = $plan->name;
         $firstName      = $customer->name;
@@ -76,7 +76,7 @@ class PlanController extends ShopController
         $phone          = $customer->phone ?? '';
  
         // surl / furl — PayU will redirect iframe to these after payment
-        $baseUrl = config('services.payu.callback_base_url', config('app.url'));
+        $baseUrl = core()->getConfigData('class_ranker.settings.pay_u.production_mode');
         $surl    = $baseUrl . '/api/v1/payu/success';
         $furl    = $baseUrl . '/api/v1/payu/failure';
  
@@ -103,7 +103,7 @@ class PlanController extends ShopController
         return response()->json([
             'success' => true,
             'data'    => [
-                'payu_url'    => config('services.payu.env', 'test') === 'production'
+                'payu_url'    => core()->getConfigData('class_ranker.settings.pay_u.production_mode')
                                     ? 'https://secure.payu.in/_payment'
                                     : 'https://test.payu.in/_payment',
                 'key'         => $key,
@@ -139,8 +139,8 @@ class PlanController extends ShopController
         }
  
         // Reverse hash verification
-        $salt        = config('services.payu.salt');
-        $key         = config('services.payu.key');
+        $salt        = core()->getConfigData('class_ranker.settings.pay_u.salt');
+        $key         = core()->getConfigData('class_ranker.settings.pay_u.key');
         $reverseHash = hash('sha512', implode('|', [
             $salt,
             $request->status,

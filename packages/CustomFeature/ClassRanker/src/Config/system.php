@@ -40,5 +40,35 @@ return [
                 'type'    => 'text',
             ],
         ],
+    ], [
+        'key'    => 'class_ranker.settings.pay_u',
+        'name'   => 'PayU Service',
+        'info'   => 'Settings for PayU service used in Class Ranker module',
+        'sort'   => 1,
+        'fields' => [
+            [
+                'name'    => 'status',
+                'title'   => 'Status',
+                'type'    => 'boolean',
+                'default' => true,
+            ], [
+                'name'    => 'production_mode',
+                'title'   => 'Production Mode',
+                'type'    => 'boolean',
+                'default' => true,
+            ], [
+                'name'       => 'key',
+                'title'      => 'PayU Key',
+                'type'       => 'text',
+            ], [
+                'name'       => 'salt',
+                'title'      => 'PayU Salt',
+                'type'       => 'text',
+            ], [
+                'name'    => 'callback_url',
+                'title'   => 'Callback URL',
+                'type'    => 'text',
+            ],
+        ],
     ],
 ];
