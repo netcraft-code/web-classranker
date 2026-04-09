@@ -76,7 +76,7 @@ class PlanController extends ShopController
         $phone          = $customer->phone ?? '';
  
         // surl / furl — PayU will redirect iframe to these after payment
-        $baseUrl = core()->getConfigData('class_ranker.settings.pay_u.production_mode');
+        $baseUrl = core()->getConfigData('class_ranker.settings.pay_u.callback_url');
         $surl    = $baseUrl . '/api/v1/payu/success';
         $furl    = $baseUrl . '/api/v1/payu/failure';
  
