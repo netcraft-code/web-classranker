@@ -2,8 +2,9 @@
 
 namespace CustomFeature\ClassRanker\Models\Customer;
 
+use CustomFeature\Board\Models\Board;
+use CustomFeature\Grade\Models\Grade;
 use Webkul\Customer\Models\Customer as BaseCustomer;
-use Webkul\Customer\Models\CustomerAddressProxy;
 
 class Customer extends BaseCustomer
 {
@@ -31,4 +32,14 @@ class Customer extends BaseCustomer
         'board_id',
         'grade_id',
     ];
+
+    public function board()
+    {
+        return $this->belongsTo(Board::class, 'board_id');
+    }
+
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class, 'grade_id');
+    }
 }

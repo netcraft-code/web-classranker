@@ -4,6 +4,7 @@ use CustomFeature\Board\Http\Controllers\BoardController;
 use CustomFeature\Book\Http\Controllers\BookController;
 use CustomFeature\Chapter\Http\Controllers\ChapterController;
 use CustomFeature\ClassRanker\Http\Controllers\Dashboard\DashboardController;
+use CustomFeature\ClassRanker\Http\Controllers\Plan\PlanController;
 use CustomFeature\ClassRanker\Http\Controllers\TempUploadController;
 use CustomFeature\Grade\Http\Controllers\GradeController;
 use CustomFeature\Note\Http\Controllers\NoteController;
@@ -237,4 +238,18 @@ Route::prefix('study-material')->group(function () {
  */
 Route::controller(DashboardController::class)->prefix('dashboards')->group(function () {
     Route::get('', 'index')->name('admin.class_ranker.dashboard.index');
+});
+
+Route::controller(PlanController::class)->prefix('plans')->group(function () {
+    Route::get('', 'index')->name('admin.plans.index');
+
+    Route::get('create', 'create')->name('admin.plans.create');
+
+    Route::post('', 'store')->name('admin.plans.store');
+
+    Route::get('{id}/edit', 'edit')->name('admin.plans.edit');
+
+    Route::put('{id}', 'update')->name('admin.plans.update');
+
+    Route::delete('{id}', 'destroy')->name('admin.plans.delete');
 });

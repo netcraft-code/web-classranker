@@ -26,6 +26,7 @@ class UpdateQuizRequest extends FormRequest
             'slug' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
             'status' => 'nullable|boolean',
+            'is_premium' => 'nullable|boolean',
         ];
     }
 

@@ -15,6 +15,7 @@ return [
                 'videos'          => 'Videos',
                 'pdfs'            => 'Pdfs',
                 'notes'           => 'Notes',
+                'plans'           => 'Plans',
             ],
         ],
     ],
@@ -399,6 +400,46 @@ return [
                     'delete'     => 'Delete',
                 ],
             ],
+        ],
+    ],
+
+    'plans' => [
+        'index' => [
+            'title'      => 'Plans',
+            'create-btn' => 'Create Plan',
+        ],
+
+        'create' => [
+            'title'          => 'Create Plan',
+            'save-btn'       => 'Save Plan',
+            'information'    => 'Basic Information',
+            'pricing'        => 'Pricing',
+            'duration'       => 'Duration',
+            'features'       => 'Features',
+            'settings'       => 'Settings',
+            'name'           => 'Plan Name',
+            'code'           => 'Plan Code',
+            'description'    => 'Description',
+            'price'          => 'Price',
+            'discount-price' => 'Discount Price',
+            'duration-value' => 'Duration Value',
+            'duration-type'  => 'Duration Type',
+            'status'         => 'Status',
+            'is-popular'     => 'Mark as Popular',
+            'sort-order'     => 'Sort Order',
+            'avatar'         => 'Plan Image',
+            'avatar-size'    => 'Max 2MB. PNG, JPG, WEBP.',
+            'success'        => 'Plan created successfully.',
+        ],
+
+        'edit' => [
+            'title'   => 'Edit Plan',
+            'save-btn'=> 'Update Plan',
+            'success' => 'Plan updated successfully.',
+        ],
+
+        'delete' => [
+            'success' => 'Plan deleted successfully.',
         ],
     ],
 ];

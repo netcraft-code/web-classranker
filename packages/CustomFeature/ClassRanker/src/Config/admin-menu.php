@@ -94,6 +94,17 @@ return [
         'sort'  => 3,
         'icon'  => '',
     ],
+
+    /**
+     * Plans.
+     */
+    [
+        'key'   => 'plans',
+        'name'  => 'class_ranker::app.components.layouts.sidebar.plans',
+        'route' => 'admin.plans.index',
+        'sort'  => 3,
+        'icon'  => 'icon-sales',
+    ],
     
     /**
      * Customers.
@@ -102,7 +113,7 @@ return [
         'key'   => 'customers',
         'name'  => 'admin::app.components.layouts.sidebar.customers',
         'route' => 'admin.customers.customers.index',
-        'sort'  => 3,
+        'sort'  => 4,
         'icon'  => 'icon-customer-2',
     ], [
         'key'   => 'customers.customers',

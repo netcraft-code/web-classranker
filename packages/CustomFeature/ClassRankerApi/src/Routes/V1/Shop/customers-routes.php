@@ -3,6 +3,7 @@
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Ads\AdController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Core\CmsController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Customer\AuthController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Plan\PlanController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BoardController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BookController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BookmarkController;
@@ -14,6 +15,7 @@ use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\Question
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuizController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\SubjectController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\VideoController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -24,7 +26,13 @@ Route::controller(AuthController::class)->prefix('customer')->group(function () 
 
     Route::post('send-otp', 'sendOtp');
 
+    Route::get('resend-otp', 'resendOtp');
+
     Route::post('verify-otp', 'verifyOtp');
+
+    Route::post('check-user', 'checkUser');
+
+    Route::post('verify-access-token', 'verifyAccessToken');
 
     Route::post('register', 'register');
 });
@@ -50,6 +58,16 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::post('logout', 'logout');
 
         Route::post('board-class', 'updateBoardClass');
+    });
+
+    Route::controller(PlanController::class)->prefix('plans')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::post('{id}/create-order', 'createOrder');
+
+        Route::post('verify-payment', 'verifyPayment');
+
+        Route::get('my-plans', 'myPlans');
     });
     
     Route::controller(BoardController::class)->prefix('boards')->group(function () {
@@ -137,4 +155,30 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 
         Route::get('premium-status', 'premiumStatus');
     });
+});
+
+Route::post('payu/success', function (Request $request) {
+    $data = json_encode($request->all());
+    return response(
+        "<html><body><script>
+            if (window.opener) {
+                window.opener.postMessage({ payuStatus: 'success', data: {$data} }, '*');
+                window.close();
+            }
+        </script></body></html>",
+        200
+    )->header('Content-Type', 'text/html');
+});
+
+Route::post('payu/failure', function (Request $request) {
+    $data = json_encode($request->all());
+    return response(
+        "<html><body><script>
+            if (window.opener) {
+                window.opener.postMessage({ payuStatus: 'failure', data: {$data} }, '*');
+                window.close();
+            }
+        </script></body></html>",
+        200
+    )->header('Content-Type', 'text/html');
 });
