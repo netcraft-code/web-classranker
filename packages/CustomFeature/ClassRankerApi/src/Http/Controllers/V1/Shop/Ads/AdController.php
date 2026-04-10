@@ -52,7 +52,7 @@ class AdController extends ResourceController
         $customer = $this->resolveShopUser($request);
 
         // User khud premium hai?
-        if ($customer->is_premium) {
+        if ($customer->isPremium()) {
             return response()->json([
                 'has_access'   => true,
                 'type'         => 'subscription',

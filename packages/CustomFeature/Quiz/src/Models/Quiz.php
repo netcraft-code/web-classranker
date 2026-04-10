@@ -25,7 +25,8 @@ class Quiz extends Model implements QuizContract
     ];
 
     protected $casts = [
-        'status' => 'boolean',
+        'status'     => 'boolean',
+        'is_premium' => 'boolean',
     ];
 
     /**

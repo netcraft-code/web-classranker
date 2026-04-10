@@ -3,6 +3,8 @@
 namespace CustomFeature\ClassRanker\Models\Customer;
 
 use CustomFeature\Board\Models\Board;
+use CustomFeature\ClassRanker\Models\CustomerPlan;
+use CustomFeature\ClassRanker\Models\PremiumAccess;
 use CustomFeature\Grade\Models\Grade;
 use Webkul\Customer\Models\Customer as BaseCustomer;
 
@@ -41,5 +43,25 @@ class Customer extends BaseCustomer
     public function grade()
     {
         return $this->belongsTo(Grade::class, 'grade_id');
+    }
+
+    public function isPremium()
+    {
+        $customerPlans = CustomerPlan::with('plan')
+            ->where('customer_id', $this->id)
+            ->latest()
+            ->get();
+ 
+        $activePlan = $customerPlans->first(fn($cp) => $cp->is_active);
+
+        if ((bool) $activePlan) {
+            return true;
+        }
+
+        $access = PremiumAccess::where('customer_id', $this->id)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        return (bool) $access;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\Customer;
 
+use CustomFeature\ClassRanker\Models\CustomerPlan;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomerResource extends JsonResource
@@ -13,7 +14,7 @@ class CustomerResource extends JsonResource
      * @return array
      */
     public function toArray($request)
-    {
+    {        
         return [
             'id'            => $this->id,
             'email'         => $this->email,
@@ -34,6 +35,7 @@ class CustomerResource extends JsonResource
             'addresses'     => $this->when($this->addresses->first(), new CustomerAddressResource($this->addresses->first())),
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
+            'is_premium_user' => $this->isPremium(),
         ];
     }
 }
