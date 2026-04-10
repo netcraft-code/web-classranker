@@ -160,7 +160,7 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 Route::get('/payu/redirect-form', function (Request $request) {
     $data = $request->all();
 
-    return response()->view('payu-form', compact('data'));
+    return response()->view('class_ranker_api::payu-form', compact('data'));
 });
 
 Route::post('payu/success', function (Request $request) {

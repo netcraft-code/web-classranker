@@ -33,6 +33,8 @@ class ClassRankerApiServiceProvider extends ServiceProvider
         $this->activateMiddlewareAliases();
 
         $this->app->bind(BaseHandler::class, Handler::class);
+
+        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'class_ranker_api');
     }
 
     /**
