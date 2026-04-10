@@ -159,12 +159,12 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 
 Route::post('payu/success', function (Request $request) {
     $params = http_build_query($request->all());
-    $frontendUrl = config('services.payu.frontend_url');
+    $frontendUrl = core()->getConfigData('class_ranker.settings.pay_u.callback_url');
     return redirect("{$frontendUrl}/my-purchase?payu=success&{$params}");
 });
 
 Route::post('payu/failure', function (Request $request) {
     $params = http_build_query($request->all());
-    $frontendUrl = config('services.payu.frontend_url');
+    $frontendUrl = core()->getConfigData('class_ranker.settings.pay_u.callback_url');
     return redirect("{$frontendUrl}/my-purchase?payu=failure&{$params}");
 });
