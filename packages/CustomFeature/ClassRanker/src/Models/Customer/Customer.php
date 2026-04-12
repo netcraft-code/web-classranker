@@ -54,10 +54,11 @@ class Customer extends BaseCustomer
  
         $activePlan = $customerPlans->first(fn($cp) => $cp->is_active);
 
-        if ((bool) $activePlan) {
-            return true;
-        }
+        return (bool) $activePlan;
+    }
 
+    public function isPremiumRewarded()
+    {
         $access = PremiumAccess::where('customer_id', $this->id)
             ->where('expires_at', '>', now())
             ->first();

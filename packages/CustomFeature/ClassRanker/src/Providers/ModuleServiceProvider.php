@@ -15,5 +15,6 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
         \CustomFeature\ClassRanker\Models\Bookmark::class,
         \CustomFeature\ClassRanker\Models\CustomerPlan::class,
         \CustomFeature\ClassRanker\Models\Plan::class,
+        \CustomFeature\ClassRanker\Models\RecentlyViewed::class,
     ];
 }

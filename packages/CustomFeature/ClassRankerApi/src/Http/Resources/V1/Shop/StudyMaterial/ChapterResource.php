@@ -28,6 +28,7 @@ class ChapterResource extends JsonResource
             'video_count' => $this->activeVideos
                               ->loadMissing('videoItems')
                               ->sum(fn($video) => $video->videoItems->count()),
+            'video_is_premium' => $this->videoIsPremium()
         ];
     }
 }

@@ -13,6 +13,7 @@ use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\NoteCont
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\PdfController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuestionController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\QuizController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\RecentlyViewedController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\SubjectController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\VideoController;
 use Illuminate\Http\Request;
@@ -148,6 +149,12 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::get('', 'allResources');
         
         Route::post('toggle', 'toggle');
+    });
+
+    Route::controller(RecentlyViewedController::class)->prefix('recently-viewed')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::post('', 'record');
     });
 
     Route::controller(AdController::class)->prefix('ads')->group(function () {

@@ -29,7 +29,7 @@ class AdController extends ResourceController
         $premiumUnlocked = false;
 
         // 4 ads complete → 24hr premium access
-        if ($adsWatched >= 4) {
+        if ($adsWatched >= 8) {
             PremiumAccess::updateOrCreate(
                 ['customer_id' => $customer->id],
                 ['expires_at'  => now()->addHours(24)]
@@ -42,7 +42,7 @@ class AdController extends ResourceController
             'coins'           => $customer->fresh()->coins,
             'ads_watched'     => $adsWatched,
             'premium_unlocked'=> $premiumUnlocked,
-            'ads_remaining'   => max(0, 4 - $adsWatched),
+            'ads_remaining'   => max(0, 8 - $adsWatched),
         ]);
     }
 
@@ -76,7 +76,7 @@ class AdController extends ResourceController
             'type'          => $access ? 'ad_reward' : null,
             'expires_at'    => $access?->expires_at,
             'ads_watched'   => $adsWatched,
-            'ads_remaining' => max(0, 4 - $adsWatched),
+            'ads_remaining' => max(0, 8 - $adsWatched),
             'coins'         => $customer->coins,
         ]);
     }

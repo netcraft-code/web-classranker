@@ -119,6 +119,11 @@ class Chapter extends Model implements ChapterContract
             ->with(['videoItems' => fn ($q) => $q->active()->orderBy('position')]);
     }
 
+    public function videoIsPremium()
+    {
+        return $this->videos()->where('is_premium', true)->exists();
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Quizzes

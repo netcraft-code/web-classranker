@@ -8,7 +8,7 @@ use Webkul\Customer\Models\Customer;
 
 class PremiumAccess extends Model implements PremiumAccessContract
 {
-    protected $fillable = ['customer_id', 'expire_at'];
+    protected $fillable = ['customer_id', 'expires_at'];
 
     public function customer()
     {
