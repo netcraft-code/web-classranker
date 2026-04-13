@@ -436,7 +436,7 @@ class AuthController extends CustomerController
     public function login(Request $request): Response
     {
         $request->validate([
-            'email'    => 'required|email',
+            'phone'    => 'required|phone',
             'password' => 'required',
         ]);
 
@@ -445,11 +445,11 @@ class AuthController extends CustomerController
                 'device_name' => 'required',
             ]);
 
-            $customer = $this->customerRepository->where('email', $request->email)->first();
+            $customer = $this->customerRepository->where('phone', $request->phone)->first();
 
             if (! $customer || ! Hash::check($request->password, $customer->password)) {
                 throw ValidationException::withMessages([
-                    'email' => trans('class_ranker_api::app.shop.customer.accounts.error.credential-error'),
+                    'phone' => trans('class_ranker_api::app.shop.customer.accounts.error.credential-error'),
                 ]);
             }
 
@@ -473,7 +473,7 @@ class AuthController extends CustomerController
             ]);
         }
 
-        if (Auth::attempt($request->only(['email', 'password']))) {
+        if (Auth::attempt($request->only(['phone', 'password']))) {
             $request->session()->regenerate();
 
             return response([
