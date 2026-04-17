@@ -70,10 +70,10 @@ class PlanController extends ShopController
         $key            = core()->getConfigData('class_ranker.settings.pay_u.key');
         $salt           = core()->getConfigData('class_ranker.settings.pay_u.salt');
         $amount         = number_format($effectivePrice, 2, '.', '');
-        $productInfo    = $plan->name;
-        $firstName      = $customer->name;
-        $email          = $customer->email;
-        $phone          = $customer->phone ?? '';
+        $productInfo    = trim($plan->name);
+        $firstName      = trim($customer->name);
+        $email          = strtolower(trim($customer->email));
+        $phone          = preg_replace('/[^0-9]/', '', $customer->phone ?? '');
  
         // surl / furl — PayU will redirect iframe to these after payment
         $baseUrl = core()->getConfigData('class_ranker.settings.pay_u.callback_url');

@@ -164,10 +164,19 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
     });
 });
 
-Route::get('/payu/redirect-form', function (Request $request) {
-    $data = $request->all();
+Route::post('/payu/store-data', function (Request $request) {
+    session(['payu_data' => $request->all()]);
+    return response()->json(['success' => true]);
+});
 
-    return response()->view('class_ranker_api::payu-form', compact('data'));
+Route::get('/payu/redirect-form', function () {
+    $data = session('payu_data');
+
+    if (!$data) {
+        return "No payment data found";
+    }
+
+    return view('class_ranker_api::payu-form', compact('data'));
 });
 
 Route::post('payu/success', function (Request $request) {

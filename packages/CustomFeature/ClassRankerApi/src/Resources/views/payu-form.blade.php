@@ -8,7 +8,7 @@
 <form method="POST" action="{{ $data['payu_url'] }}">
     @foreach($data as $key => $value)
         @if($key !== 'payu_url')
-            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            <input type="hidden" name="{{ $key }}" value="{{ html_entity_decode($value) }}">
         @endif
     @endforeach
 </form>
