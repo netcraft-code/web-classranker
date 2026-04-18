@@ -17,7 +17,9 @@ use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\Recently
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\SubjectController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\VideoController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /**
  * Customer unauthorized routes.
@@ -165,15 +167,22 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 });
 
 Route::post('/payu/store-data', function (Request $request) {
-    session(['payu_data' => $request->all()]);
-    return response()->json(['success' => true]);
+    $token = Str::random(40);
+    
+    Cache::put('payu_'.$token, $request->all(), now()->addMinutes(10));
+
+    return response()->json([
+        'success' => true,
+        'token' => $token
+    ]);
 });
 
-Route::get('/payu/redirect-form', function () {
-    $data = session('payu_data');
+Route::get('/payu/redirect-form', function (Request $request) {
+    $token = $request->query('token');
+    $data  = Cache::get('payu_'.$token);
 
     if (!$data) {
-        return "No payment data found";
+        return "Payment session expired";
     }
 
     return view('class_ranker_api::payu-form', compact('data'));
