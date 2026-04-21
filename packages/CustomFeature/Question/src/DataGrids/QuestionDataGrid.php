@@ -21,7 +21,7 @@ class QuestionDataGrid extends DataGrid
             ->leftJoin('subjects',  'question_assignments.subject_id', '=', 'subjects.id')
             ->leftJoin('books',     'question_assignments.book_id',    '=', 'books.id')
             ->leftJoin('chapters',  'question_assignments.chapter_id', '=', 'chapters.id')
-            ->addSelect(
+            ->select(
                 'question_assignments.id as assignment_id',
                 'boards.name as board_name',
                 'grades.name as grade_name',
@@ -29,17 +29,28 @@ class QuestionDataGrid extends DataGrid
                 'books.title as book_title',
                 'chapters.title as chapter_title',
                 'questions.id as id',
-                'questions.slug as slug',
-                'questions.title as title',
-                'questions.short_title as short_title',
-                'questions.status as status',
-                'questions.is_premium as is_premium',
-                'questions.created_at as created_at',
+                'questions.slug',
+                'questions.title',
+                'questions.short_title',
+                'questions.status',
+                'questions.is_premium',
+                'questions.created_at',
                 DB::raw('(SELECT COUNT(*) FROM question_items WHERE question_items.question_id = questions.id) as item_count'),
-                DB::raw('(SELECT COUNT(*) FROM question_faqs  WHERE question_faqs.question_id  = questions.id) as faq_count'),
+                DB::raw('(SELECT COUNT(*) FROM question_faqs WHERE question_faqs.question_id = questions.id) as faq_count')
             );
         
+        $this->addFilter('id', 'questions.id');
         $this->addFilter('title', 'questions.title');
+        $this->addFilter('short_title', 'questions.short_title');
+        $this->addFilter('slug', 'questions.slug');
+
+        $this->addFilter('board_name', 'boards.name');
+        $this->addFilter('grade_name', 'grades.name');
+        $this->addFilter('subject_name', 'subjects.name');
+        $this->addFilter('book_title', 'books.title');
+        $this->addFilter('chapter_title', 'chapters.title');
+
+        $this->addFilter('created_at', 'questions.created_at');
 
         return $queryBuilder;
     }
@@ -136,18 +147,12 @@ class QuestionDataGrid extends DataGrid
             'index'      => 'item_count',
             'label'      => 'Question Count',
             'type'       => 'integer',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
         ]);
 
         $this->addColumn([
             'index'      => 'faq_count',
             'label'      => 'faq Count',
             'type'       => 'integer',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable'   => true,
         ]);
 
         $this->addColumn([
