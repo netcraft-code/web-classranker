@@ -3,7 +3,10 @@
 use CustomFeature\Board\Http\Controllers\BoardController;
 use CustomFeature\Book\Http\Controllers\BookController;
 use CustomFeature\Chapter\Http\Controllers\ChapterController;
+use CustomFeature\ClassRanker\Http\Controllers\Customers\CustomerController;
 use CustomFeature\ClassRanker\Http\Controllers\Dashboard\DashboardController;
+use CustomFeature\ClassRanker\Http\Controllers\Dashboard\DatabaseController;
+use CustomFeature\ClassRanker\Http\Controllers\Plan\CustomerPlanController;
 use CustomFeature\ClassRanker\Http\Controllers\Plan\PlanController;
 use CustomFeature\ClassRanker\Http\Controllers\TempUploadController;
 use CustomFeature\Grade\Http\Controllers\GradeController;
@@ -240,6 +243,10 @@ Route::controller(DashboardController::class)->prefix('dashboards')->group(funct
     Route::get('', 'index')->name('admin.class_ranker.dashboard.index');
 });
 
+Route::controller(CustomerController::class)->prefix('customers')->group(function () {
+    Route::post('bulk/mass-assign-plan', 'massAssignPlan')->name('admin.customers.customers.mass_assign_plan');
+});
+
 Route::controller(PlanController::class)->prefix('plans')->group(function () {
     Route::get('', 'index')->name('admin.plans.index');
 
@@ -252,4 +259,28 @@ Route::controller(PlanController::class)->prefix('plans')->group(function () {
     Route::put('{id}', 'update')->name('admin.plans.update');
 
     Route::delete('{id}', 'destroy')->name('admin.plans.delete');
+});
+
+Route::controller(CustomerPlanController::class)->prefix('customer-plans')->group(function () {
+    Route::get('', 'index')->name('admin.plans.customer_plans.index');
+
+    Route::post('{id}', 'cancelPlan')->name('admin.plans.customer_plans.cancel_plan');
+});
+
+Route::controller(DatabaseController::class)->prefix('db')->group(function () {
+    // DB
+    Route::get('tables', 'tables')
+        ->name('admin.system.tables');
+
+    Route::get('tables/export/{table}', 'exportTable')
+        ->where('table', '[A-Za-z0-9_]+')
+        ->name('admin.system.tables.export');
+
+    // Files
+    Route::get('files', 'files')
+        ->name('admin.system.files');
+
+    Route::get('files/download/{path}', 'downloadFile')
+        ->where('path', '.*')
+        ->name('admin.system.files.download');
 });

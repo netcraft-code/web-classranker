@@ -4,6 +4,7 @@ namespace CustomFeature\ClassRanker\Models\Customer;
 
 use CustomFeature\Board\Models\Board;
 use CustomFeature\ClassRanker\Models\CustomerPlan;
+use CustomFeature\ClassRanker\Models\Plan;
 use CustomFeature\ClassRanker\Models\PremiumAccess;
 use CustomFeature\Grade\Models\Grade;
 use Webkul\Customer\Models\Customer as BaseCustomer;
@@ -64,5 +65,18 @@ class Customer extends BaseCustomer
             ->first();
 
         return (bool) $access;
+    }
+
+    public function plans()
+    {
+        return $this->belongsToMany(Plan::class, 'customer_plans')
+            ->withPivot([
+                'status',
+                'starts_at',
+                'expires_at',
+                'amount_paid',
+                'currency'
+            ])
+            ->withTimestamps();
     }
 }

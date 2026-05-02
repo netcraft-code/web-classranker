@@ -104,6 +104,18 @@ return [
         'route' => 'admin.plans.index',
         'sort'  => 3,
         'icon'  => 'icon-sales',
+    ], [
+        'key'   => 'plans.plans',
+        'name'  => 'class_ranker::app.components.layouts.sidebar.plans',
+        'route' => 'admin.plans.index',
+        'sort'  => 1,
+        'icon'  => '',
+    ], [
+        'key'   => 'plans.customer_plans',
+        'name'  => 'Customer Plans',
+        'route' => 'admin.plans.customer_plans.index',
+        'sort'  => 2,
+        'icon'  => '',
     ],
     
     /**

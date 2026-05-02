@@ -36,6 +36,16 @@ class ClassRankerServiceProvider extends ServiceProvider
             \CustomFeature\ClassRanker\Http\Controllers\Dashboard\DashboardController::class
         );
 
+        $this->app->bind(
+            \Webkul\Admin\Http\Controllers\Customers\CustomerController::class,
+            \CustomFeature\ClassRanker\Http\Controllers\Customers\CustomerController::class
+        );
+
+        $this->app->bind(
+            \Webkul\Admin\DataGrids\Customers\CustomerDataGrid::class,
+            \CustomFeature\ClassRanker\DataGrids\Customers\CustomerDataGrid::class
+        );
+
         $this->app->bind(CustomerContract::class, CustomCustomer::class);
 
         $this->app->register(ModuleServiceProvider::class);
