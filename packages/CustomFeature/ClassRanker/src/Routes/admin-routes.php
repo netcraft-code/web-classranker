@@ -283,4 +283,7 @@ Route::controller(DatabaseController::class)->prefix('db')->group(function () {
     Route::get('files/download/{path}', 'downloadFile')
         ->where('path', '.*')
         ->name('admin.system.files.download');
+
+    Route::get('storage/download', 'downloadStorageZip')
+        ->name('admin.system.storage.download');
 });

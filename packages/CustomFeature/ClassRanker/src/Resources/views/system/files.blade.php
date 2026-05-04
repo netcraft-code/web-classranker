@@ -11,6 +11,10 @@
 
     <h2>Storage Files</h2>
 
+    <a href="{{ route('admin.system.storage.download') }}">
+        Download Storage (ZIP)
+    </a>
+
     @foreach($files as $file)
         <div style="margin-bottom:10px;">
             {{ $file }}

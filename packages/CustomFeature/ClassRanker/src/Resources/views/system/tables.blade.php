@@ -11,12 +11,20 @@
 
     <h2>Database Tables</h2>
 
+    <a href="{{ route('admin.system.storage.download') }}">
+        Download Storage (ZIP)
+    </a>
+
     @foreach($tables as $table)
-        <div style="margin-bottom:10px;">
+        <div style="margin-bottom: 10px;">
             <strong>{{ $table }}</strong>
 
-            <a href="{{ route('admin.system.tables.export', $table) }}">
-                Export
+            <a href="{{ route('admin.system.tables.export', ['table' => $table, 'type' => 'json']) }}">
+                JSON
+            </a>
+
+            <a href="{{ route('admin.system.tables.export', ['table' => $table, 'type' => 'sql']) }}">
+                SQL
             </a>
         </div>
     @endforeach
