@@ -3,8 +3,8 @@
 namespace CustomFeature\ClassRanker\Models;
 
 use CustomFeature\ClassRanker\Contracts\Bookmark as BookmarkContract;
+use CustomFeature\ClassRanker\Models\Customer\Customer;
 use Illuminate\Database\Eloquent\Model;
-use Webkul\Customer\Models\Customer;
 
 class Bookmark extends Model implements BookmarkContract
 {

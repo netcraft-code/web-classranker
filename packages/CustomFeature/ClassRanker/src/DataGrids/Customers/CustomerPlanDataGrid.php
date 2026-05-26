@@ -22,6 +22,7 @@ class CustomerPlanDataGrid extends DataGrid
                 'customers.first_name',
                 'customers.last_name',
                 'customers.email',
+                'customers.phone',
                 'plans.name as plan_name',
                 'plans.code as plan_code',
                 'customer_plans.amount_paid',
@@ -31,6 +32,30 @@ class CustomerPlanDataGrid extends DataGrid
                 'customer_plans.expires_at',
                 'customer_plans.created_at'
             );
+            
+        $this->addFilter('first_name', 'customers.first_name');
+
+        $this->addFilter('last_name', 'customers.last_name');
+
+        $this->addFilter('email', 'customers.email');
+
+        $this->addFilter('phone', 'customers.phone');
+
+        $this->addFilter('plan_name', 'plans.name');
+
+        $this->addFilter('plan_code', 'plans.code');
+
+        $this->addFilter('amount_paid', 'customer_plans.amount_paid');
+
+        $this->addFilter('currency', 'customer_plans.currency');
+
+        $this->addFilter('status', 'customer_plans.status');
+
+        $this->addFilter('starts_at', 'customer_plans.starts_at');
+
+        $this->addFilter('expires_at', 'customer_plans.expires_at');
+
+        $this->addFilter('created_at', 'customer_plans.created_at');
 
         return $queryBuilder;
     }
@@ -43,13 +68,6 @@ class CustomerPlanDataGrid extends DataGrid
     public function prepareColumns()
     {
         $this->addColumn([
-            'index'      => 'id',
-            'label'      => 'ID',
-            'type'       => 'integer',
-            'sortable'   => true,
-        ]);
-
-        $this->addColumn([
             'index'      => 'first_name',
             'label'      => 'Customer',
             'type'       => 'string',
@@ -59,10 +77,19 @@ class CustomerPlanDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
+            'index'      => 'phone',
+            'label'      => 'Phone',
+            'type'       => 'string',
+            'searchable' => true,
+            'filterable' => true,
+        ]);
+
+        $this->addColumn([
             'index'      => 'email',
             'label'      => 'Email',
             'type'       => 'string',
             'searchable' => true,
+            'filterable' => true,
         ]);
 
         $this->addColumn([
@@ -73,9 +100,26 @@ class CustomerPlanDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'plan_code',
-            'label'      => 'Code',
-            'type'       => 'string',
+            'index'      => 'status',
+            'label'      => 'Status',
+            'type'       => 'boolean',
+            'filterable' => true,
+            'filterable_options' => [
+                ['label' => 'Pending',   'value' => 'pending'],
+                ['label' => 'Active',    'value' => 'active'],
+                ['label' => 'Expired',   'value' => 'expired'],
+                ['label' => 'Cancelled', 'value' => 'cancelled'],
+            ],
+            'sortable'   => true,
+            'closure' => function ($row) {
+                return match ($row->status) {
+                    'pending'   => '<span class="badge badge-warning">Pending</span>',
+                    'active'    => '<span class="badge badge-success">Active</span>',
+                    'expired'   => '<span class="badge badge-dark">Expired</span>',
+                    'cancelled' => '<span class="badge badge-danger">Cancelled</span>',
+                    default     => '<span class="badge badge-secondary">Unknown</span>',
+                };
+            },
         ]);
 
         $this->addColumn([
@@ -88,31 +132,6 @@ class CustomerPlanDataGrid extends DataGrid
             'index'      => 'currency',
             'label'      => 'Currency',
             'type'       => 'string',
-        ]);
-
-        $this->addColumn([
-            'index'      => 'status',
-            'label'      => 'Status',
-            'type'       => 'string',
-            'filterable' => true,
-            'filterable_options' => [
-                ['label' => 'Pending',   'value' => 'pending'],
-                ['label' => 'Active',    'value' => 'active'],
-                ['label' => 'Expired',   'value' => 'expired'],
-                ['label' => 'Cancelled', 'value' => 'cancelled'],
-            ],
-            'sortable'   => true,
-
-            'closure' => function ($row) {
-
-                return match ($row->status) {
-                    'pending'   => '<span class="badge badge-warning">Pending</span>',
-                    'active'    => '<span class="badge badge-success">Active</span>',
-                    'expired'   => '<span class="badge badge-dark">Expired</span>',
-                    'cancelled' => '<span class="badge badge-danger">Cancelled</span>',
-                    default     => '<span class="badge badge-secondary">Unknown</span>',
-                };
-            },
         ]);
 
         $this->addColumn([

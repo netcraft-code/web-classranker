@@ -16,6 +16,8 @@ return [
                 'pdfs'            => 'Pdfs',
                 'notes'           => 'Notes',
                 'plans'           => 'Plans',
+                'discussions'     => 'Discussions',
+                'hashtags'        => 'Hashtags',
             ],
         ],
     ],
@@ -440,6 +442,52 @@ return [
 
         'delete' => [
             'success' => 'Plan deleted successfully.',
+        ],
+    ],
+
+    // ─── Hashtags ──────────────────────────────────────────────────────────────
+    'hashtags' => [
+        'index' => [
+            'title'      => 'Hashtags',
+            'create-btn' => 'Create Hashtag',
+        ],
+        'create' => [
+            'title'       => 'Create Hashtag',
+            'save-btn'    => 'Save Hashtag',
+            'information' => 'Basic Information',
+            'name'        => 'Name',
+            'slug'        => 'Slug',
+            'settings'    => 'Settings',
+            'status'      => 'Status',
+        ],
+        'edit' => [
+            'title'    => 'Edit Hashtag',
+            'save-btn' => 'Update Hashtag',
+        ],
+    ],
+
+    // ─── Discussions ───────────────────────────────────────────────────────────
+    'discussions' => [
+        'index' => [
+            'title'      => 'Discussions',
+            'create-btn' => 'Create Discussion',
+        ],
+        'create' => [
+            'title'                => 'Create Discussion',
+            'save-btn'             => 'Save Discussion',
+            'information'          => 'Basic Information',
+            'title-label'          => 'Title',
+            'title-placeholder'    => 'Start typing to see existing discussions…',
+            'description'          => 'Description',
+            'description-placeholder' => 'What is this discussion about?',
+            'taxonomy'             => 'Filter Tags (Board / Class / Subject)',
+            'hashtags'             => 'Hashtags',
+            'settings'             => 'Settings',
+            'status'               => 'Status',
+        ],
+        'edit' => [
+            'title'    => 'Edit Discussion',
+            'save-btn' => 'Update Discussion',
         ],
     ],
 ];

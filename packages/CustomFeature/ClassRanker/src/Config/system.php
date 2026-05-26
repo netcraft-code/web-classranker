@@ -70,5 +70,45 @@ return [
                 'type'    => 'text',
             ],
         ],
+    ], [
+        'key'    => 'class_ranker.settings.openai',
+        'name'   => 'OpenAI Service',
+        'info'   => 'Settings for OpenAI service used in Class Ranker module',
+        'sort'   => 1,
+        'fields' => [
+            [
+                'name'    => 'status',
+                'title'   => 'Status',
+                'type'    => 'boolean',
+            ], [
+                'name'  => 'key',
+                'title' => 'API Key',
+                'type'  => 'text',
+            ], [
+                'name'  => 'project_id',
+                'title' => 'Project ID',
+                'type'  => 'text',
+            ],
+        ],
+    ], [
+        'key'    => 'class_ranker.settings.app_version',
+        'name'   => 'APP Version',
+        'info'   => 'Settings for managing app version in Class Ranker module',
+        'sort'   => 1,
+        'fields' => [
+            [
+                'name'       => 'latest_version',
+                'title'      => 'Latest Version',
+                'type'       => 'number',
+            ], [
+                'name'       => 'min_version',
+                'title'      => 'Supported Version',
+                'type'       => 'number',
+            ], [
+                'name'       => 'store_url',
+                'title'      => 'Store URL',
+                'type'       => 'text',
+            ],
+        ],
     ],
 ];

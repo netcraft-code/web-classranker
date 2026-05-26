@@ -117,6 +117,30 @@ return [
         'sort'  => 2,
         'icon'  => '',
     ],
+
+    /**
+     * Discussions.
+     */
+    [
+        'key'   => 'discussions',
+        'name'  => 'class_ranker::app.components.layouts.sidebar.discussions',
+        'route' => 'admin.discussions.index',
+        'sort'  => 3,
+        'icon' => 'icon-promotion',
+        'icon-class' => 'promotion-icon',
+    ],  [
+        'key'   => 'discussions.discussions',
+        'name'  => 'class_ranker::app.components.layouts.sidebar.discussions',
+        'route' => 'admin.discussions.index',
+        'sort'  => 1,
+        'icon'  => '',
+    ], [
+        'key'   => 'discussions.hashtags',
+        'name'  => 'class_ranker::app.components.layouts.sidebar.hashtags',
+        'route' => 'admin.hashtags.index',
+        'sort'  => 2,
+        'icon'  => '',
+    ],
     
     /**
      * Customers.

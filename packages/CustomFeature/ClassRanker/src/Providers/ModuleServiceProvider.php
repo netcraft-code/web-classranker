@@ -16,5 +16,8 @@ class ModuleServiceProvider extends BaseModuleServiceProvider
         \CustomFeature\ClassRanker\Models\CustomerPlan::class,
         \CustomFeature\ClassRanker\Models\Plan::class,
         \CustomFeature\ClassRanker\Models\RecentlyViewed::class,
+        \CustomFeature\ClassRanker\Models\Hashtag::class,
+        \CustomFeature\ClassRanker\Models\Discussion::class,
+        \CustomFeature\ClassRanker\Models\DiscussionComment::class,
     ];
 }

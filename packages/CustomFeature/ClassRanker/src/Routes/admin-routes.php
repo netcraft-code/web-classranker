@@ -6,6 +6,9 @@ use CustomFeature\Chapter\Http\Controllers\ChapterController;
 use CustomFeature\ClassRanker\Http\Controllers\Customers\CustomerController;
 use CustomFeature\ClassRanker\Http\Controllers\Dashboard\DashboardController;
 use CustomFeature\ClassRanker\Http\Controllers\Dashboard\DatabaseController;
+use CustomFeature\ClassRanker\Http\Controllers\Discussion\DiscussionController;
+use CustomFeature\ClassRanker\Http\Controllers\Discussion\DiscussionViewController;
+use CustomFeature\ClassRanker\Http\Controllers\Hashtag\HashtagController;
 use CustomFeature\ClassRanker\Http\Controllers\Plan\CustomerPlanController;
 use CustomFeature\ClassRanker\Http\Controllers\Plan\PlanController;
 use CustomFeature\ClassRanker\Http\Controllers\TempUploadController;
@@ -286,4 +289,52 @@ Route::controller(DatabaseController::class)->prefix('db')->group(function () {
 
     Route::get('storage/download', 'downloadStorageZip')
         ->name('admin.system.storage.download');
+});
+
+Route::controller(HashtagController::class)->prefix('hashtags')->group(function () {
+    Route::get('', 'index')->name('admin.hashtags.index');
+    
+    Route::get('create', 'create')->name('admin.hashtags.create');
+    
+    Route::post('', 'store')->name('admin.hashtags.store');
+    
+    Route::get('edit/{id}', 'edit')->name('admin.hashtags.edit');
+    
+    Route::put('{id}', 'update')->name('admin.hashtags.update');
+    
+    Route::delete('{id}', 'destroy')->name('admin.hashtags.delete');
+});
+
+Route::controller(DiscussionController::class)->prefix('discussions')->group(function () {
+    Route::get('', 'index')->name('admin.discussions.index');
+    
+    Route::get('hints', 'hints')->name('admin.discussions.hints');
+    
+    Route::get('create', 'create')->name('admin.discussions.create');
+    
+    Route::post('', 'store')->name('admin.discussions.store');
+    
+    Route::get('edit/{id}', 'edit')->name('admin.discussions.edit');
+    
+    Route::put('{id}', 'update')->name('admin.discussions.update');
+    
+    Route::delete('{id}', 'destroy')->name('admin.discussions.delete');
+});
+
+Route::controller(DiscussionViewController::class)->prefix('')->group(function () {
+    Route::get('{id}/show', 'show')->name('admin.discussions.show');
+    
+    Route::get('{id}/ajax-likes', 'ajaxLikes')->name('admin.discussions.ajax-likes');
+    
+    Route::get('{id}/ajax-comments', 'ajaxComments')->name('admin.discussions.ajax-comments');
+    
+    Route::patch('{id}/comments/{cId}', 'updateComment')->name('admin.discussions.update-comment');
+    
+    Route::delete('{id}/comments/{cId}', 'deleteComment')->name('admin.discussions.delete-comment');
+    
+    Route::post('block-customer', 'blockCustomer')->name('admin.discussions.block-customer');
+    
+    Route::post('{id}/mark-correct', 'markCorrectAnswers')->name('admin.discussions.mark-correct');
+    
+    Route::delete('unblock/{customerId}', 'unblockCustomer')->name('admin.discussions.unblock-customer');
 });

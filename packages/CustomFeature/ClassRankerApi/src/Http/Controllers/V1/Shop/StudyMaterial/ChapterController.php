@@ -49,7 +49,7 @@ class ChapterController extends StudyMaterialController
             }
 
             if ($sort = $request->input('sort')) {
-                $query = $query->orderBy($sort, $request->input('order') ?? 'asc');
+                $query = $query->orderBy($sort, $request->input('order') ?? 'desc');
             } else {
                 $query = $query->orderBy('id', 'asc');
             }

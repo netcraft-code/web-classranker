@@ -36,6 +36,7 @@ class CustomerResource extends JsonResource
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
             'is_premium_user' => $this->isPremium() || $this->isPremiumRewarded(),
+            'has_active_plan' => $this->isPremium(),
         ];
     }
 }

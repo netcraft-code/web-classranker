@@ -3,13 +3,11 @@
 namespace CustomFeature\ClassRanker\Models;
 
 use CustomFeature\ClassRanker\Contracts\CustomerPlan as CustomerPlanContract;
+use CustomFeature\ClassRanker\Models\Customer\Customer;
 use Illuminate\Database\Eloquent\Model;
-use Webkul\Customer\Models\Customer;
 
 class CustomerPlan extends Model implements CustomerPlanContract
 {
-    protected $table = 'customer_plans';
- 
     protected $fillable = [
         'customer_id',
         'plan_id',

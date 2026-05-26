@@ -11,8 +11,6 @@ class Plan extends Model implements PlanContract
 {
     use HasFactory;
  
-    protected $table = 'plans';
- 
     protected $fillable = [
         'name',
         'code',

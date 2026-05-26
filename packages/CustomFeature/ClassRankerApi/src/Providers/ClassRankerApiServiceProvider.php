@@ -19,6 +19,7 @@ class ClassRankerApiServiceProvider extends ServiceProvider
         'sanctum.customer' => \CustomFeature\ClassRankerApi\Http\Middleware\CustomerMiddleware::class,
         'sanctum.locale'   => \CustomFeature\ClassRankerApi\Http\Middleware\LocaleMiddleware::class,
         'sanctum.currency' => \CustomFeature\ClassRankerApi\Http\Middleware\CurrencyMiddleware::class,
+        'app.version'      => \CustomFeature\ClassRankerApi\Http\Middleware\CheckAppVersion::class,
     ];
 
     /**
@@ -67,7 +68,7 @@ class ClassRankerApiServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::prefix('api')
-            ->middleware(['api', 'etag'])
+            ->middleware(['api', 'etag', 'app.version'])
             ->group(__DIR__.'/../Routes/api.php');
     }
 }

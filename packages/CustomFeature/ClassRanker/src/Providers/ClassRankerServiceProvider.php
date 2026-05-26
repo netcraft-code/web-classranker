@@ -31,6 +31,10 @@ class ClassRankerServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'class_ranker');
 
+        $this->publishes([
+            __DIR__.'/../../publishable/build' => public_path('themes/class-ranker/build'),
+        ], 'public');
+
         $this->app->bind(
             \Webkul\Admin\Http\Controllers\DashboardController::class,
             \CustomFeature\ClassRanker\Http\Controllers\Dashboard\DashboardController::class
@@ -46,9 +50,11 @@ class ClassRankerServiceProvider extends ServiceProvider
             \CustomFeature\ClassRanker\DataGrids\Customers\CustomerDataGrid::class
         );
 
-        $this->app->bind(CustomerContract::class, CustomCustomer::class);
+        $this->app->concord->registerModel(CustomerContract::class, CustomCustomer::class);
 
         $this->app->register(ModuleServiceProvider::class);
+        
+        $this->app->register(EventServiceProvider::class);
     }
 
     /**
@@ -65,6 +71,11 @@ class ClassRankerServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             dirname(__DIR__).'/Config/system.php',
             'core'
+        );
+
+        $this->mergeConfigFrom(
+            dirname(__DIR__).'/Config/bagisto-vite.php',
+            'bagisto-vite.viters'
         );
     }
 }

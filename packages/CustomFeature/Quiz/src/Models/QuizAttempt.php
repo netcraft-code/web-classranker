@@ -2,12 +2,12 @@
 
 namespace CustomFeature\Quiz\Models;
 
+use CustomFeature\ClassRanker\Models\Customer\Customer;
+use CustomFeature\Quiz\Contracts\QuizAttempt as QuizAttemptContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Webkul\Customer\Models\Customer;
-use CustomFeature\Quiz\Contracts\QuizAttempt as QuizAttemptContract;
 
 class QuizAttempt extends Model implements QuizAttemptContract
 {

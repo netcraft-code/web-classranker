@@ -3,6 +3,8 @@
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Ads\AdController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Core\CmsController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Customer\AuthController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Discussion\DiscussionCommentController;
+use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Discussion\DiscussionController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Plan\PlanController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BoardController;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\StudyMaterial\BookController;
@@ -163,6 +165,40 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::post('watch', 'watchAd');
 
         Route::get('premium-status', 'premiumStatus');
+    });
+
+    Route::controller(DiscussionController::class)->prefix('discussions')->group(function () {
+        Route::get('', 'allResources');
+
+        Route::get('search', 'searchTitles');
+
+        Route::get('hashtags', 'hashtags');
+
+        Route::get('{id}', 'getResource');
+
+        Route::post('', 'store');
+
+        Route::post('{id}/like', 'toggleLike');
+
+        Route::get('/{id}/likes', 'likes');
+    });
+
+    Route::controller(DiscussionCommentController::class)->prefix('discussions')->group(function () {
+        Route::post('{discussionId}/comments', 'store');
+
+        Route::delete('{discussionId}/comments/{commentId}', 'destroy');
+
+        Route::post('{discussionId}/comments/{commentId}/like', 'toggleLike');
+
+        Route::patch('{discussionId}/comments/{commentId}', 'update');
+        
+        Route::post('{id}/ai-comment', 'aiGenerate');
+        
+        Route::get('{id}/comments', 'getComments');
+        
+        Route::post('comments/upload-image', 'uploadTempImage');
+
+        Route::post('{id}/mark-correct', 'markCorrectAnswers');
     });
 });
 

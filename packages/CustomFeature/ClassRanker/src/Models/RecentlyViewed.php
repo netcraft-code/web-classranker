@@ -3,13 +3,11 @@
 namespace CustomFeature\ClassRanker\Models;
 
 use CustomFeature\ClassRanker\Contracts\RecentlyViewed as RecentlyViewedContract;
+use CustomFeature\ClassRanker\Models\Customer\Customer;
 use Illuminate\Database\Eloquent\Model;
-use Webkul\Customer\Models\Customer;
 
 class RecentlyViewed extends Model implements RecentlyViewedContract
 {
-    protected $table = 'recently_viewed';
-
     protected $fillable = [
         'customer_id',
         'grade_id',

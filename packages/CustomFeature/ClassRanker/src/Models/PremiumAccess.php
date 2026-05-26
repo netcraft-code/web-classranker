@@ -3,8 +3,8 @@
 namespace CustomFeature\ClassRanker\Models;
 
 use CustomFeature\ClassRanker\Contracts\PremiumAccess as PremiumAccessContract;
+use CustomFeature\ClassRanker\Models\Customer\Customer;
 use Illuminate\Database\Eloquent\Model;
-use Webkul\Customer\Models\Customer;
 
 class PremiumAccess extends Model implements PremiumAccessContract
 {
