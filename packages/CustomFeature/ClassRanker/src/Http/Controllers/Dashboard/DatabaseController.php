@@ -146,4 +146,65 @@ class DatabaseController extends Controller
 
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
+
+    public function downloadDatabaseSql()
+    {
+        $this->authorizeAccess();
+
+        $dbName = env('DB_DATABASE');
+
+        $fileName = 'database_backup_' . time() . '.sql';
+
+        return response()->streamDownload(function () use ($dbName) {
+
+            echo "-- Database Backup\n";
+            echo "-- Generated: " . now() . "\n\n";
+
+            echo "SET FOREIGN_KEY_CHECKS=0;\n\n";
+
+            $tables = collect(DB::select('SHOW TABLES'))
+                ->map(fn ($t) => array_values((array) $t)[0]);
+
+            foreach ($tables as $table) {
+
+                // Table structure
+                $createTable = DB::select("SHOW CREATE TABLE `$table`")[0]->{'Create Table'};
+
+                echo "DROP TABLE IF EXISTS `$table`;\n";
+                echo $createTable . ";\n\n";
+
+                // Table data
+                $rows = DB::table($table)->get();
+
+                if ($rows->count()) {
+
+                    $columns = Schema::getColumnListing($table);
+
+                    foreach ($rows as $row) {
+
+                        $values = array_map(function ($value) {
+
+                            if (is_null($value)) {
+                                return 'NULL';
+                            }
+
+                            return "'" . addslashes($value) . "'";
+
+                        }, (array) $row);
+
+                        echo "INSERT INTO `$table` (`"
+                            . implode('`,`', $columns)
+                            . "`) VALUES ("
+                            . implode(',', $values)
+                            . ");\n";
+                    }
+                }
+
+                echo "\n\n";
+            }
+
+            echo "SET FOREIGN_KEY_CHECKS=1;\n";
+
+        }, $fileName);
+    }
 }

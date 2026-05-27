@@ -15,6 +15,10 @@
         Download Storage (ZIP)
     </a>
 
+    <a href="{{ route('admin.system.database.download') }}">
+        Download Full Database SQL
+    </a>
+
     @foreach($tables as $table)
         <div style="margin-bottom: 10px;">
             <strong>{{ $table }}</strong>

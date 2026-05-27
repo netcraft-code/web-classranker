@@ -279,6 +279,9 @@ Route::controller(DatabaseController::class)->prefix('db')->group(function () {
         ->where('table', '[A-Za-z0-9_]+')
         ->name('admin.system.tables.export');
 
+    Route::get('database/download', 'downloadDatabaseSql'
+        )->name('admin.system.database.download');
+
     // Files
     Route::get('files', 'files')
         ->name('admin.system.files');
