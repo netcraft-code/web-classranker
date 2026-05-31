@@ -348,7 +348,6 @@ class AuthController extends CustomerController
 
     public function verifyAccessToken(Request $request)
     {
-        \Log::info('verifyAccessToken called', ['request' => $request->all()]);
         $request->validate([
             'access-token' => 'required|string',
             'device_name'  => 'nullable|string',
@@ -366,12 +365,7 @@ class AuthController extends CustomerController
             'access-token' => $accessToken,
         ]);
 
-            \Log::info('MSG91 response', $msg91Response->json());
-
-
         $msg91Data = $msg91Response->json();
-
-        \Log::info('MSG91 verify response', $msg91Data); // debug ke liye
 
         // MSG91 success check
         if (

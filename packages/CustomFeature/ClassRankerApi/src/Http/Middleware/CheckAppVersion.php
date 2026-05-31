@@ -9,8 +9,6 @@ class CheckAppVersion
 {
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
-
         $appVersion = $request->header('X-App-Version');
 
         if (! $appVersion) {

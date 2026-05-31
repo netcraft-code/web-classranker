@@ -8,6 +8,7 @@ use CustomFeature\ClassRanker\Repositories\HashtagRepository;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\ShopController;
 use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\Discussion\DiscussionResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DiscussionController extends ShopController
 {
@@ -287,5 +288,11 @@ class DiscussionController extends ShopController
             ->all();
 
         return response()->json(['data' => $hashtags]);
+    }
+
+    public function uploadImage(Request $request) {
+        $path = $request->file('image')->store('discussions', 'public');
+        
+        return response()->json(['url' => Storage::url($path)]);
     }
 }

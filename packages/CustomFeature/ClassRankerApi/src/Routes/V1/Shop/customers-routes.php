@@ -174,13 +174,15 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
 
         Route::get('hashtags', 'hashtags');
 
-        Route::get('{id}', 'getResource');
+        Route::post('upload-image', 'uploadImage');
 
         Route::post('', 'store');
 
         Route::post('{id}/like', 'toggleLike');
 
         Route::get('/{id}/likes', 'likes');
+
+        Route::get('{id}', 'getResource');
     });
 
     Route::controller(DiscussionCommentController::class)->prefix('discussions')->group(function () {
