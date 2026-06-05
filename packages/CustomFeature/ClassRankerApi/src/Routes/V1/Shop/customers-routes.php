@@ -203,28 +203,28 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum.customer']], function ()
         Route::post('{id}/mark-correct', 'markCorrectAnswers');
     });
 
-    // routes/api.php
-    Route::get('stream-file', function (Request $request) {
-        $relativePath = $request->query('path');
+// routes/api.php
+Route::get('stream-file', function (Request $request) {
+    $relativePath = $request->query('path');
 
-        // Security: sirf storage folder allow karo
-        if (!str_starts_with($relativePath, 'storage/')) {
-            return response()->json(['error' => 'Invalid path'], 403);
-        }
+    // Security: sirf storage folder allow karo
+    if (!str_starts_with($relativePath, 'storage/')) {
+        return response()->json(['error' => 'Invalid path'], 403);
+    }
 
-        $fullPath = public_path($relativePath);
+    $fullPath = public_path($relativePath);
 
-        if (!file_exists($fullPath)) {
-            return response()->json(['error' => 'File not found'], 404);
-        }
+    if (!file_exists($fullPath)) {
+        return response()->json(['error' => 'File not found'], 404);
+    }
 
-        $mimeType = mime_content_type($fullPath);
+    $mimeType = mime_content_type($fullPath);
 
-        return response()->file($fullPath, [
-            'Content-Type'              => $mimeType,
-            'Access-Control-Allow-Origin' => '*',
-        ]);
-    });
+    return response()->file($fullPath, [
+        'Content-Type'              => $mimeType,
+        'Access-Control-Allow-Origin' => '*',
+    ]);
+});
 });
 
 Route::post('/payu/store-data', function (Request $request) {

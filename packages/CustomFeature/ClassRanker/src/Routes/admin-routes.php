@@ -11,6 +11,7 @@ use CustomFeature\ClassRanker\Http\Controllers\Discussion\DiscussionViewControll
 use CustomFeature\ClassRanker\Http\Controllers\Hashtag\HashtagController;
 use CustomFeature\ClassRanker\Http\Controllers\Plan\CustomerPlanController;
 use CustomFeature\ClassRanker\Http\Controllers\Plan\PlanController;
+use CustomFeature\ClassRanker\Http\Controllers\Notification\AdminNotificationController;
 use CustomFeature\ClassRanker\Http\Controllers\TempUploadController;
 use CustomFeature\Grade\Http\Controllers\GradeController;
 use CustomFeature\Note\Http\Controllers\NoteController;
@@ -262,6 +263,22 @@ Route::controller(PlanController::class)->prefix('plans')->group(function () {
     Route::put('{id}', 'update')->name('admin.plans.update');
 
     Route::delete('{id}', 'destroy')->name('admin.plans.delete');
+});
+
+Route::controller(AdminNotificationController::class)->prefix('push-notifications')->group(function () {
+    Route::get('', 'index')->name('admin.notifications.index');
+
+    Route::get('create', 'create')->name('admin.notifications.create');
+    
+    Route::post('create', 'store')->name('admin.notifications.store');
+
+    Route::get('edit/{id}', 'edit')->name('admin.notifications.edit');
+
+    Route::put('edit/{id}', 'update')->name('admin.notifications.update');
+
+    Route::delete('edit/{id}', 'delete')->name('admin.notifications.delete');
+
+    Route::post('send-all/{id}', 'sendToAll')->name('admin.notifications.send_to_all');
 });
 
 Route::controller(CustomerPlanController::class)->prefix('customer-plans')->group(function () {

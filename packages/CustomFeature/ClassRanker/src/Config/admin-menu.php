@@ -118,6 +118,14 @@ return [
         'icon'  => '',
     ],
 
+    [
+        'key'   => 'notifications',
+        'name'  => 'Notifications',
+        'route' => 'admin.notifications.index',
+        'sort'  => 4,
+        'icon'  => 'icon-sales',
+    ],
+
     /**
      * Discussions.
      */
@@ -125,7 +133,7 @@ return [
         'key'   => 'discussions',
         'name'  => 'class_ranker::app.components.layouts.sidebar.discussions',
         'route' => 'admin.discussions.index',
-        'sort'  => 3,
+        'sort'  => 5,
         'icon' => 'icon-promotion',
         'icon-class' => 'promotion-icon',
     ],  [
@@ -149,7 +157,7 @@ return [
         'key'   => 'customers',
         'name'  => 'admin::app.components.layouts.sidebar.customers',
         'route' => 'admin.customers.customers.index',
-        'sort'  => 4,
+        'sort'  => 6,
         'icon'  => 'icon-customer-2',
     ], [
         'key'   => 'customers.customers',
@@ -166,7 +174,7 @@ return [
         'key'   => 'cms',
         'name'  => 'admin::app.components.layouts.sidebar.cms',
         'route' => 'admin.cms.index',
-        'sort'  => 5,
+        'sort'  => 7,
         'icon'  => 'icon-cms',
     ],
 ];

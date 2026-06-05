@@ -2,6 +2,7 @@
 
 namespace CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\Customer;
 
+use CustomFeature\ClassRanker\Models\CustomerDevice;
 use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\Customer\CustomerResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -351,11 +352,13 @@ class AuthController extends CustomerController
         $request->validate([
             'access-token' => 'required|string',
             'device_name'  => 'nullable|string',
+            'fcm_token'    => 'nullable|string',
         ]);
 
         $accessToken = $request->input('access-token');
         $deviceName  = $request->input('device_name', 'Unknown Device');
-
+        $fcmToken    = $request->input('fcm_token');
+        
         \Log::info('Access token received', ['token' => $accessToken]);
         \Log::info('Auth key used', ['key' => env('MSG91_AUTH_KEY')]);
 
@@ -408,6 +411,13 @@ class AuthController extends CustomerController
             
             $customer->refresh();
         }
+        
+        \Log::info('Saving FCM token', ['customer_id' => $customer->id, 'fcm_token' => $fcmToken]);
+        
+        $this->saveFcmToken(
+            $customer,
+            $fcmToken
+        );
 
         // Purane tokens delete karo
         $customer->tokens()->delete();
@@ -430,8 +440,9 @@ class AuthController extends CustomerController
     public function login(Request $request): Response
     {
         $request->validate([
-            'phone'    => 'required|phone',
-            'password' => 'required',
+            'phone'      => 'required|phone',
+            'password'   => 'required',
+            'fcm_token'  => 'nullable|string',
         ]);
 
         if (! EnsureFrontendRequestsAreStateful::fromFrontend($request)) {
@@ -441,11 +452,18 @@ class AuthController extends CustomerController
 
             $customer = $this->customerRepository->where('phone', $request->phone)->first();
 
+            $fcmToken = $request->input('fcm_token');
+
             if (! $customer || ! Hash::check($request->password, $customer->password)) {
                 throw ValidationException::withMessages([
                     'phone' => trans('class_ranker_api::app.shop.customer.accounts.error.credential-error'),
                 ]);
             }
+
+            $this->saveFcmToken(
+                $customer,
+                $fcmToken
+            );
 
             /**
              * Preventing multiple token creation.
@@ -481,6 +499,74 @@ class AuthController extends CustomerController
             'success' => false,
             'message' => trans('class_ranker_api::app.shop.customer.accounts.error.invalid'),
         ], 401);
+    }
+
+    private function saveFcmToken($customer, ?string $fcmToken): void
+    {
+        if (empty($fcmToken)) {
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Case 1
+        |--------------------------------------------------------------------------
+        | Same customer + same token
+        | Bas updated_at update karna hai
+        */
+
+        $existingCustomerToken = CustomerDevice::where(
+            'customer_id',
+            $customer->id
+        )->first();
+
+        if (
+            $existingCustomerToken &&
+            $existingCustomerToken->fcm_token === $fcmToken
+        ) {
+            $existingCustomerToken->touch();
+
+            return;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Case 2
+        |--------------------------------------------------------------------------
+        | Ye token kisi aur customer se mapped hai
+        |--------------------------------------------------------------------------
+        */
+
+        CustomerDevice::where(
+            'fcm_token',
+            $fcmToken
+        )->delete();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Case 3
+        |--------------------------------------------------------------------------
+        | Current customer ke purane token hatao
+        |--------------------------------------------------------------------------
+        */
+
+        CustomerDevice::where(
+            'customer_id',
+            $customer->id
+        )->delete();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Case 4
+        |--------------------------------------------------------------------------
+        | Current customer ko current token map karo
+        |--------------------------------------------------------------------------
+        */
+
+        CustomerDevice::create([
+            'customer_id' => $customer->id,
+            'fcm_token'   => $fcmToken,
+        ]);
     }
 
     /**

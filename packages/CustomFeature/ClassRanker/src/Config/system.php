@@ -110,5 +110,21 @@ return [
                 'type'       => 'text',
             ],
         ],
+    ], [
+        'key'    => 'class_ranker.settings.firebase',
+        'name'   => 'Firebase Service',
+        'info'   => 'Settings for Firebase service used in Class Ranker module',
+        'sort'   => 1,
+        'fields' => [
+            [
+                'name'       => 'project_id',
+                'title'      => 'Project ID',
+                'type'       => 'text',
+            ], [
+                'name'       => 'firebase_service',
+                'title'      => 'Firebase Service',
+                'type'       => 'text',
+            ],
+        ],
     ],
 ];

@@ -9,6 +9,7 @@ use CustomFeature\ClassRanker\Repositories\DiscussionCommentRepository;
 use CustomFeature\ClassRanker\Repositories\DiscussionRepository;
 use CustomFeature\ClassRankerApi\Http\Controllers\V1\Shop\ShopController;
 use CustomFeature\ClassRankerApi\Http\Resources\V1\Shop\Discussion\CommentResource;
+use CustomFeature\ClassRankerApi\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -18,6 +19,7 @@ class DiscussionCommentController extends ShopController
     public function __construct(
         protected DiscussionCommentRepository $commentRepository,
         protected DiscussionRepository        $discussionRepository,
+        protected NotificationService         $notificationService
     ) {}
 
     /**
@@ -80,7 +82,7 @@ class DiscussionCommentController extends ShopController
 
     public function store(Request $request, int $discussionId)
     {
-        $this->discussionRepository->findOrFail($discussionId);
+        $discussion = $this->discussionRepository->findOrFail($discussionId);
 
         $customer = $this->resolveShopUser($request);
 
@@ -93,7 +95,6 @@ class DiscussionCommentController extends ShopController
                 'blocked' => true,
             ], 403);
         }
-        \Log::info($request->all());
         
         $request->validate([
             'body'               => 'required_without:image_paths|nullable|string|max:2000',
@@ -110,6 +111,28 @@ class DiscussionCommentController extends ShopController
 
         $comment->is_liked = false;
 
+        $creatorId = $discussion->creator_id;
+
+        // if ($creatorId && $creatorId !== $customerId) {
+            $commenterName = $customer?->name ?? 'Someone';
+
+            $notifyIds = $this->getDiscussionParticipantIds($discussionId, null);
+
+            if (! empty($notifyIds)) {
+
+                $this->notificationService->sendToCustomersQueued(
+                    $notifyIds,
+                    'New Comment',
+                    "{$commenterName} commented on a discussion you participated in.",
+                    [
+                        'type'          => 'discussion_comment',
+                        'discussion_id' => (string)$discussionId,
+                        'comment_id'    => (string)$comment->id,
+                    ]
+                );
+            }
+        // }
+
         $resourceClassName = $this->resource();
         
         return (new $resourceClassName($comment))
@@ -121,14 +144,39 @@ class DiscussionCommentController extends ShopController
     public function update(Request $request, int $discussionId, int $commentId)
     {
         $request->validate(['body' => 'required|string|max:2000']);
+        
+        $customer = $this->resolveShopUser($request);
 
-        $customerId = $this->resolveShopUser($request)->id;
+        $customerId = $customer?->id;
 
         $comment = $this->commentRepository->editComment(
             $commentId,
             $customerId,
             $request->body
         );
+
+        $discussion = $this->discussionRepository->findOrFail($discussionId);
+        $creatorId  = $discussion->creator_id;
+    
+        if ($creatorId && $creatorId !== $customerId) {
+            $editorName = $customer?->name ?? 'Someone';
+
+            $notifyIds = $this->getDiscussionParticipantIds($discussionId, null);
+
+            if (! empty($notifyIds)) {
+
+                $this->notificationService->sendToCustomersQueued(
+                    $notifyIds,
+                    'Comment Updated',
+                    "{$editorName} updated a comment in a discussion you participated in.",
+                    [
+                        'type'          => 'discussion_comment_updated',
+                        'discussion_id' => (string)$discussionId,
+                        'comment_id'    => (string)$commentId,
+                    ]
+                );
+            }
+        }
 
         $resourceClassName = $this->resource();
 
@@ -334,6 +382,8 @@ class DiscussionCommentController extends ShopController
             ], 403);
         }
 
+        $participantIds = $this->getDiscussionParticipantIds($discussionId, null);
+        
         DB::transaction(function () use ($discussionId, $discussion, $validated) {
             // Reset previous correct answers
             $this->discussionCommentRepository->resetCorrectAnswers($discussionId);
@@ -349,6 +399,22 @@ class DiscussionCommentController extends ShopController
                 'is_resolved' => true,
             ], $discussion->id);
         });
+
+        if (! empty($participantIds)) {
+            // Thode customers — direct bhejo
+            // Bahut zyada hain toh queued use karo (unlikely yahan)
+            if (count($participantIds) <= 50) {
+                $this->notificationService->sendToCustomersQueued(
+                    $participantIds,
+                    'Answer Marked Correct!',
+                    'A correct answer has been selected for a discussion you participated in.',
+                    [
+                        'type'          => 'correct_answer',
+                        'discussion_id' => (string) $discussionId,
+                    ]
+                );
+            }
+        }
 
         return response()->json([
             'message'     => 'Correct answers updated successfully.',
@@ -366,5 +432,23 @@ class DiscussionCommentController extends ShopController
         $path = $request->file('image')->store('discussions/temp', 'public');
 
         return response()->json(['path' => $path]);
+    }
+
+    private function getDiscussionParticipantIds(
+        int $discussionId,
+        ?int $excludeId = null
+    ): array {
+
+        return DB::table('discussion_comments')
+            ->where('discussion_id', $discussionId)
+            ->whereNotNull('customer_id')
+            ->when(
+                $excludeId,
+                fn ($q) => $q->where('customer_id', '!=', $excludeId)
+            )
+            ->pluck('customer_id')
+            ->unique()
+            ->values()
+            ->toArray();
     }
 }

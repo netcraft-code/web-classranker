@@ -3,6 +3,7 @@
 namespace CustomFeature\ClassRanker\Models\Customer;
 
 use CustomFeature\Board\Models\Board;
+use CustomFeature\ClassRanker\Models\CustomerDevice;
 use CustomFeature\ClassRanker\Models\CustomerPlan;
 use CustomFeature\ClassRanker\Models\Plan;
 use CustomFeature\ClassRanker\Models\PremiumAccess;
@@ -78,5 +79,10 @@ class Customer extends BaseCustomer
                 'currency'
             ])
             ->withTimestamps();
+    }
+
+    public function customerDeviceToken()
+    {
+        return $this->hasOne(CustomerDevice::class);
     }
 }
