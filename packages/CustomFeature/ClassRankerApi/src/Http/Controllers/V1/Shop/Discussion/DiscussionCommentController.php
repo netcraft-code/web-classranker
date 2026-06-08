@@ -116,7 +116,7 @@ class DiscussionCommentController extends ShopController
         // if ($creatorId && $creatorId !== $customerId) {
             $commenterName = $customer?->name ?? 'Someone';
 
-            $notifyIds = $this->getDiscussionParticipantIds($discussionId, null);
+            $notifyIds = $this->getDiscussionParticipantIds($discussionId, $customerId);
 
             if (! empty($notifyIds)) {
 
@@ -161,7 +161,7 @@ class DiscussionCommentController extends ShopController
         if ($creatorId && $creatorId !== $customerId) {
             $editorName = $customer?->name ?? 'Someone';
 
-            $notifyIds = $this->getDiscussionParticipantIds($discussionId, null);
+            $notifyIds = $this->getDiscussionParticipantIds($discussionId, $customerId);
 
             if (! empty($notifyIds)) {
 
@@ -382,7 +382,7 @@ class DiscussionCommentController extends ShopController
             ], 403);
         }
 
-        $participantIds = $this->getDiscussionParticipantIds($discussionId, null);
+        $participantIds = $this->getDiscussionParticipantIds($discussionId, $customer?->id);
         
         DB::transaction(function () use ($discussionId, $discussion, $validated) {
             // Reset previous correct answers
