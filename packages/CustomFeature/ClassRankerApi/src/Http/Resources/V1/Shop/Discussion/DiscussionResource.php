@@ -15,14 +15,12 @@ class DiscussionResource extends JsonResource
     public function toArray($request)
     {
         $creatorName = 'Student';
+        
         $canModerate = false;
 
         if ($this->creator_type && str_contains($this->creator_type, 'Admin')) {
-
             $creatorName = 'Study Rankers';
-
         } elseif ($this->creator) {
-
             $creatorName = trim(
                 ($this->creator->first_name ?? '') . ' ' .
                 ($this->creator->last_name ?? '')

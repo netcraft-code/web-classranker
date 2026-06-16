@@ -260,7 +260,7 @@
                                     name="status"
                                     value="1"
                                     :label="trans('class_ranker::app.plans.create.status')"
-                                    :checked="initialPlan.status"
+                                    ::checked="initialPlan.status"
                                 />
                                 <x-admin::form.control-group.error control-name="status" />
                             </x-admin::form.control-group>
@@ -276,7 +276,7 @@
                                     name="is_popular"
                                     value="1"
                                     :label="trans('class_ranker::app.plans.create.is-popular')"
-                                    :checked="initialPlan.is_popular"
+                                    ::checked="initialPlan.is_popular"
                                 />
                                 <x-admin::form.control-group.error control-name="is_popular" />
                             </x-admin::form.control-group>
