@@ -26,15 +26,28 @@
                 'questions_update'=> route('admin.study_materials.quizzes.questions.update',[$quiz->id, ':questionId']),
                 'questions_remove'=> route('admin.study_materials.quizzes.questions.remove',[$quiz->id, ':questionId']),
             ]) }}"
+            :initial-imports="{{ json_encode($quizImports ?? []) }}"
+            :import-routes="{{ json_encode([
+                'index'     => route('admin.study_materials.quizzes.imports.index',     $quiz->id),
+                'upload'    => route('admin.study_materials.quizzes.imports.upload',    $quiz->id),
+                'status'    => route('admin.study_materials.quizzes.imports.status',    [$quiz->id, ':importId']),
+                'update'    => route('admin.study_materials.quizzes.imports.update',    [$quiz->id, ':importId']),
+                'destroy'   => route('admin.study_materials.quizzes.imports.destroy',   [$quiz->id, ':importId']),
+                'questions' => route('admin.study_materials.quizzes.imports.questions', $quiz->id),
+            ]) }}"
         ></v-edit-quiz>
     </x-admin::form>
 
     @pushOnce('scripts')
+
+    {{-- ═══════════════════════════════════════════════════════════
+         TEMPLATE: v-edit-quiz
+    ═══════════════════════════════════════════════════════════ --}}
     <script type="text/x-template" id="v-edit-quiz-template">
         <div class="mt-3.5 flex gap-2.5 max-xl:flex-wrap">
             <div class="flex flex-1 flex-col gap-2 max-xl:flex-auto">
 
-                <!-- ── BASIC INFO ── -->
+                <!-- BASIC INFO -->
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
                     <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">Basic Information</p>
 
@@ -59,11 +72,13 @@
                     </x-admin::form.control-group>
                 </div>
 
-                <!-- ── QUESTIONS ── -->
+                <!-- QUESTIONS -->
                 <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
-                    <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">Questions</p>
+                    <p class="mb-4 text-base font-semibold text-gray-800 dark:text-white">
+                        Questions
+                        <span class="ml-2 text-sm font-normal text-gray-400">(@{{ questions.length }})</span>
+                    </p>
 
-                    <!-- Existing questions -->
                     <div v-for="(question, qIndex) in questions" :key="question.id"
                         class="mb-6 p-4 border-2 rounded bg-gray-50 dark:bg-gray-800">
 
@@ -106,7 +121,7 @@
                                     <span :class="opt.is_correct ? 'text-green-600 font-bold' : 'text-gray-400'"
                                         class="flex-shrink-0">@{{ oIdx + 1 }}.</span>
                                     <span v-html="opt.text" class="flex-1 prose max-w-none text-sm"></span>
-                                    <span v-if="opt.is_correct" class="text-xs text-green-600 font-semibold flex-shrink-0">✓ Correct</span>
+                                    <span v-if="opt.is_correct" class="text-xs text-green-600 font-semibold flex-shrink-0">&#10003; Correct</span>
                                 </div>
                             </div>
 
@@ -118,7 +133,6 @@
 
                         <!-- Edit form -->
                         <template v-if="question.editing">
-                            <!-- Question Text -->
                             <div class="mb-3">
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Question Text <span class="text-red-500">*</span>
@@ -127,7 +141,6 @@
                                     class="w-full border rounded p-2 text-sm">@{{ question.text }}</textarea>
                             </div>
 
-                            <!-- Options -->
                             <div class="mb-3">
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Options</label>
 
@@ -139,46 +152,38 @@
                                             Option @{{ oIdx + 1 }}
                                         </span>
                                         <div class="flex items-center gap-2">
-                                            <!-- TinyMCE Toggle -->
                                             <label class="flex items-center gap-1 text-xs">
                                                 <input type="checkbox" v-model="opt.useTinymce"
                                                     @change="onOptionTinymceToggle(question, oIdx)"
                                                     class="h-3 w-3">
                                                 <span class="text-gray-600">Rich Editor</span>
                                             </label>
-
-                                            <!-- Is Correct -->
                                             <label class="flex items-center gap-1">
                                                 <input type="checkbox" :value="oIdx"
                                                     v-model="question.correctOptions" class="h-4 w-4">
                                                 <span class="text-xs text-green-600 font-semibold">Correct</span>
                                             </label>
-
-                                            <!-- Remove option -->
                                             <button v-if="question.options.length > 2" type="button"
                                                 @click="removeEditOption(question, oIdx)"
                                                 class="text-red-500 text-xs font-semibold">Remove</button>
                                         </div>
                                     </div>
 
-                                    <!-- Plain text -->
                                     <div v-if="!opt.useTinymce">
                                         <textarea v-model="opt.text" rows="2"
                                             class="w-full border rounded p-2 text-sm" placeholder="Option text"></textarea>
                                     </div>
-
-                                    <!-- TinyMCE -->
                                     <div v-else>
                                         <textarea :id="'opt_' + question.id + '_' + oIdx"
                                             class="w-full border rounded p-2 text-sm">@{{ opt.text }}</textarea>
                                     </div>
                                 </div>
 
-                                <button type="button" @click="question.options.push({ text: '', useTinymce: false, is_correct: false })"
+                                <button type="button"
+                                    @click="question.options.push({ text: '', useTinymce: false, is_correct: false })"
                                     class="text-sm text-blue-600 hover:text-blue-800">+ Add Option</button>
                             </div>
 
-                            <!-- Solution (TinyMCE) -->
                             <div class="mb-3">
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                     Solution / Explanation
@@ -194,16 +199,13 @@
                         class="mb-6 p-4 border-2 border-dashed border-blue-300 rounded bg-blue-50 dark:bg-gray-800">
                         <p class="font-semibold text-blue-700 dark:text-white mb-3">New Question</p>
 
-                        <!-- Question Text -->
                         <div class="mb-3">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                 Question Text <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="new_question_text"
-                                class="w-full border rounded p-2 text-sm"></textarea>
+                            <textarea id="new_question_text" class="w-full border rounded p-2 text-sm"></textarea>
                         </div>
 
-                        <!-- Options -->
                         <div class="mb-3">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Options</label>
 
@@ -217,8 +219,7 @@
                                     <div class="flex items-center gap-2">
                                         <label class="flex items-center gap-1 text-xs">
                                             <input type="checkbox" v-model="opt.useTinymce"
-                                                @change="onNewOptionTinymceToggle(oIdx)"
-                                                class="h-3 w-3">
+                                                @change="onNewOptionTinymceToggle(oIdx)" class="h-3 w-3">
                                             <span class="text-gray-600">Rich Editor</span>
                                         </label>
                                         <label class="flex items-center gap-1">
@@ -237,8 +238,7 @@
                                         class="w-full border rounded p-2 text-sm" placeholder="Option text"></textarea>
                                 </div>
                                 <div v-else>
-                                    <textarea :id="'new_opt_' + oIdx"
-                                        class="w-full border rounded p-2 text-sm"></textarea>
+                                    <textarea :id="'new_opt_' + oIdx" class="w-full border rounded p-2 text-sm"></textarea>
                                 </div>
                             </div>
 
@@ -247,13 +247,11 @@
                                 class="text-sm text-blue-600 hover:text-blue-800">+ Add Option</button>
                         </div>
 
-                        <!-- Solution -->
                         <div class="mb-4">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                 Solution / Explanation
                             </label>
-                            <textarea id="new_solution_text"
-                                class="w-full border rounded p-2 text-sm"></textarea>
+                            <textarea id="new_solution_text" class="w-full border rounded p-2 text-sm"></textarea>
                         </div>
 
                         <div class="flex gap-2">
@@ -271,7 +269,7 @@
 
             </div>
 
-            <!-- ── RIGHT SIDEBAR ── -->
+            <!-- RIGHT SIDEBAR -->
             <div class="flex w-[360px] max-w-full flex-col gap-2 max-sm:w-full">
 
                 <!-- Settings -->
@@ -330,28 +328,158 @@
                         <div v-for="(c, index) in selectedChapters" :key="c.id"
                             class="flex items-start justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded border text-xs">
                             <span class="text-gray-700 dark:text-gray-300 flex-1">
-                                @{{ c.boardName }} → @{{ c.gradeName }} → @{{ c.subjectName }} → @{{ c.bookName }} → @{{ c.chapterName }}
+                                @{{ c.boardName }} &#8594; @{{ c.gradeName }} &#8594; @{{ c.subjectName }} &#8594; @{{ c.bookName }} &#8594; @{{ c.chapterName }}
                             </span>
                             <button v-if="selectedChapters.length > 1" type="button"
                                 @click="ajaxRemoveChapter(c.id, index)"
-                                class="text-red-600 hover:text-red-800 ml-2 flex-shrink-0">×</button>
+                                class="text-red-600 hover:text-red-800 ml-2 flex-shrink-0">&#215;</button>
                         </div>
                     </div>
                 </div>
+
+                <!-- XLS Import -->
+                <v-xls-import
+                    :initial-imports="initialImports"
+                    :import-routes="importRoutes"
+                ></v-xls-import>
+
             </div>
         </div>
     </script>
 
+    {{-- ═══════════════════════════════════════════════════════════
+         TEMPLATE: v-xls-import
+    ═══════════════════════════════════════════════════════════ --}}
+    <script type="text/x-template" id="v-xls-import-template">
+        <div class="box-shadow rounded bg-white p-4 dark:bg-gray-900">
+
+            <p class="mb-1 text-base font-semibold text-gray-800 dark:text-white">Import Questions (XLS)</p>
+            <p class="mb-4 text-xs text-gray-500 dark:text-gray-400">
+                Columns: <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">question, option_a, option_b, option_c, option_d, correct_option, solution</code>
+            </p>
+
+            <!-- Drop zone -->
+            <label
+                class="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed rounded cursor-pointer transition-colors"
+                :class="dragging
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-gray-300 bg-gray-50 dark:bg-gray-800 hover:border-blue-400'"
+                @dragover.prevent="dragging = true"
+                @dragleave.prevent="dragging = false"
+                @drop.prevent="onDrop"
+            >
+                <svg class="w-8 h-8 text-gray-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                    Drop .xlsx / .xls here or <span class="text-blue-600 font-semibold">browse</span>
+                </span>
+                <input ref="fileInput" type="file" accept=".xlsx,.xls,.csv" multiple class="hidden"
+                    @change="onFileSelect">
+            </label>
+
+            <!-- Upload queue -->
+            <div v-if="queue.length" class="mt-3 space-y-2">
+                <p class="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Ready to upload</p>
+                <div v-for="(item, idx) in queue" :key="idx"
+                    class="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 border rounded text-xs">
+                    <span class="truncate max-w-[200px] text-gray-700 dark:text-gray-300">@{{ item.file.name }}</span>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <button type="button" @click="uploadFile(item)" :disabled="item.uploading"
+                            class="text-blue-600 hover:text-blue-800 font-semibold">
+                            @{{ item.uploading ? 'Uploading...' : 'Upload' }}
+                        </button>
+                        <button type="button" @click="queue.splice(idx, 1)"
+                            class="text-red-500 hover:text-red-700">&#215;</button>
+                    </div>
+                </div>
+                <button type="button" @click="uploadAll" :disabled="allUploading"
+                    class="primary-button w-full text-sm mt-1">
+                    @{{ allUploading ? 'Uploading...' : 'Upload All' }}
+                </button>
+            </div>
+
+            <!-- Existing imports list -->
+            <div v-if="imports.length" class="mt-4 space-y-3">
+                <p class="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">Uploaded Files</p>
+
+                <div v-for="(imp, idx) in imports" :key="imp.id"
+                    class="p-3 border rounded bg-gray-50 dark:bg-gray-800">
+
+                    <!-- Filename + status badge -->
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 truncate max-w-[180px]">
+                            @{{ imp.original_filename }}
+                        </span>
+                        <span class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold"
+                            :class="{
+                                'bg-yellow-100 text-yellow-700': imp.status === 'pending',
+                                'bg-blue-100  text-blue-700':   imp.status === 'processing',
+                                'bg-green-100 text-green-700':  imp.status === 'completed',
+                                'bg-red-100   text-red-700':    imp.status === 'failed',
+                            }">
+                            @{{ imp.status }}
+                        </span>
+                    </div>
+
+                    <!-- Progress bar -->
+                    <div v-if="imp.status === 'processing' || imp.status === 'completed'" class="mb-1">
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                            <div class="h-1.5 rounded-full transition-all duration-300"
+                                :class="imp.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'"
+                                :style="{ width: imp.progress_percent + '%' }"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                            @{{ imp.progress_percent }}% &#8212; @{{ imp.imported_rows }} / @{{ imp.total_rows }} questions imported
+                        </p>
+                    </div>
+
+                    <!-- Error message -->
+                    <p v-if="imp.status === 'failed' && imp.error_message"
+                        class="text-xs text-red-600 mb-1">@{{ imp.error_message }}</p>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2 mt-2">
+                        <label class="cursor-pointer text-xs text-blue-600 hover:text-blue-800 font-semibold">
+                            Replace
+                            <input type="file" accept=".xlsx,.xls,.csv" class="hidden"
+                                @change="replaceFile(imp, $event)">
+                        </label>
+                        <button type="button"
+                            @click="deleteImport(imp, idx)"
+                            :disabled="imp.deleting"
+                            class="text-xs text-red-600 hover:text-red-800 font-semibold">
+                            @{{ imp.deleting ? 'Deleting...' : 'Delete' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <p v-if="!imports.length && !queue.length"
+                class="mt-3 text-center text-xs text-gray-400 dark:text-gray-500">
+                No files uploaded yet.
+            </p>
+        </div>
+    </script>
+
     <script type="module">
+
+        // ════════════════════════════════════════════════════════════════
+        // v-edit-quiz
+        // ════════════════════════════════════════════════════════════════
         app.component('v-edit-quiz', {
             template: '#v-edit-quiz-template',
 
             props: {
-                initialChapters:   { type: Array,  default: () => [] },
-                initialQuestions:  { type: Array,  default: () => [] },
-                boards:            { type: Array,  default: () => [] },
-                quizId:            { type: Number, required: true },
-                routes:            { type: Object, required: true },
+                initialChapters:  { type: Array,  default: () => [] },
+                initialQuestions: { type: Array,  default: () => [] },
+                boards:           { type: Array,  default: () => [] },
+                quizId:           { type: Number, required: true },
+                routes:           { type: Object, required: true },
+                initialImports:   { type: Array,  default: () => [] },
+                importRoutes:     { type: Object, required: true },
             },
 
             data() {
@@ -386,6 +514,23 @@
                 };
             },
 
+            mounted() {
+                // Jab XLS import complete ho — questions list bina page refresh ke update ho
+                this.$emitter.on('quiz-questions-refreshed', (freshQuestions) => {
+                    this.questions = freshQuestions.map(q => ({
+                        ...q,
+                        editing:        false,
+                        saving:         false,
+                        deleting:       false,
+                        correctOptions: q.correctOptions || [],
+                    }));
+                    this.$emitter.emit('add-flash', {
+                        type:    'success',
+                        message: 'Questions list updated from imported file.',
+                    });
+                });
+            },
+
             watch: {
                 'quiz.title'(val) { this.quiz.slug = this.slugify(val); },
             },
@@ -393,9 +538,8 @@
             methods: {
                 defaultNewQuestion() {
                     return {
-                        text:     '',
-                        solution: '',
-                        options:  [
+                        text: '', solution: '',
+                        options: [
                             { text: '', useTinymce: false },
                             { text: '', useTinymce: false },
                         ],
@@ -403,7 +547,7 @@
                     };
                 },
 
-                // ── Cascade ──────────────────────────────────────────
+                // Cascade
                 onBoardChange() {
                     const board = this.boards.find(b => b.id == this.selectedBoardId);
                     this.filteredGrades    = board?.grades ?? [];
@@ -431,7 +575,7 @@
                     this.selectedChapterId = '';
                 },
 
-                // ── Chapters AJAX ────────────────────────────────────
+                // Chapters AJAX
                 ajaxAddChapter() {
                     if (!this.selectedBoardId || !this.selectedGradeId || !this.selectedSubjectId ||
                         !this.selectedBookId || !this.selectedChapterId) {
@@ -471,7 +615,7 @@
                         .catch(() => this.$emitter.emit('add-flash', { type: 'error', message: 'Failed to remove chapter' }));
                 },
 
-                // ── Questions AJAX ───────────────────────────────────
+                // Questions AJAX
                 startEditQuestion(question) {
                     question._snapshot = JSON.parse(JSON.stringify({
                         text:           question.text,
@@ -480,9 +624,7 @@
                         correctOptions: question.correctOptions,
                     }));
                     question.editing = true;
-                    this.$nextTick(() => {
-                        this.initQuestionEditors(question);
-                    });
+                    this.$nextTick(() => this.initQuestionEditors(question));
                 },
 
                 cancelEditQuestion(question) {
@@ -497,17 +639,14 @@
                 },
 
                 collectQuestionData(question) {
-                    // TinyMCE se content fetch karo
                     const qtEditor = tinymce.get('question_text_' + question.id);
                     if (qtEditor) question.text = qtEditor.getContent();
-
                     const solEditor = tinymce.get('solution_' + question.id);
                     if (solEditor) question.solution = solEditor.getContent();
-
                     question.options.forEach((opt, oIdx) => {
                         if (opt.useTinymce) {
-                            const optEditor = tinymce.get('opt_' + question.id + '_' + oIdx);
-                            if (optEditor) opt.text = optEditor.getContent();
+                            const e = tinymce.get('opt_' + question.id + '_' + oIdx);
+                            if (e) opt.text = e.getContent();
                         }
                     });
                 },
@@ -515,21 +654,18 @@
                 collectNewQuestionData() {
                     const qtEditor = tinymce.get('new_question_text');
                     if (qtEditor) this.newQuestion.text = qtEditor.getContent();
-
                     const solEditor = tinymce.get('new_solution_text');
                     if (solEditor) this.newQuestion.solution = solEditor.getContent();
-
                     this.newQuestion.options.forEach((opt, oIdx) => {
                         if (opt.useTinymce) {
-                            const optEditor = tinymce.get('new_opt_' + oIdx);
-                            if (optEditor) opt.text = optEditor.getContent();
+                            const e = tinymce.get('new_opt_' + oIdx);
+                            if (e) opt.text = e.getContent();
                         }
                     });
                 },
 
                 ajaxAddQuestion() {
                     this.collectNewQuestionData();
-
                     if (!this.newQuestion.text) { alert('Question text required'); return; }
                     if (!this.newQuestion.options.some(o => o.text)) { alert('Options required'); return; }
 
@@ -537,7 +673,7 @@
                     this.$axios.post(this.routes.questions_add, {
                         text:            this.newQuestion.text,
                         solution:        this.newQuestion.solution,
-                        options:         this.newQuestion.options.map((o, i) => ({
+                        options:         this.newQuestion.options.map(o => ({
                             text:        o.text,
                             use_tinymce: o.useTinymce ? 1 : 0,
                         })),
@@ -557,22 +693,20 @@
 
                 ajaxUpdateQuestion(question) {
                     this.collectQuestionData(question);
-
                     if (!question.text) { alert('Question text required'); return; }
 
                     question.saving = true;
                     this.$axios.put(this.routes.questions_update.replace(':questionId', question.id), {
                         text:            question.text,
                         solution:        question.solution,
-                        options:         question.options.map((o, i) => ({
+                        options:         question.options.map(o => ({
                             text:        o.text,
                             use_tinymce: o.useTinymce ? 1 : 0,
                         })),
                         correct_options: question.correctOptions,
                     })
                     .then(res => {
-                        // Update local data from server response
-                        const updated = res.data.question;
+                        const updated           = res.data.question;
                         question.text           = updated.text;
                         question.solution       = updated.solution;
                         question.options        = updated.options;
@@ -601,18 +735,14 @@
 
                 removeEditOption(question, oIdx) {
                     if (question.options.length <= 2) return;
-                    // TinyMCE destroy karo
-                    const optEditor = tinymce.get('opt_' + question.id + '_' + oIdx);
-                    if (optEditor) optEditor.remove();
-
+                    const e = tinymce.get('opt_' + question.id + '_' + oIdx);
+                    if (e) e.remove();
                     question.options.splice(oIdx, 1);
-                    // correctOptions adjust karo
                     const ci = question.correctOptions.indexOf(oIdx);
                     if (ci > -1) question.correctOptions.splice(ci, 1);
                     question.correctOptions = question.correctOptions.map(i => i > oIdx ? i - 1 : i);
                 },
 
-                // ── New question form ────────────────────────────────
                 openNewQuestion() {
                     this.showNewQuestion = true;
                     this.$nextTick(() => {
@@ -627,11 +757,10 @@
                     this.newQuestion.options.forEach((opt, oIdx) => {
                         if (opt.useTinymce) this.destroyTinyMCE('new_opt_' + oIdx);
                     });
-                    this.showNewQuestion  = false;
-                    this.newQuestion      = this.defaultNewQuestion();
+                    this.showNewQuestion = false;
+                    this.newQuestion     = this.defaultNewQuestion();
                 },
 
-                // ── TinyMCE helpers ──────────────────────────────────
                 getTinyMCEConfig() {
                     return {
                         menubar: true,
@@ -724,7 +853,6 @@
                             this.initTinyMCE('opt_' + question.id + '_' + oIdx, opt.text || '');
                         });
                     } else {
-                        // Content save karke destroy
                         const editor = tinymce.get('opt_' + question.id + '_' + oIdx);
                         if (editor) { opt.text = editor.getContent(); editor.remove(); }
                     }
@@ -733,9 +861,7 @@
                 onNewOptionTinymceToggle(oIdx) {
                     const opt = this.newQuestion.options[oIdx];
                     if (opt.useTinymce) {
-                        this.$nextTick(() => {
-                            this.initTinyMCE('new_opt_' + oIdx, opt.text || '');
-                        });
+                        this.$nextTick(() => this.initTinyMCE('new_opt_' + oIdx, opt.text || ''));
                     } else {
                         const editor = tinymce.get('new_opt_' + oIdx);
                         if (editor) { opt.text = editor.getContent(); editor.remove(); }
@@ -748,6 +874,177 @@
                 },
             },
         });
+
+        // ════════════════════════════════════════════════════════════════
+        // v-xls-import
+        // ════════════════════════════════════════════════════════════════
+        app.component('v-xls-import', {
+            template: '#v-xls-import-template',
+
+            props: {
+                initialImports: { type: Array,  default: () => [] },
+                importRoutes:   { type: Object, required: true },
+            },
+
+            data() {
+                return {
+                    imports:  this.initialImports.map(i => ({ ...i, deleting: false })),
+                    queue:    [],
+                    dragging: false,
+                };
+            },
+
+            computed: {
+                allUploading() {
+                    return this.queue.length > 0 && this.queue.every(i => i.uploading);
+                },
+            },
+
+            methods: {
+                onFileSelect(e) {
+                    Array.from(e.target.files).forEach(f => this.addToQueue(f));
+                    e.target.value = '';
+                },
+
+                onDrop(e) {
+                    this.dragging = false;
+                    Array.from(e.dataTransfer.files).forEach(f => this.addToQueue(f));
+                },
+
+                addToQueue(file) {
+                    const allowed = ['xlsx', 'xls', 'csv'];
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    if (!allowed.includes(ext)) {
+                        this.$emitter.emit('add-flash', { type: 'error', message: `${file.name}: unsupported format.` });
+                        return;
+                    }
+                    this.queue.push({ file, uploading: false });
+                },
+
+                async uploadFile(item) {
+                    item.uploading = true;
+                    const fd = new FormData();
+                    fd.append('file', item.file);
+
+                    try {
+                        const res = await this.$axios.post(this.importRoutes.upload, fd, {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                        });
+
+                        const imp = { ...res.data.import, deleting: false };
+                        this.imports.unshift(imp);
+
+                        // Remove from queue
+                        const idx = this.queue.indexOf(item);
+                        if (idx > -1) this.queue.splice(idx, 1);
+
+                        if (imp.status === 'processing' || imp.status === 'pending') {
+                            this.pollStatus(imp);
+                        } else if (imp.status === 'completed') {
+                            // Small file — already done, refresh questions immediately
+                            this.refreshQuestions();
+                        }
+
+                        this.$emitter.emit('add-flash', { type: 'success', message: res.data.message });
+                    } catch (err) {
+                        const msg = err.response?.data?.message ?? 'Upload failed';
+                        this.$emitter.emit('add-flash', { type: 'error', message: msg });
+                        item.uploading = false;
+                    }
+                },
+
+                uploadAll() {
+                    this.queue.filter(i => !i.uploading).forEach(i => this.uploadFile(i));
+                },
+
+                pollStatus(imp) {
+                    const statusUrl = this.importRoutes.status.replace(':importId', imp.id);
+
+                    const timer = setInterval(async () => {
+                        try {
+                            const res   = await this.$axios.get(statusUrl);
+                            const fresh = res.data.import;
+
+                            imp.status           = fresh.status;
+                            imp.total_rows       = fresh.total_rows;
+                            imp.imported_rows    = fresh.imported_rows;
+                            imp.progress_percent = fresh.progress_percent;
+                            imp.error_message    = fresh.error_message;
+
+                            if (fresh.status === 'completed') {
+                                clearInterval(timer);
+                                // Fetch fresh questions + emit to v-edit-quiz — no page reload!
+                                this.refreshQuestions();
+                            } else if (fresh.status === 'failed') {
+                                clearInterval(timer);
+                            }
+                        } catch {
+                            clearInterval(timer);
+                        }
+                    }, 1500);
+                },
+
+                async refreshQuestions() {
+                    try {
+                        const res = await this.$axios.get(this.importRoutes.questions);
+                        // v-edit-quiz ka mounted() listener yeh event sunke questions update kar dega
+                        this.$emitter.emit('quiz-questions-refreshed', res.data.questions);
+                    } catch {
+                        // Silently ignore — questions are saved in DB
+                    }
+                },
+
+                async replaceFile(imp, event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    event.target.value = '';
+
+                    const fd = new FormData();
+                    fd.append('file', file);
+
+                    try {
+                        const url = this.importRoutes.update.replace(':importId', imp.id);
+                        const res = await this.$axios.post(url, fd, {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                        });
+
+                        const fresh           = res.data.import;
+                        imp.original_filename = fresh.original_filename;
+                        imp.status            = fresh.status;
+                        imp.total_rows        = fresh.total_rows;
+                        imp.imported_rows     = fresh.imported_rows;
+                        imp.progress_percent  = fresh.progress_percent;
+                        imp.error_message     = fresh.error_message;
+
+                        if (fresh.status === 'processing' || fresh.status === 'pending') {
+                            this.pollStatus(imp);
+                        } else if (fresh.status === 'completed') {
+                            this.refreshQuestions();
+                        }
+
+                        this.$emitter.emit('add-flash', { type: 'success', message: res.data.message });
+                    } catch (err) {
+                        const msg = err.response?.data?.message ?? 'Replace failed';
+                        this.$emitter.emit('add-flash', { type: 'error', message: msg });
+                    }
+                },
+
+                async deleteImport(imp, idx) {
+                    if (!confirm('Delete this import record?\n\nNote: Already imported questions will remain in the quiz.')) return;
+                    imp.deleting = true;
+                    try {
+                        const url = this.importRoutes.destroy.replace(':importId', imp.id);
+                        const res = await this.$axios.delete(url);
+                        this.imports.splice(idx, 1);
+                        this.$emitter.emit('add-flash', { type: 'success', message: res.data.message });
+                    } catch {
+                        imp.deleting = false;
+                        this.$emitter.emit('add-flash', { type: 'error', message: 'Failed to delete import' });
+                    }
+                },
+            },
+        });
+
     </script>
     @endPushOnce
 </x-admin::layouts>

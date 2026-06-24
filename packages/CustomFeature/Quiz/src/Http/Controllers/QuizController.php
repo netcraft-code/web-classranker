@@ -304,7 +304,7 @@ class QuizController extends Controller
         ])->toArray();
 
         $formattedQuestions = $quiz->questions->map(fn($q) => [
-            'id'       => $q->id,               // ← AJAX ke liye zaruri
+            'id'       => $q->id, 
             'text'     => $q->question_text,
             'solution' => $q->question_solution,
             'options'  => $q->options->map(fn($opt) => [
@@ -319,8 +319,22 @@ class QuizController extends Controller
                 ->toArray(),
         ])->toArray();
 
+        $quizImports = \CustomFeature\Quiz\Models\QuizImport::where('quiz_id', $id)
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(fn($imp) => [
+                'id'                => $imp->id,
+                'original_filename' => $imp->original_filename,
+                'status'            => $imp->status,
+                'total_rows'        => $imp->total_rows,
+                'imported_rows'     => $imp->imported_rows,
+                'progress_percent'  => $imp->progress_percent,
+                'error_message'     => $imp->error_message,
+            ])
+            ->toArray();
+
         return view('class_ranker::study-material.quizzes.edit', compact(
-            'quiz', 'boards', 'formattedChapters', 'formattedQuestions'
+            'quiz', 'boards', 'formattedChapters', 'formattedQuestions', 'quizImports',
         ));
     }
 }

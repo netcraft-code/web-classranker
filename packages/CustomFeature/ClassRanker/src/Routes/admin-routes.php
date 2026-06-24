@@ -9,15 +9,16 @@ use CustomFeature\ClassRanker\Http\Controllers\Dashboard\DatabaseController;
 use CustomFeature\ClassRanker\Http\Controllers\Discussion\DiscussionController;
 use CustomFeature\ClassRanker\Http\Controllers\Discussion\DiscussionViewController;
 use CustomFeature\ClassRanker\Http\Controllers\Hashtag\HashtagController;
+use CustomFeature\ClassRanker\Http\Controllers\Notification\AdminNotificationController;
 use CustomFeature\ClassRanker\Http\Controllers\Plan\CustomerPlanController;
 use CustomFeature\ClassRanker\Http\Controllers\Plan\PlanController;
-use CustomFeature\ClassRanker\Http\Controllers\Notification\AdminNotificationController;
 use CustomFeature\ClassRanker\Http\Controllers\TempUploadController;
 use CustomFeature\Grade\Http\Controllers\GradeController;
 use CustomFeature\Note\Http\Controllers\NoteController;
 use CustomFeature\Pdf\Http\Controllers\PdfController;
 use CustomFeature\Question\Http\Controllers\QuestionController;
 use CustomFeature\Quiz\Http\Controllers\QuizController;
+use CustomFeature\Quiz\Http\Controllers\QuizImportController;
 use CustomFeature\Subject\Http\Controllers\SubjectController;
 use CustomFeature\Video\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
@@ -219,6 +220,20 @@ Route::prefix('study-material')->group(function () {
             Route::put('{id}/questions/{questionId}', 'updateQuestion')->name('admin.study_materials.quizzes.questions.update');
             
             Route::delete('{id}/questions/{questionId}', 'removeQuestion')->name('admin.study_materials.quizzes.questions.remove');
+        });
+
+        Route::controller(QuizImportController::class)->prefix('quizzes/{quizId}/imports')->name('admin.study_materials.quizzes.imports.')->group(function () {
+            Route::get('', 'index')->name('index');
+        
+            Route::post('', 'upload')->name('upload');
+
+            Route::get('questions', 'questions')->name('questions');
+        
+            Route::get('{importId}', 'status')->name('status');
+        
+            Route::post('{importId}', 'update')->name('update');
+        
+            Route::delete('{importId}', 'destroy')->name('destroy');
         });
 
         /**
