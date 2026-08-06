@@ -117,9 +117,12 @@
                             <div class="space-y-1 mb-3">
                                 <div v-for="(opt, oIdx) in question.options" :key="oIdx"
                                     class="flex items-start gap-2 text-sm p-2 rounded"
-                                    :class="opt.is_correct ? 'bg-green-50 border border-green-200' : 'bg-white border'">
+                                    :class="opt.is_correct ? 'bg-green-50 border border-green-200' : 'bg-white border'"
+                                >
                                     <span :class="opt.is_correct ? 'text-green-600 font-bold' : 'text-gray-400'"
-                                        class="flex-shrink-0">@{{ oIdx + 1 }}.</span>
+                                        class="flex-shrink-0">@{{ oIdx + 1 }}.
+                                    </span>
+                                    
                                     <span v-html="opt.text" class="flex-1 prose max-w-none text-sm"></span>
                                     <span v-if="opt.is_correct" class="text-xs text-green-600 font-semibold flex-shrink-0">&#10003; Correct</span>
                                 </div>

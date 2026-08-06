@@ -37,6 +37,23 @@ class QuizDataGrid extends DataGrid
                 DB::raw('(SELECT COUNT(*) FROM quiz_questions WHERE quiz_questions.quiz_id = quizzes.id) as question_count'),
             );
 
+        $this->addFilter('id', 'quizzes.id');
+        $this->addFilter('title', 'quizzes.title');
+        $this->addFilter('slug', 'quizzes.slug');
+
+        $this->addFilter('board_name', 'boards.name');
+        $this->addFilter('grade_name', 'grades.name');
+        $this->addFilter('subject_name', 'subjects.name');
+        $this->addFilter('book_title', 'books.title');
+        $this->addFilter('chapter_title', 'chapters.title');
+
+        $this->addFilter('question_count', DB::raw('(SELECT COUNT(*) FROM quiz_questions WHERE quiz_questions.quiz_id = quizzes.id)'));
+
+        $this->addFilter('created_at', 'quizzes.created_at');
+
+        $this->addFilter('status', 'quizzes.status');
+        $this->addFilter('is_premium', 'quizzes.is_premium');
+
         return $queryBuilder;
     }
 

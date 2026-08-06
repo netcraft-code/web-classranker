@@ -309,6 +309,7 @@ class QuizController extends Controller
             'solution' => $q->question_solution,
             'options'  => $q->options->map(fn($opt) => [
                 'text'       => $opt->option_text,
+                'is_correct'  => (bool) $opt->is_correct,
                 'useTinymce' => (bool) $opt->use_tinymce,
             ])->toArray(),
             'correctOptions' => $q->options
